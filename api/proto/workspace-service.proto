@@ -1,0 +1,94 @@
+syntax = "proto3";
+option go_package = "github.com/matthieuberger/butler/internal/services/gen/workspace";
+package v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+import "protoc-gen-openapiv2/options/annotations.proto";
+import "protoc-gen-validate/validate/validate.proto";
+
+service WorkspaceService {
+  rpc ListOrganizations(google.protobuf.Empty) returns (OrganizationListResponse) {
+    option (google.api.http) = {
+      get: "/v1/organizations"
+    };
+  }
+
+  rpc CreateOrganization(CreateOrganizationRequest) returns (OrganizationResponse) {
+    option (google.api.http) = {
+      post: "/v1/organizations"
+      body: "*"
+    };
+  }
+
+  rpc CreateWorkspace(CreateWorkspaceRequest) returns (WorkspaceResponse) {
+    option (google.api.http) = {
+      post: "/v1/workspaces"
+      body: "*"
+    };
+  }
+
+  rpc AddOrganizationMember(AddOrganizationMemberRequest) returns (OrganizationResponse) {}
+  rpc AddWorkspaceMember(AddWorkspaceMemberRequest) returns (OrganizationResponse) {}
+}
+
+message OrganizationListResponse {
+  repeated Organization organizations = 1;
+}
+
+message CreateOrganizationRequest {
+  string name = 1 [(validate.rules).string.min_len = 2];
+  string userRole = 2;
+}
+
+message OrganizationResponse {
+  Organization organization = 1;
+}
+
+message CreateWorkspaceRequest {
+  string organizationID = 1;
+  string name = 2 [(validate.rules).string.min_len = 2];
+  string description = 3;
+}
+
+message WorkspaceResponse {
+  Workspace workspace = 1;
+}
+
+message AddOrganizationMemberRequest {
+  UserMember member = 1;
+  string organizationID = 2;
+}
+
+message AddWorkspaceMemberRequest {
+  UserMember member = 1;
+  string workspaceID = 2;
+}
+
+message Organization {
+  string ID = 1;
+  string name = 2;
+  string ownerID = 3;
+  repeated Workspace workspaces = 4;
+  repeated UserMember members = 5;
+  google.protobuf.Timestamp createdAt = 6;
+  google.protobuf.Timestamp updatedAt = 7;
+}
+
+message Workspace {
+  string ID = 1;
+  string name = 2;
+  string description = 3;
+  string organizationID = 4;
+  repeated UserMember members = 5;
+  google.protobuf.Timestamp createdAt = 6;
+  google.protobuf.Timestamp updatedAt = 7;
+}
+
+message UserMember {
+  string userID = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string role = 4;
+}

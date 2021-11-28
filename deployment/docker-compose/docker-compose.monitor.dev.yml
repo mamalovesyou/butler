@@ -1,0 +1,50 @@
+version: '3.6'
+
+services:
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+       - pgadmin:/root/.pgadmin
+    networks:
+      - dev_net
+    
+  # prometheus:
+  #   image: prom/prometheus:v2.22.0
+  #   volumes:
+  #     - prometheus:/prometheus
+  #     - ../../environment/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+  #   command:
+  #     - '--environment.file=/etc/prometheus/prometheus.yml'
+  #     - '--storage.tsdb.path=/prometheus'
+  #     - '--storage.tsdb.retention.time=365d'
+  #   ports:
+  #     - "9090:9090"
+  #   networks: 
+  #     - dev_net
+  
+  # grafana:
+  #   image: grafana/grafana:7.2.2
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - prometheus
+  #   volumes:
+  #     - grafana:/var/lib/grafana
+  #     - ../../environment/grafana/provisioning/:/etc/grafana/provisioning/
+  #   networks: 
+  #     - dev_net
+  
+volumes:
+  pgadmin:
+  prometheus:
+  grafana:
+
+networks:
+  dev_net:
+    external:
+      name: dev_net

@@ -1,0 +1,120 @@
+version: "3.6"
+
+services:
+
+  swagger-ui:
+    image: swaggerapi/swagger-ui
+    container_name: swagger_ui_container
+    ports:
+      - "4001:8080"
+    volumes:
+      - ../../api/openapi:/usr/share/nginx/html/doc
+    environment:
+      BASE_URL: http://localhost:8080
+      API_URL: doc/apiV1.swagger.json
+
+  jaeger:
+    container_name: jaeger_container
+    image: jaegertracing/all-in-one:1.27
+    environment:
+      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+    ports:
+      - 5775:5775/udp
+      - 6831:6831/udp
+      - 6832:6832/udp
+      - 5778:5778
+      - 16686:16686
+      - 14268:14268
+      - 14250:14250
+      - 9411:9411
+    networks:
+      - dev_net
+
+  postgres:
+    image: postgres:12.5-alpine
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=postgres
+    networks:
+      - dev_net
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL:-pgadmin4@pgadmin.org}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD:-admin}
+    ports:
+      - "${PGADMIN_PORT:-5050}:80"
+    volumes:
+       - pgadmin:/root/.pgadmin
+    networks:
+      - dev_net
+
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+    volumes:
+      - redis:/data
+    networks:
+      - dev_net
+
+  victorinox:
+    build:
+      context: ../..
+      dockerfile: build/victorinox/Dockerfile.dev
+    volumes:
+      - ../..:/go/src/butler:delegated
+    depends_on:
+      - postgres
+    command: >
+      sh -c "victorinox provision --dir config/services
+      && victorinox migrate --dir config/services"
+    networks:
+      - dev_net
+  auth:
+    build:
+      context: ../..
+      dockerfile: build/auth/Dockerfile.dev
+    ports:
+      - 3001:3001
+    volumes:
+      - ../..:/go/src/butler:delegated
+    networks:
+      - dev_net
+
+  workspace:
+    build:
+      context: ../..
+      dockerfile: build/workspace/Dockerfile.dev
+    ports:
+      - 3002:3002
+    volumes:
+      - ../..:/go/src/butler:delegated
+    networks:
+      - dev_net
+
+  gateway:
+    build:
+      context: ../..
+      dockerfile: build/gateway/Dockerfile.dev
+    ports:
+      - 8080:8080
+    volumes:
+      - ../..:/go/src/butler:delegated
+    networks:
+      - dev_net
+
+volumes:
+  postgres:
+  redis:
+  pgadmin:
+
+networks:
+  dev_net:
+    driver: bridge

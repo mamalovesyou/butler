@@ -1,0 +1,33 @@
+FROM golang:1.17-alpine as builder
+
+# Install Alpine Dependencies
+RUN apk update && apk upgrade && apk add --update alpine-sdk && \
+    apk add --no-cache build-base bash git openssh make cmake
+
+ENV PROJECT_DIR $GOPATH/src/butler
+WORKDIR $PROJECT_DIR
+
+COPY go.mod go.sum Makefile .
+COPY vendor .
+RUN make air
+
+ENV CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64 \
+    GOBIN=$GOPATH/bin
+
+ENV PACKAGE_PATH cmd/workspace
+
+# Environment default value
+ENV ENVIRONMENT development
+ENV AUTH_PORT 3000
+ENV AUTH_DB_HOST postgres
+ENV AUTH_DB_PORT 5432
+ENV AUTH_DB_USER postgres
+ENV AUTH_DB_NAME postgres
+ENV AUTH_JWT_SECRET qwerty
+
+# Expose ports
+EXPOSE $AUTH_PORT
+
+ENTRYPOINT ["air", "-c", "./config/services/workspace/air.toml"]

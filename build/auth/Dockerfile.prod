@@ -1,0 +1,30 @@
+# syntax = docker/dockerfile:1-experimental
+
+FROM golang:1.17-alpine as builder
+
+# Install Alpine Dependencies
+RUN apk update && apk upgrade && apk add --update alpine-sdk && \
+    apk add --no-cache build-base bash git openssh make cmake
+
+ENV PROJECT_DIR $GOPATH/src/butler
+WORKDIR $PROJECT_DIR
+
+COPY go.mod go.sum
+RUN go mod download
+
+COPY . .
+
+ENV CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64 \
+    GOBIN=$GOPATH/bin
+
+RUN go mod vendor
+RUN --mount=type=cache,target=/root/.cache/go-build make build.all
+
+FROM scratch AS bin-unix
+# Copy our static executable.
+COPY --from=builder /go/bin/auth /auth
+
+# Run the auth service binary.
+ENTRYPOINT ["/auth", "start"]

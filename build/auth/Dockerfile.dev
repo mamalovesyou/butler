@@ -1,0 +1,24 @@
+FROM golang:1.17-alpine as builder
+
+# Install Alpine Dependencies
+RUN apk update && apk upgrade && apk add --update alpine-sdk && \
+    apk add --no-cache build-base bash git openssh make cmake
+
+ENV PROJECT_DIR $GOPATH/src/butler
+WORKDIR $PROJECT_DIR
+
+COPY go.mod go.sum Makefile .
+COPY vendor .
+RUN make air
+
+ENV CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64 \
+    GOBIN=$GOPATH/bin
+
+ENV PACKAGE_PATH cmd/auth
+
+# Expose ports
+EXPOSE $AUTH_PORT
+
+ENTRYPOINT ["air", "-c", "./config/services/auth/air.toml"]

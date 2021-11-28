@@ -1,0 +1,52 @@
+env:
+  browser: true
+  es2021: true
+extends:
+  - plugin:react/recommended
+  - airbnb
+  - plugin:@typescript-eslint/recommended
+  - plugin:react/jsx-runtime
+parser: '@typescript-eslint/parser'
+parserOptions:
+  ecmaFeatures:
+    jsx: true
+  ecmaVersion: 13
+  sourceType: module
+plugins:
+  - react
+  - '@typescript-eslint'
+rules: 
+  semi: 0
+  no-shadow: 0
+  no-param-reassign: 0
+  no-empty-function: 0
+  '@typescript-eslint/ban-ts-comment': 0
+  '@typescript-eslint/no-empty-function':
+    - 0
+  react/jsx-props-no-spreading: 0
+  react/require-default-props: 0
+  react/no-children-prop: 0
+  import/prefer-default-export: 0
+  react/function-component-definition: 
+    - 1
+    - namedComponents: arrow-function
+      unnamedComponents: arrow-function
+  react/jsx-filename-extension: 
+    - 1
+    - extensions: 
+      - .tsx
+      - .ts
+  dot-notation: 0
+  max-len:
+    - 0
+    - 80
+    - 4
+  import/extensions:
+    - error
+    - ignorePackages
+    - ts: never
+      tsx: never
+      
+settings:
+  import/resolver:
+    typescript: 
