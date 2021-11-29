@@ -23,7 +23,10 @@ export function* onLoginRequest() {
             yield put(push(DASHBOARD_ROOT_PATH));
         }
         catch (error) {
-            const rpcError: GoogleRpcStatus = error.response.data;
+            const rpcError: GoogleRpcStatus = error?.response?.data || {
+                code: 0,
+                message: error.message
+            };
             yield put(Actions.loginFailure(rpcError));
         }
     });
@@ -42,7 +45,10 @@ export function* onRefreshTokenRequest() {
             yield put(push(DASHBOARD_ROOT_PATH));
         }
         catch (error) {
-            const rpcError: GoogleRpcStatus = error.response.data;
+            const rpcError: GoogleRpcStatus = error?.response?.data || {
+                code: 0,
+                message: error.message
+            };
             yield put(Actions.refreshFailure(rpcError));
         }
     });

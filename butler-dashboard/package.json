@@ -72,6 +72,7 @@
     "@babel/preset-env": "^7.16.4",
     "@babel/preset-react": "^7.16.0",
     "@babel/preset-typescript": "^7.16.0",
+    "@svgr/webpack": "^6.0.0",
     "@types/node": "^16.11.10",
     "@types/prop-types": "^15.7.4",
     "@types/react": "^17.0.37",

@@ -1,19 +1,30 @@
 import { FC } from 'react';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { Box, Button, FormHelperText, TextField } from '@mui/material';
+import {
+  Box, Button, FormHelperText, TextField,
+} from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { loginRequest } from '../../features/auth';
+import { OAuthPopup } from '../oauth-popup';
+
+const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?
+scope=https://www.googleapis.com/auth/drive.metadata.readonly&
+access_type=offline&
+include_granted_scopes=true&
+response_type=code&
+state=state_parameter_passthrough_value&
+redirect_uri=http://localhost:3000/oauth&
+client_id=133098310007-oq0arc40c3o9821rmcq9oen5bncnn1ru.apps.googleusercontent.com`
 
 export const JWTLogin: FC = (props) => {
-
   const dispatch = useDispatch();
 
   const formik = useFormik({
     initialValues: {
       email: '',
       password: '',
-      submit: null
+      submit: null,
     },
     validationSchema: Yup.object({
       email: Yup
@@ -24,17 +35,16 @@ export const JWTLogin: FC = (props) => {
       password: Yup
         .string()
         .max(255)
-        .required('Password is required')
+        .required('Password is required'),
     }),
     onSubmit: async (values, helpers): Promise<void> => {
-      
       dispatch(loginRequest({
         email: values.email,
-        password: values.password
+        password: values.password,
       }))
 
       // TODO: Display errors
-    }
+    },
   });
 
   return (
@@ -84,6 +94,27 @@ export const JWTLogin: FC = (props) => {
         >
           Log In
         </Button>
+        <OAuthPopup
+          url={googleUrl}
+          title="Connect Google Account"
+          onCode={(code, params) => {
+            console.log(code, params)
+          }}
+          onClose={() => {
+            console.log("window closed")
+          }}
+          onError={(err) => {
+            console.log("error", err)
+          }}
+        >
+          <Button
+            variant="contained"
+            fullWidth
+            size="large"
+          >
+            Try OAuth
+          </Button>
+        </OAuthPopup>
       </Box>
     </form>
   );

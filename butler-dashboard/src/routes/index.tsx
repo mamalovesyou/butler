@@ -8,19 +8,24 @@ import { DashboardLayout } from '../components/dashboard/dashboard-layout';
 import NotFound from '../pages/404';
 import Account from '../pages/dashboard/account';
 import {
-  ACCOUNT_ROOT_PATH, DASHBOARD_ROOT_PATH, DATA_SOURCES_ROOT_PATH, LOGIN_ROUTE_PATH, ONBOARDING_ROOT_PATH, REGISTER_ROOT_PATH,
+  ACCOUNT_ROOT_PATH, DASHBOARD_ROOT_PATH, DATA_SOURCES_ROOT_PATH, LOGIN_ROUTE_PATH, OAUTH_CALLBACK, ONBOARDING_ROOT_PATH, REGISTER_ROOT_PATH,
 } from './constants';
 import Onboarding from '../pages/onboarding';
 import { AuthGuard } from '../components/auth/auth-guard';
 import Login from '../pages/auth/login';
 import Register from '../pages/auth/register';
 import { OnboardingGuard } from '../components/onboarding/onboarding-guard';
+import OAuthCallback from '../pages/oauth-callback';
 
 export * from './constants';
 
 export const AppRoutes: React.FC = () => {
   const location = useLocation();
   const element = useRoutes([
+    {
+      path: OAUTH_CALLBACK,
+      element: <OAuthCallback />,
+    },
     {
       path: LOGIN_ROUTE_PATH,
       element: <Login />,
