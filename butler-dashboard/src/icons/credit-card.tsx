@@ -1,4 +1,4 @@
-import { createSvgIcon } from '@mui/material/utils';
+import { createSvgIcon } from "@mui/material/utils";
 
 export const CreditCard = createSvgIcon(
   <svg
@@ -13,5 +13,5 @@ export const CreditCard = createSvgIcon(
       clipRule="evenodd"
     />
   </svg>,
-  'CreditCard',
+  "CreditCard"
 );

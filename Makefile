@@ -70,9 +70,9 @@ tidy: ## Clean go.mod dependencies
 	@echo "Cleaning go.mod dependencies..."
 	@go mod tidy
 
-tools: vendor ## Install tools
+tools: ## Install tools
 	@echo "Installing tools..."
-	@cat $(TOOLS)/tools.go | grep _ | awk -F'"' '{print $$2}' | xargs -tI % go install % \
+	cat $(TOOLS)/tools.go | grep _ | awk -F'"' '{print $$2}' | xargs -tI % go install % \
 		&& echo "✅ Tools installed" || (echo "❌ Failed to install tools"; exit 1);
 
 air: ## Build air for developpment
@@ -184,7 +184,7 @@ gen.openapi: $(PROTO_DIR)/* ## Generate openapi doc from proto
 	@echo "Generating swagger from proto files..."
 	@mkdir -p $(OPEN_API_DIR)
 	@$(PROTO_CMD) \
-    	--openapiv2_out=fqn_for_openapi_name=true,allow_merge=true,merge_file_name=$(OPEN_API_NAME),logtostderr=true:$(OPEN_API_DIR) $^ \
+    	--openapiv2_out=openapi_naming_strategy=fqn,allow_merge=true,merge_file_name=$(OPEN_API_NAME),logtostderr=true:$(OPEN_API_DIR) $^ \
 		&& echo "✅ Succesffuly generated swagger file" || (echo "❌ Failed generated swagger file"; exit 1); \
 
 gen.web.old: $(PROTO_DIR)/* ## Generate openapi specs from proto-rest annotations

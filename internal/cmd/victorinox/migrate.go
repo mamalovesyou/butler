@@ -76,7 +76,11 @@ var (
 					logger.Fatal(ctx, "❌ Failed to initialize migrate instance.", zap.Error(err))
 				}
 				if err := m.Up(); err != nil {
-					logger.Fatal(ctx, "❌ Failed to apply migrations.", zap.Error(err))
+					if err == migrate.ErrNoChange {
+						logger.Infof(ctx, "%s - No change detected.", prefix)
+					} else {
+						logger.Fatal(ctx, "❌ Failed to apply migrations.", zap.Error(err))
+					}
 				}
 				logger.Infof(ctx, "✅ %s - Successfully applied migrations", prefix)
 			}

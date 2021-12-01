@@ -1,4 +1,4 @@
-import { createSvgIcon } from '@mui/material/utils';
+import { createSvgIcon } from "@mui/material/utils";
 
 export const Filter = createSvgIcon(
   <svg
@@ -12,5 +12,5 @@ export const Filter = createSvgIcon(
       clipRule="evenodd"
     />
   </svg>,
-  'Filter',
+  "Filter"
 );

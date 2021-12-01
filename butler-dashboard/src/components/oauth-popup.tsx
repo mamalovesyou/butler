@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { OAuthSource } from '../pages/oauth-callback';
+import React, { useEffect, useState } from "react";
+import { OAuthSource } from "../pages/oauth-callback";
 
 const DEFAULT_POPUP_WIDTH = 500;
 const DEFAULT_POPUP_HEIGHT = 700;
@@ -19,21 +19,24 @@ type IPopupProps = IWindowProps & {
 };
 
 const createPopup = ({
-  url, title, height, width,
+  url,
+  title,
+  height,
+  width,
 }: IWindowProps): Window | null => {
   const left = window.screenX + (window.outerWidth - width) / 2;
   const top = window.screenY + (window.outerHeight - height) / 2.5;
   const externalPopup = window.open(
     url,
     title,
-    `toolbar=no,menubar=no,width=${width},height=${height},left=${left},top=${top}`,
+    `toolbar=no,menubar=no,width=${width},height=${height},left=${left},top=${top}`
   );
   externalPopup.focus();
   return externalPopup;
 };
 
 export const OAuthPopup: React.FC<IPopupProps> = ({
-  title = '',
+  title = "",
   width = DEFAULT_POPUP_WIDTH,
   height = DEFAULT_POPUP_HEIGHT,
   url,
@@ -42,12 +45,16 @@ export const OAuthPopup: React.FC<IPopupProps> = ({
   onClose,
 }: IPopupProps) => {
   const [externalWindow, setExternalWindow] = useState<Window | null>();
-  const [messageListener, setMessageListsner] = useState<boolean>(false);
 
   const onContainerClick = () => {
-    setExternalWindow(createPopup({
-      url, title, width, height,
-    }));
+    setExternalWindow(
+      createPopup({
+        url,
+        title,
+        width,
+        height,
+      })
+    );
   };
 
   const receiveMessage = (event) => {
@@ -59,25 +66,26 @@ export const OAuthPopup: React.FC<IPopupProps> = ({
     // }
     const { data } = event;
     if (data.source === OAuthSource && data.payload) {
+      console.log("data", data.payload)
       const params = new URL(data.payload).searchParams;
-      console.log('params', params.get('code'), params.get('state'))
+      onCode(params.get("code"), params);
     }
   };
 
   const cleanup = () => {
-    window.removeEventListener('message', receiveMessage);
+    window.removeEventListener("message", receiveMessage);
     if (externalWindow) {
       externalWindow.close();
+      if (onClose) onClose();
     }
-    if (onClose) onClose();
   };
 
   useEffect(() => {
     if (externalWindow) {
-      window.addEventListener('message', receiveMessage, false);
+      window.addEventListener("message", receiveMessage, false);
     }
-    return cleanup
-  }, [externalWindow])
+    return cleanup;
+  }, [externalWindow]);
 
   return (
     // eslint-disable-next-line

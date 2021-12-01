@@ -1,8 +1,8 @@
 export type ConnectionStatus =
-  | 'connected'
-  | 'not_connected'
-  | 'pending'
-  | 'rejected';
+  | "connected"
+  | "not_connected"
+  | "pending"
+  | "rejected";
 
 export interface Connection {
   id: string;

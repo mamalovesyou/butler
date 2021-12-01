@@ -1,13 +1,11 @@
-import {
-  createContext, useEffect, useMemo, useState,
-} from 'react';
-import type { FC, ReactNode } from 'react';
-import PropTypes from 'prop-types';
+import { createContext, useEffect, useMemo, useState } from "react";
+import type { FC, ReactNode } from "react";
+import PropTypes from "prop-types";
 
 interface Settings {
-  direction?: 'ltr' | 'rtl';
+  direction?: "ltr" | "rtl";
   responsiveFontSizes?: boolean;
-  theme: 'light' | 'dark';
+  theme: "light" | "dark";
 }
 
 export interface SettingsContextValue {
@@ -20,26 +18,26 @@ interface SettingsProviderProps {
 }
 
 const initialSettings: Settings = {
-  direction: 'ltr',
+  direction: "ltr",
   responsiveFontSizes: true,
-  theme: 'light',
+  theme: "light",
 };
 
 export const restoreSettings = (): Settings | null => {
   let settings = null;
 
   try {
-    const storedData: string | null = window.localStorage.getItem('settings');
+    const storedData: string | null = window.localStorage.getItem("settings");
 
     if (storedData) {
       settings = JSON.parse(storedData);
     } else {
       settings = {
-        direction: 'ltr',
+        direction: "ltr",
         responsiveFontSizes: true,
-        theme: window.matchMedia('(prefers-color-scheme: dark)').matches
-          ? 'dark'
-          : 'light',
+        theme: window.matchMedia("(prefers-color-scheme: dark)").matches
+          ? "dark"
+          : "light",
       };
     }
   } catch (err) {
@@ -52,7 +50,7 @@ export const restoreSettings = (): Settings | null => {
 };
 
 export const storeSettings = (settings: Settings): void => {
-  window.localStorage.setItem('settings', JSON.stringify(settings));
+  window.localStorage.setItem("settings", JSON.stringify(settings));
 };
 
 export const SettingsContext = createContext<SettingsContextValue>({
@@ -77,14 +75,16 @@ export const SettingsProvider: FC<SettingsProviderProps> = (props) => {
     storeSettings(updatedSettings);
   };
 
-  const value = useMemo(() => ({
-    settings, saveSettings,
-  }), [settings]);
+  const value = useMemo(
+    () => ({
+      settings,
+      saveSettings,
+    }),
+    [settings]
+  );
 
   return (
-    <SettingsContext.Provider
-      value={value}
-    >
+    <SettingsContext.Provider value={value}>
       {children}
     </SettingsContext.Provider>
   );

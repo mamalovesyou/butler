@@ -1,4 +1,4 @@
-import { createSvgIcon } from '@mui/material/utils';
+import { createSvgIcon } from "@mui/material/utils";
 
 export const MenuAlt4 = createSvgIcon(
   <svg
@@ -12,5 +12,5 @@ export const MenuAlt4 = createSvgIcon(
       clipRule="evenodd"
     />
   </svg>,
-  'MenuAlt4',
+  "MenuAlt4"
 );

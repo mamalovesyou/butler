@@ -1,0 +1,71 @@
+syntax = "proto3";
+option go_package = "github.com/matthieuberger/butler/internal/services/gen/connectors";
+package v1;
+
+import "google/protobuf/timestamp.proto";
+//import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+//import "protoc-gen-openapiv2/options/annotations.proto";
+
+service ConnectorsService {
+  rpc ListCatalogConnectors(WorkspaceRequest) returns (CatalogConnectorList) {
+    option (google.api.http) = {
+      get: "/v1/{workspaceId}/catalogs"
+    };
+  }
+  rpc ListWorkspaceConnectors(WorkspaceRequest) returns (WorkspaceConnectorList) {
+    option (google.api.http) = {
+      get: "/v1/{workspaceId}/connectors"
+    };
+  }
+  rpc GetOauthConnectorAuthorization(OAuthAuthorizationRequest) returns (WorkspaceConnector) {
+    option (google.api.http) = {
+      post: "/v1/{workspaceId}/connectors/oauth"
+      body: "code"
+    };
+  }
+}
+
+message WorkspaceRequest {
+  string workspaceId = 1;
+}
+
+message CatalogConnector {
+  string id = 1;
+  enum AuthType {
+    OAUTH2 = 0;
+    API_KEY = 1;
+  }
+  string name = 2;
+  string iconUrl = 3;
+  string authType = 4;
+  string authUrl = 5;
+}
+
+message CatalogConnectorList {
+  repeated CatalogConnector connectors = 2;
+}
+
+message WorkspaceConnectorList {
+  repeated WorkspaceConnector connectors = 1;
+}
+
+message WorkspaceConnector {
+  string id = 1;
+  string workspaceId = 2;
+  string name = 3;
+  string status = 4;
+  google.protobuf.Timestamp expiresIn = 5;
+  google.protobuf.Timestamp createdAt = 6;
+  google.protobuf.Timestamp updatedAt = 7;
+}
+
+message OAuthAuthorizationRequest {
+  string workspaceId = 1;
+  message ConnectorCode {
+    string name = 1;
+    string code = 2;
+  }
+  ConnectorCode code = 2;
+}
+

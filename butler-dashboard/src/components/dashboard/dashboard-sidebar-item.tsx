@@ -59,9 +59,11 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
       >
         <Button
           endIcon={
-            !open
-              ? <ChevronRightIcon fontSize="small" />
-              : <ChevronDownIcon fontSize="small" />
+            !open ? (
+              <ChevronRightIcon fontSize="small" />
+            ) : (
+              <ChevronDownIcon fontSize="small" />
+            )
           }
           disableRipple
           onClick={handleToggle}
@@ -85,15 +87,10 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
             }
           }}
         >
-          <Box sx={{ flexGrow: 1 }}>
-            {title}
-          </Box>
+          <Box sx={{ flexGrow: 1 }}>{title}</Box>
           {info}
         </Button>
-        <Collapse
-          in={open}
-          sx={{ mt: 0.5 }}
-        >
+        <Collapse in={open} sx={{ mt: 0.5 }}>
           {children}
         </Collapse>
       </ListItem>
@@ -112,35 +109,33 @@ export const DashboardSidebarItem: FC<DashboardSidebarItemProps> = (props) => {
       }}
     >
       <Button
-          component={Link}
-          to={String(path)}
-          startIcon={icon}
-          endIcon={chip}
-          disableRipple
-          sx={{
-            backgroundColor: active && 'rgba(255,255,255, 0.08)',
-            borderRadius: 1,
-            color: active ? 'secondary.main' : 'neutral.300',
-            fontWeight: active && 'fontWeightBold',
-            justifyContent: 'flex-start',
-            pl: `${paddingLeft}px`,
-            pr: 3,
-            textAlign: 'left',
-            textTransform: 'none',
-            width: '100%',
-            '& .MuiButton-startIcon': {
-              color: active ? 'secondary.main' : 'neutral.400'
-            },
-            '&:hover': {
-              backgroundColor: 'rgba(255,255,255, 0.08)'
-            }
-          }}
-        >
-          <Box sx={{ flexGrow: 1 }}>
-            {title}
-          </Box>
-          {info}
-        </Button>
+        component={Link}
+        to={String(path)}
+        startIcon={icon}
+        endIcon={chip}
+        disableRipple
+        sx={{
+          backgroundColor: active && 'rgba(255,255,255, 0.08)',
+          borderRadius: 1,
+          color: active ? 'secondary.main' : 'neutral.300',
+          fontWeight: active && 'fontWeightBold',
+          justifyContent: 'flex-start',
+          pl: `${paddingLeft}px`,
+          pr: 3,
+          textAlign: 'left',
+          textTransform: 'none',
+          width: '100%',
+          '& .MuiButton-startIcon': {
+            color: active ? 'secondary.main' : 'neutral.400'
+          },
+          '&:hover': {
+            backgroundColor: 'rgba(255,255,255, 0.08)'
+          }
+        }}
+      >
+        <Box sx={{ flexGrow: 1 }}>{title}</Box>
+        {info}
+      </Button>
     </ListItem>
   );
 };

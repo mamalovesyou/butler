@@ -9,6 +9,9 @@
       "name": "AuthService"
     },
     {
+      "name": "ConnectorsService"
+    },
+    {
       "name": "WorkspaceService"
     }
   ],
@@ -288,20 +291,139 @@
           "WorkspaceService"
         ]
       }
+    },
+    "/v1/{workspaceId}/catalogs": {
+      "get": {
+        "operationId": "ConnectorsService_ListCatalogConnectors",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.CatalogConnectorList"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ConnectorsService"
+        ]
+      }
+    },
+    "/v1/{workspaceId}/connectors": {
+      "get": {
+        "operationId": "ConnectorsService_ListWorkspaceConnectors",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.WorkspaceConnectorList"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "ConnectorsService"
+        ]
+      }
+    },
+    "/v1/{workspaceId}/connectors/oauth": {
+      "post": {
+        "operationId": "ConnectorsService_GetOauthConnectorAuthorization",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.WorkspaceConnector"
+            }
+          },
+          "403": {
+            "description": "Returned when the user does not have permission to access the resource.",
+            "schema": {}
+          },
+          "404": {
+            "description": "Returned when the resource does not exist.",
+            "schema": {}
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "workspaceId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.OAuthAuthorizationRequest.ConnectorCode"
+            }
+          }
+        ],
+        "tags": [
+          "ConnectorsService"
+        ]
+      }
     }
   },
   "definitions": {
     "google.protobuf.Any": {
       "type": "object",
       "properties": {
-        "typeUrl": {
+        "@type": {
           "type": "string"
-        },
-        "value": {
-          "type": "string",
-          "format": "byte"
         }
-      }
+      },
+      "additionalProperties": {}
     },
     "google.rpc.Status": {
       "type": "object",
@@ -336,6 +458,37 @@
       },
       "description": "The response message containing the User."
     },
+    "v1.CatalogConnector": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "iconUrl": {
+          "type": "string"
+        },
+        "authType": {
+          "type": "string"
+        },
+        "authUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.CatalogConnectorList": {
+      "type": "object",
+      "properties": {
+        "connectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.CatalogConnector"
+          }
+        }
+      }
+    },
     "v1.CreateOrganizationRequest": {
       "type": "object",
       "properties": {
@@ -361,6 +514,14 @@
         }
       }
     },
+    "v1.IsValidAccessTokenResponse": {
+      "type": "object",
+      "properties": {
+        "userID": {
+          "type": "string"
+        }
+      }
+    },
     "v1.ListUsersResponse": {
       "type": "object",
       "properties": {
@@ -369,6 +530,17 @@
           "items": {
             "$ref": "#/definitions/v1.User"
           }
+        }
+      }
+    },
+    "v1.OAuthAuthorizationRequest.ConnectorCode": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
         }
       }
     },
@@ -551,6 +723,46 @@
         "updatedAt": {
           "type": "string",
           "format": "date-time"
+        }
+      }
+    },
+    "v1.WorkspaceConnector": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "workspaceId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "expiresIn": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1.WorkspaceConnectorList": {
+      "type": "object",
+      "properties": {
+        "connectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.WorkspaceConnector"
+          }
         }
       }
     },

@@ -1,4 +1,4 @@
-import { createSvgIcon } from '@mui/material/utils';
+import { createSvgIcon } from "@mui/material/utils";
 
 export const MinusOutlined = createSvgIcon(
   <svg
@@ -14,5 +14,5 @@ export const MinusOutlined = createSvgIcon(
       d="M18 12H6"
     />
   </svg>,
-  'MinusOutlined',
+  "MinusOutlined"
 );

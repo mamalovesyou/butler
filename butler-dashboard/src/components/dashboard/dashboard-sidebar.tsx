@@ -35,29 +35,26 @@ const getSections = (): Section[] => [
     items: [
       {
         title: 'Account',
-        path: 'account',
+        path: 'account'
       },
-        {
-            title: 'Data Sources',
-            path: 'data-sources',
-        }
+      {
+        title: 'Data Sources',
+        path: 'data-sources'
+      }
     ]
-  },
-
+  }
 ];
 
 export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
   const { onClose, open } = props;
-  const lgUp = useMediaQuery(
-    (theme: Theme) => theme.breakpoints.up('lg'),
-    {
-      noSsr: true
-    }
-  );
+  const lgUp = useMediaQuery((theme: Theme) => theme.breakpoints.up('lg'), {
+    noSsr: true
+  });
   const { workspace } = useCurrentWorkspace();
   const sections = useMemo(() => getSections(), []);
   const organizationsRef = useRef<HTMLButtonElement | null>(null);
-  const [openOrganizationsPopover, setOpenOrganizationsPopover] = useState<boolean>(false);
+  const [openOrganizationsPopover, setOpenOrganizationsPopover] =
+    useState<boolean>(false);
 
   const toggleOrganizationsPopover = (): void => {
     setOpenOrganizationsPopover(!openOrganizationsPopover);
@@ -94,14 +91,11 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
                   px: 3,
                   py: '11px',
                   borderRadius: 1,
-                  minHeight: 64,
+                  minHeight: 64
                 }}
               >
                 <div>
-                  <Typography
-                    color="inherit"
-                    variant="subtitle1"
-                  >
+                  <Typography color="inherit" variant="subtitle1">
                     {workspace?.name}
                   </Typography>
                 </div>
@@ -117,7 +111,7 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
           </div>
           <Divider
             sx={{
-              borderColor: '#2D3748', // dark divider
+              borderColor: '#2D3748' // dark divider
             }}
           />
           <Box sx={{ flexGrow: 1 }}>
@@ -136,7 +130,7 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
           </Box>
           <Divider
             sx={{
-              borderColor: '#2D3748'  // dark divider
+              borderColor: '#2D3748' // dark divider
             }}
           />
         </Box>
@@ -159,7 +153,8 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
             backgroundColor: 'neutral.900',
             borderRightColor: 'divider',
             borderRightStyle: 'solid',
-            borderRightWidth: (theme) => theme.palette.mode === 'dark' ? 1 : 0,
+            borderRightWidth: (theme) =>
+              theme.palette.mode === 'dark' ? 1 : 0,
             color: '#FFFFFF',
             width: 280
           }

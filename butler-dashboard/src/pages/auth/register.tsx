@@ -1,27 +1,26 @@
 import { FC, useEffect } from 'react';
 import { Box, Card, Container, Divider, Typography } from '@mui/material';
 import { Logo } from '../../components/logo';
-import { DASHBOARD_ROOT_PATH, LOGIN_ROUTE_PATH, REGISTER_ROOT_PATH } from '../../routes';
+import {
+  DASHBOARD_ROOT_PATH,
+  LOGIN_ROUTE_PATH,
+  REGISTER_ROOT_PATH
+} from '../../routes';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../hooks/use-auth';
-import { push } from "redux-first-history"
+import { push } from 'redux-first-history';
 import { useDispatch } from 'react-redux';
 import { JWTRegister } from '../../components/auth/jwt-register';
 
-
 const Register: FC = () => {
-
   const dispatch = useDispatch();
   const { isAuthenticated } = useAuth();
 
-  useEffect(
-    () => {
-      if (isAuthenticated) {
-        dispatch(push(DASHBOARD_ROOT_PATH));
-      }
-    },
-    []
-  );
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(push(DASHBOARD_ROOT_PATH));
+    }
+  }, []);
 
   return (
     <>
@@ -43,10 +42,7 @@ const Register: FC = () => {
             }
           }}
         >
-          <Card
-            elevation={16}
-            sx={{ p: 4 }}
-          >
+          <Card elevation={16} sx={{ p: 4 }}>
             <Box
               sx={{
                 alignItems: 'center',
@@ -55,24 +51,16 @@ const Register: FC = () => {
                 justifyContent: 'center'
               }}
             >
-              <Link
-                to={DASHBOARD_ROOT_PATH}
-              >
-                  <Logo
-                    sx={{
-                      height: 40,
-                      width: 40
-                    }}
-                  />
+              <Link to={DASHBOARD_ROOT_PATH}>
+                <Logo
+                  sx={{
+                    height: 40,
+                    width: 40
+                  }}
+                />
               </Link>
-              <Typography variant="h4">
-                Register
-              </Typography>
-              <Typography
-                color="textSecondary"
-                sx={{ mt: 2 }}
-                variant="body2"
-              >
+              <Typography variant="h4">Register</Typography>
+              <Typography color="textSecondary" sx={{ mt: 2 }} variant="body2">
                 Welcome to the HeyButler familly !
               </Typography>
             </Box>
@@ -85,14 +73,12 @@ const Register: FC = () => {
               <JWTRegister />
             </Box>
             <Divider sx={{ my: 3 }} />
-            
-              <Link
-                to={LOGIN_ROUTE_PATH}
-                style={{textDecoration: 'none'}}
-              ><Typography color="textSecondary"
-              variant="body2">Signin with existing account</Typography>
-              </Link>
-            
+
+            <Link to={LOGIN_ROUTE_PATH} style={{ textDecoration: 'none' }}>
+              <Typography color="textSecondary" variant="body2">
+                Signin with existing account
+              </Typography>
+            </Link>
           </Card>
         </Container>
       </Box>

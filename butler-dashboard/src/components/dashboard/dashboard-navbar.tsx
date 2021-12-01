@@ -2,11 +2,12 @@ import { useRef, useState } from 'react';
 import type { FC } from 'react';
 import PropTypes from 'prop-types';
 import {
-    AppBar,
-    Box,
-    ButtonBase,
-    IconButton,
-    Toolbar, Typography,
+  AppBar,
+  Box,
+  ButtonBase,
+  IconButton,
+  Toolbar,
+  Typography
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 import type { AppBarProps } from '@mui/material';
@@ -19,24 +20,20 @@ interface DashboardNavbarProps extends AppBarProps {
   onOpenSidebar?: () => void;
 }
 
-const DashboardNavbarRoot = styled(AppBar)(
-  ({ theme }) => ({
-    backgroundColor: theme.palette.background.paper,
-    ...(
-      theme.palette.mode === 'light'
-        ? {
-          boxShadow: theme.shadows[3]
-        }
-        : {
-          backgroundColor: theme.palette.background.paper,
-          borderBottomColor: theme.palette.divider,
-          borderBottomStyle: 'solid',
-          borderBottomWidth: 1,
-          boxShadow: 'none'
-        }
-    )
-  })
-);
+const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  ...(theme.palette.mode === 'light'
+    ? {
+        boxShadow: theme.shadows[3]
+      }
+    : {
+        backgroundColor: theme.palette.background.paper,
+        borderBottomColor: theme.palette.divider,
+        borderBottomStyle: 'solid',
+        borderBottomWidth: 1,
+        boxShadow: 'none'
+      })
+}));
 
 const AccountButton = () => {
   const anchorRef = useRef<HTMLButtonElement | null>(null);
@@ -62,13 +59,13 @@ const AccountButton = () => {
         sx={{
           alignItems: 'center',
           display: 'flex',
-          ml: 2,
+          ml: 2
         }}
       >
-      <UserAvatar name={fullName} />
-      <Typography variant="h6"  color="textPrimary" sx={{ px: 1 }}>
+        <UserAvatar name={fullName} />
+        <Typography variant="h6" color="textPrimary" sx={{ px: 1 }}>
           {fullName}
-      </Typography>
+        </Typography>
       </Box>
       <AccountPopover
         anchorEl={anchorRef.current}

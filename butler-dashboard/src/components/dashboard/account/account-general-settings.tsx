@@ -12,8 +12,8 @@ import {
 } from '@mui/material';
 import LightThemeIcon from './lightTheme.svg';
 import DarkThemeIcon from './darkTheme.svg';
-import {useSettings} from "../../../hooks/use-settings";
-import {useEffect, useState} from "react";
+import { useSettings } from '../../../hooks/use-settings';
+import { useEffect, useState } from 'react';
 import { useAuth } from '../../../hooks/use-auth';
 
 const themes = [
@@ -56,30 +56,14 @@ export const AccountGeneralSettings: FC = (props) => {
   const handleSave = (): void => saveSettings(values);
 
   return (
-    <Box
-      sx={{ mt: 4 }}
-      {...props}
-    >
+    <Box sx={{ mt: 4 }} {...props}>
       <Card>
         <CardContent>
-          <Grid
-            container
-            spacing={3}
-          >
-            <Grid
-              item
-              md={4}
-              xs={12}
-            >
-              <Typography variant="h6">
-                Basic details
-              </Typography>
+          <Grid container spacing={3}>
+            <Grid item md={4} xs={12}>
+              <Typography variant="h6">Basic details</Typography>
             </Grid>
-            <Grid
-              item
-              md={8}
-              xs={12}
-            >
+            <Grid item md={8} xs={12}>
               <Box
                 sx={{
                   display: 'flex',
@@ -122,7 +106,7 @@ export const AccountGeneralSettings: FC = (props) => {
                   size="small"
                   sx={{
                     flexGrow: 1,
-                    mr: 3,
+                    mr: 3
                   }}
                 />
               </Box>
@@ -132,25 +116,11 @@ export const AccountGeneralSettings: FC = (props) => {
       </Card>
       <Card sx={{ mt: 4 }}>
         <CardContent>
-          <Grid
-            container
-            spacing={3}
-          >
-            <Grid
-              item
-              md={4}
-              xs={12}
-            >
-              <Typography variant="h6">
-                Dashboard Settings
-              </Typography>
+          <Grid container spacing={3}>
+            <Grid item md={4} xs={12}>
+              <Typography variant="h6">Dashboard Settings</Typography>
             </Grid>
-            <Grid
-              item
-              md={8}
-              sm={12}
-              xs={12}
-            >
+            <Grid item md={8} sm={12} xs={12}>
               <Box
                 sx={{
                   alignItems: 'center',
@@ -160,48 +130,51 @@ export const AccountGeneralSettings: FC = (props) => {
                 }}
               >
                 <Box
-                    sx={{
-                      alignItems: 'center',
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      mb: 3
-                    }}
-                    className="test"
+                  sx={{
+                    alignItems: 'center',
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    mb: 3
+                  }}
+                  className="test"
                 >
                   {themes.map((theme) => {
                     const { label, icon: Icon, value } = theme;
 
                     return (
-                        <div key={value}>
-                          <Box
-                              onClick={() => handleChange('theme', value)}
-                              sx={{
-                                borderColor: values.theme === value ? 'primary.main' : 'divider',
-                                borderRadius: 1,
-                                borderStyle: 'solid',
-                                borderWidth: 2,
-                                cursor: 'pointer',
-                                flexGrow: 1,
-                                fontSize: 0,
-                                m: 1,
-                                overflow: 'hidden',
-                                p: 1,
-                                '& svg': {
-                                  height: 'auto',
-                                  width: '100%'
-                                }
-                              }}
-                          >
-                            <Icon />
-                          </Box>
-                          <Typography
-                              align="center"
-                              sx={{ mt: 1 }}
-                              variant="subtitle2"
-                          >
-                            {label}
-                          </Typography>
-                        </div>
+                      <div key={value}>
+                        <Box
+                          onClick={() => handleChange('theme', value)}
+                          sx={{
+                            borderColor:
+                              values.theme === value
+                                ? 'primary.main'
+                                : 'divider',
+                            borderRadius: 1,
+                            borderStyle: 'solid',
+                            borderWidth: 2,
+                            cursor: 'pointer',
+                            flexGrow: 1,
+                            fontSize: 0,
+                            m: 1,
+                            overflow: 'hidden',
+                            p: 1,
+                            '& svg': {
+                              height: 'auto',
+                              width: '100%'
+                            }
+                          }}
+                        >
+                          <Icon />
+                        </Box>
+                        <Typography
+                          align="center"
+                          sx={{ mt: 1 }}
+                          variant="subtitle2"
+                        >
+                          {label}
+                        </Typography>
+                      </div>
                     );
                   })}
                 </Box>
@@ -224,33 +197,34 @@ export const AccountGeneralSettings: FC = (props) => {
                     sx={{ mt: 1 }}
                     variant="body2"
                   >
-                    Toggling this will make fonts to be responsive to your screen size.
+                    Toggling this will make fonts to be responsive to your
+                    screen size.
                   </Typography>
                 </div>
-                <Switch checked={values.responsiveFontSizes}
-                        name="direction"
-                        onChange={(event): void => handleChange(
-                            'responsiveFontSizes',
-                            event.target.checked
-                        )} />
+                <Switch
+                  checked={values.responsiveFontSizes}
+                  name="direction"
+                  onChange={(event): void =>
+                    handleChange('responsiveFontSizes', event.target.checked)
+                  }
+                />
               </Box>
               <Box
-                  sx={{
-                    alignItems: 'center',
-                    display: 'flex',
-                    justifyContent: 'left',
-                    mt: 4
-                  }}
+                sx={{
+                  alignItems: 'center',
+                  display: 'flex',
+                  justifyContent: 'left',
+                  mt: 4
+                }}
               >
                 <Button
-                    color="primary"
-                    onClick={handleSave}
-                    variant="contained"
+                  color="primary"
+                  onClick={handleSave}
+                  variant="contained"
                 >
                   Save Settings
                 </Button>
               </Box>
-
             </Grid>
           </Grid>
         </CardContent>

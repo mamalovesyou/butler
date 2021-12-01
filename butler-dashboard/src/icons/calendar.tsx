@@ -1,4 +1,4 @@
-import { createSvgIcon } from '@mui/material/utils';
+import { createSvgIcon } from "@mui/material/utils";
 
 export const Calendar = createSvgIcon(
   <svg
@@ -12,5 +12,5 @@ export const Calendar = createSvgIcon(
       clipRule="evenodd"
     />
   </svg>,
-  'Calendar',
+  "Calendar"
 );

@@ -1,7 +1,13 @@
 import type { FC } from 'react';
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
-import { Box, Button, FormHelperText, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormHelperText,
+  TextField,
+  Typography
+} from '@mui/material';
 import { useFormik } from 'formik';
 import { ArrowRight as ArrowRightIcon } from '../../icons/arrow-right';
 import { useDispatch } from 'react-redux';
@@ -12,7 +18,9 @@ interface CreateOrganizationStepProps {
   onBack?: () => void;
 }
 
-export const CreateOrganizationStep: FC<CreateOrganizationStepProps> = (props) => {
+export const CreateOrganizationStep: FC<CreateOrganizationStepProps> = (
+  props
+) => {
   const { onBack, onNext, ...other } = props;
 
   const dispatch = useDispatch();
@@ -24,43 +32,28 @@ export const CreateOrganizationStep: FC<CreateOrganizationStepProps> = (props) =
       submit: null
     },
     validationSchema: Yup.object({
-      name: Yup
-        .string()
-        .max(255)
-        .required('Organization name is required'),
-      role: Yup
-        .string()
+      name: Yup.string().max(255).required('Organization name is required'),
+      role: Yup.string()
     }),
     onSubmit: async (values, helpers): Promise<void> => {
-
-      dispatch(createOrganizationRequest({
-        name: values.name,
-        userRole: values.role
-      }))
+      dispatch(
+        createOrganizationRequest({
+          name: values.name,
+          userRole: values.role
+        })
+      );
 
       // TODO: Display errors
     }
   });
 
-
-
   return (
     <div {...other}>
-      <Typography variant="h6">
-        Create an Organization
-      </Typography>
-      <Typography
-        color="textSecondary"
-        sx={{ mt: 2 }}
-        variant="body2"
-      >
+      <Typography variant="h6">Create an Organization</Typography>
+      <Typography color="textSecondary" sx={{ mt: 2 }} variant="body2">
         What's your company name ? And what is your role or job title ?
       </Typography>
-      <form
-        noValidate
-        onSubmit={formik.handleSubmit}
-        {...props}
-      >
+      <form noValidate onSubmit={formik.handleSubmit} {...props}>
         <Box sx={{ mt: 3 }}>
           <TextField
             autoFocus
@@ -89,15 +82,13 @@ export const CreateOrganizationStep: FC<CreateOrganizationStepProps> = (props) =
           />
           {formik.errors.submit && (
             <Box sx={{ mt: 3 }}>
-              <FormHelperText error>
-                {formik.errors.submit}
-              </FormHelperText>
+              <FormHelperText error>{formik.errors.submit}</FormHelperText>
             </Box>
           )}
         </Box>
         <Box sx={{ pt: 2 }}>
           <Button
-            endIcon={(<ArrowRightIcon fontSize="small" />)}
+            endIcon={<ArrowRightIcon fontSize="small" />}
             type="submit"
             variant="contained"
             disabled={formik.isSubmitting}

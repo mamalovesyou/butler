@@ -1,4 +1,4 @@
-import { createSvgIcon } from '@mui/material/utils';
+import { createSvgIcon } from "@mui/material/utils";
 
 export const EmojiHappy = createSvgIcon(
   <svg
@@ -12,5 +12,5 @@ export const EmojiHappy = createSvgIcon(
       clipRule="evenodd"
     />
   </svg>,
-  'EmojiHappy',
+  "EmojiHappy"
 );

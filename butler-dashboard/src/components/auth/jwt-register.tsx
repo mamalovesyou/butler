@@ -1,7 +1,15 @@
 import type { FC } from 'react';
 import * as Yup from 'yup';
 import { useFormik } from 'formik';
-import { Box, Button, Checkbox, FormHelperText, TextField, Typography, Link } from '@mui/material';
+import {
+  Box,
+  Button,
+  Checkbox,
+  FormHelperText,
+  TextField,
+  Typography,
+  Link
+} from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { signupRequest } from '../../features/auth';
 
@@ -17,47 +25,31 @@ export const JWTRegister: FC = (props) => {
       submit: null
     },
     validationSchema: Yup.object({
-      firstName: Yup
-        .string()
-        .max(255)
-        .required('Firstname is required'),
-      lastName: Yup
-      .string()
-      .max(255)
-      .required('Lastname is required'),
-      email: Yup
-        .string()
+      firstName: Yup.string().max(255).required('Firstname is required'),
+      lastName: Yup.string().max(255).required('Lastname is required'),
+      email: Yup.string()
         .email('Must be a valid email')
         .max(255)
         .required('Email is required'),
-      password: Yup
-        .string()
-        .min(7)
-        .max(255)
-        .required('Password is required'),
-      policy: Yup
-        .boolean()
-        .oneOf([true], 'This field must be checked')
+      password: Yup.string().min(7).max(255).required('Password is required'),
+      policy: Yup.boolean().oneOf([true], 'This field must be checked')
     }),
     onSubmit: async (values, helpers): Promise<void> => {
-
-      dispatch(signupRequest({
-        firstName: values.firstName,
-        lastName: values.lastName,
-        email: values.email,
-        password: values.password
-      }))
+      dispatch(
+        signupRequest({
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email,
+          password: values.password
+        })
+      );
 
       // TODO: Display errors
     }
   });
 
   return (
-    <form
-      noValidate
-      onSubmit={formik.handleSubmit}
-      {...props}
-    >
+    <form noValidate onSubmit={formik.handleSubmit} {...props}>
       <TextField
         error={Boolean(formik.touched.firstName && formik.errors.firstName)}
         fullWidth
@@ -117,30 +109,19 @@ export const JWTRegister: FC = (props) => {
           name="policy"
           onChange={formik.handleChange}
         />
-        <Typography
-          color="textSecondary"
-          variant="body2"
-        >
-          I have read the
-          {' '}
-          <Link
-            component="a"
-            href="#"
-          >
+        <Typography color="textSecondary" variant="body2">
+          I have read the{' '}
+          <Link component="a" href="#">
             Terms and Conditions
           </Link>
         </Typography>
       </Box>
       {Boolean(formik.touched.policy && formik.errors.policy) && (
-        <FormHelperText error>
-          {formik.errors.policy}
-        </FormHelperText>
+        <FormHelperText error>{formik.errors.policy}</FormHelperText>
       )}
       {formik.errors.submit && (
         <Box sx={{ mt: 3 }}>
-          <FormHelperText error>
-            {formik.errors.submit}
-          </FormHelperText>
+          <FormHelperText error>{formik.errors.submit}</FormHelperText>
         </Box>
       )}
       <Box sx={{ mt: 2 }}>
@@ -157,4 +138,3 @@ export const JWTRegister: FC = (props) => {
     </form>
   );
 };
-

@@ -4,14 +4,13 @@ import { Box, Container, Divider, Tab, Tabs, Typography } from '@mui/material';
 import { AccountGeneralSettings } from '../../components/dashboard/account/account-general-settings';
 import { AccountTeamSettings } from '../../components/dashboard/account/account-team-settings';
 
-
 enum TabsEnum {
-    GENERAL = 'GENERAL',
-    TEAM = 'TEAM'
+  GENERAL = 'GENERAL',
+  TEAM = 'TEAM'
 }
 const tabs = [
   { label: 'General', value: TabsEnum.GENERAL },
-  { label: 'Team', value:  TabsEnum.TEAM },
+  { label: 'Team', value: TabsEnum.TEAM }
 ];
 
 const Account: FC = () => {
@@ -31,9 +30,7 @@ const Account: FC = () => {
         }}
       >
         <Container maxWidth="md">
-          <Typography variant="h4">
-            Account
-          </Typography>
+          <Typography variant="h4">Account</Typography>
           <Tabs
             indicatorColor="primary"
             onChange={handleTabsChange}
@@ -44,11 +41,7 @@ const Account: FC = () => {
             sx={{ mt: 3 }}
           >
             {tabs.map((tab) => (
-              <Tab
-                key={tab.value}
-                label={tab.label}
-                value={tab.value}
-              />
+              <Tab key={tab.value} label={tab.label} value={tab.value} />
             ))}
           </Tabs>
           <Divider sx={{ mb: 3 }} />

@@ -19,24 +19,26 @@ interface WorkspaceName {
 }
 
 export const WorkspacePopover: FC<WorkspacePopoverProps> = (props) => {
-  const {
-    anchorEl, onClose, open, ...other
-  } = props;
+  const { anchorEl, onClose, open, ...other } = props;
   const dispatch = useDispatch();
-  const [workspaceNames, setworkspaceNames] = useState<WorkspaceName[]>([])
+  const [workspaceNames, setworkspaceNames] = useState<WorkspaceName[]>([]);
   const { organizations, organizationId } = useWorkspace();
 
   const handleChange = (workspace: WorkspaceName): void => {
-    dispatch(setCurrentWorkspace({
-      organizationId: workspace.organizationID,
-      workspaceId: workspace.ID,
-    }));
+    dispatch(
+      setCurrentWorkspace({
+        organizationId: workspace.organizationID,
+        workspaceId: workspace.ID
+      })
+    );
     onClose();
   };
 
   useEffect(() => {
     const names = organizationId
-      ? organizations[organizationId].workspaces?.map((w: V1Workspace) => w as WorkspaceName)
+      ? organizations[organizationId].workspaces?.map(
+          (w: V1Workspace) => w as WorkspaceName
+        )
       : [];
     setworkspaceNames(names);
   }, [organizationId]);
@@ -46,7 +48,7 @@ export const WorkspacePopover: FC<WorkspacePopoverProps> = (props) => {
       anchorEl={anchorEl}
       anchorOrigin={{
         horizontal: 'left',
-        vertical: 'bottom',
+        vertical: 'bottom'
       }}
       keepMounted
       onClose={onClose}
@@ -56,10 +58,7 @@ export const WorkspacePopover: FC<WorkspacePopoverProps> = (props) => {
       {...other}
     >
       {workspaceNames.map((workspace) => (
-        <MenuItem
-          key={workspace.ID}
-          onClick={() => handleChange(workspace)}
-        >
+        <MenuItem key={workspace.ID} onClick={() => handleChange(workspace)}>
           {workspace.name}
         </MenuItem>
       ))}

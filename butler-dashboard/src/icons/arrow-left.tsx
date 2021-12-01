@@ -1,4 +1,4 @@
-import { createSvgIcon } from '@mui/material/utils';
+import { createSvgIcon } from "@mui/material/utils";
 
 export const ArrowLeft = createSvgIcon(
   <svg
@@ -12,5 +12,5 @@ export const ArrowLeft = createSvgIcon(
       clipRule="evenodd"
     />
   </svg>,
-  'ArrowLeft',
+  "ArrowLeft"
 );

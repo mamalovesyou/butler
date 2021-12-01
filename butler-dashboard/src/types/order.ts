@@ -10,18 +10,14 @@ interface OrderCustomer {
 
 export interface OrderItem {
   id: string;
-  billingCycle: 'daily' | 'weekly' | 'monthly' | 'yearly';
+  billingCycle: "daily" | "weekly" | "monthly" | "yearly";
   currency: string;
   name: string;
   quantity: number;
   unitAmount: number;
 }
 
-export type OrderStatus =
-  | 'canceled'
-  | 'complete'
-  | 'pending'
-  | 'rejected';
+export type OrderStatus = "canceled" | "complete" | "pending" | "rejected";
 
 export interface Order {
   id: string;

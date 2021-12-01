@@ -12,7 +12,7 @@ export interface Product {
   price: number;
   quantity: number;
   sku: string;
-  status: 'published' | 'draft';
+  status: "published" | "draft";
   updatedAt: number;
   variants: number;
 }

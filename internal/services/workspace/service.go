@@ -5,6 +5,8 @@ import (
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
 	"github.com/matthieuberger/butler/internal/logger"
 	"github.com/matthieuberger/butler/internal/services/gen/auth"
+	"github.com/matthieuberger/butler/internal/services/gen/connectors"
+	"github.com/matthieuberger/butler/internal/services/workspace/usecases"
 	"go.uber.org/zap"
 	"google.golang.org/protobuf/types/known/emptypb"
 
@@ -20,10 +22,15 @@ import (
 	"gorm.io/gorm"
 )
 
+type UseCase interface {
+	RegisterUseCaseEndpoints(server *grpc.Server)
+}
+
 // Service has router and db instances
 type Service struct {
 	OrganizationRepo *repositories.OrganizationRepo
 	WorkspaceRepo    *repositories.WorkspaceRepo
+	ConnectorUseCase *usecases.ConnectorsUseCase
 	AuthClient       auth.AuthServiceClient
 	workspace.UnimplementedWorkspaceServiceServer
 }
@@ -33,6 +40,7 @@ func NewWorkspaceService(config *ServiceConfig, db *gorm.DB) *Service {
 	return &Service{
 		OrganizationRepo: repositories.NewOrganizationRepo(db),
 		WorkspaceRepo:    repositories.NewWorkspaceRepo(db),
+		ConnectorUseCase: usecases.NewConnectorsUseCase(db),
 		AuthClient:       connectAuth(config.AuthServiceAddr),
 	}
 }
@@ -50,6 +58,7 @@ func connectAuth(addr string) auth.AuthServiceClient {
 
 // RegisterGRPC Service to the specified grpc server
 func (svc *Service) RegisterGRPC(server *grpc.Server) {
+	connectors.RegisterConnectorsServiceServer(server, svc.ConnectorUseCase)
 	workspace.RegisterWorkspaceServiceServer(server, svc)
 }
 

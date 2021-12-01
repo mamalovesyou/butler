@@ -1,4 +1,4 @@
-import { createSvgIcon } from '@mui/material/utils';
+import { createSvgIcon } from "@mui/material/utils";
 
 export const Plus = createSvgIcon(
   <svg
@@ -12,5 +12,5 @@ export const Plus = createSvgIcon(
       clipRule="evenodd"
     />
   </svg>,
-  'Plus',
+  "Plus"
 );

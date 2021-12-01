@@ -1,6 +1,5 @@
 /* eslint-disable */
 /* tslint:disable */
-// @ts-nocheck
 /*
  * ---------------------------------------------------------------
  * ## THIS FILE WAS GENERATED VIA SWAGGER-TYPESCRIPT-API        ##
@@ -11,10 +10,7 @@
  */
 
 export interface GoogleProtobufAny {
-  typeUrl?: string;
-
-  /** @format byte */
-  value?: string;
+  "@type"?: string;
 }
 
 export interface GoogleRpcStatus {
@@ -33,6 +29,18 @@ export interface V1AuthenticatedUser {
   refreshToken?: string;
 }
 
+export interface V1CatalogConnector {
+  id?: string;
+  name?: string;
+  iconUrl?: string;
+  authType?: string;
+  authUrl?: string;
+}
+
+export interface V1CatalogConnectorList {
+  connectors?: V1CatalogConnector[];
+}
+
 export interface V1CreateOrganizationRequest {
   name?: string;
   userRole?: string;
@@ -44,8 +52,17 @@ export interface V1CreateWorkspaceRequest {
   description?: string;
 }
 
+export interface V1IsValidAccessTokenResponse {
+  userID?: string;
+}
+
 export interface V1ListUsersResponse {
   users?: V1User[];
+}
+
+export interface V1OAuthAuthorizationRequestConnectorCode {
+  name?: string;
+  code?: string;
 }
 
 export interface V1Organization {
@@ -156,6 +173,26 @@ export interface V1Workspace {
 
   /** @format date-time */
   updatedAt?: string;
+}
+
+export interface V1WorkspaceConnector {
+  id?: string;
+  workspaceId?: string;
+  name?: string;
+  status?: string;
+
+  /** @format date-time */
+  expiresIn?: string;
+
+  /** @format date-time */
+  createdAt?: string;
+
+  /** @format date-time */
+  updatedAt?: string;
+}
+
+export interface V1WorkspaceConnectorList {
+  connectors?: V1WorkspaceConnector[];
 }
 
 export interface V1WorkspaceResponse {
@@ -411,6 +448,63 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     workspaceServiceCreateWorkspace: (body: V1CreateWorkspaceRequest, params: RequestParams = {}) =>
       this.request<V1WorkspaceResponse, GoogleRpcStatus>({
         path: `/v1/workspaces`,
+        method: "POST",
+        body: body,
+        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ConnectorsService
+     * @name ConnectorsServiceListCatalogConnectors
+     * @request GET:/v1/{workspaceId}/catalogs
+     * @secure
+     */
+    connectorsServiceListCatalogConnectors: (workspaceId: string, params: RequestParams = {}) =>
+      this.request<V1CatalogConnectorList, GoogleRpcStatus>({
+        path: `/v1/${workspaceId}/catalogs`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ConnectorsService
+     * @name ConnectorsServiceListWorkspaceConnectors
+     * @request GET:/v1/{workspaceId}/connectors
+     * @secure
+     */
+    connectorsServiceListWorkspaceConnectors: (workspaceId: string, params: RequestParams = {}) =>
+      this.request<V1WorkspaceConnectorList, GoogleRpcStatus>({
+        path: `/v1/${workspaceId}/connectors`,
+        method: "GET",
+        secure: true,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ConnectorsService
+     * @name ConnectorsServiceGetOauthConnectorAuthorization
+     * @request POST:/v1/{workspaceId}/connectors/oauth
+     * @secure
+     */
+    connectorsServiceGetOauthConnectorAuthorization: (
+      workspaceId: string,
+      body: V1OAuthAuthorizationRequestConnectorCode,
+      params: RequestParams = {},
+    ) =>
+      this.request<V1WorkspaceConnector, GoogleRpcStatus>({
+        path: `/v1/${workspaceId}/connectors/oauth`,
         method: "POST",
         body: body,
         secure: true,

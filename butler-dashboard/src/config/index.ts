@@ -1,17 +1,16 @@
-import { AxiosInstance } from 'axios';
+import { AxiosInstance } from "axios";
 
 enum PlatformEnv {
-  PRODUCTION = 'production',
-  DEVELOPMENT = 'development'
+  PRODUCTION = "production",
+  DEVELOPMENT = "development",
 }
 
-const NODE_ENV = process.env.NODE_ENV;
-const PLATFORM_ENV = process.env.PLATFORM_ENV;
-const VERSION = process.env.VERSION;
-const API_BASE_URL = process.env.API_BASE_URL;
+const { NODE_ENV } = process.env;
+const { PLATFORM_ENV } = process.env;
+const { VERSION } = process.env;
+const { API_BASE_URL } = process.env;
 
-console.log("VALUES:", NODE_ENV, PLATFORM_ENV, VERSION, API_BASE_URL)
-
+console.log("VALUES:", NODE_ENV, PLATFORM_ENV, VERSION, API_BASE_URL);
 
 // type ButlerAPPConfig = {
 //   platformEnv: string;
@@ -31,7 +30,8 @@ console.log("VALUES:", NODE_ENV, PLATFORM_ENV, VERSION, API_BASE_URL)
 
 export const updateAxiosInstance = (instance: AxiosInstance): void => {
   instance.defaults.baseURL = API_BASE_URL;
-  instance.defaults.headers['App-Version'] = VERSION;
+  instance.defaults.headers["App-Version"] = VERSION;
 };
 
-export const isProductionPlatformEnv = (): boolean => NODE_ENV === PlatformEnv.PRODUCTION;
+export const isProductionPlatformEnv = (): boolean =>
+  NODE_ENV === PlatformEnv.PRODUCTION;

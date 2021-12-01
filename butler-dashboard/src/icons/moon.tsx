@@ -1,4 +1,4 @@
-import { createSvgIcon } from '@mui/material/utils';
+import { createSvgIcon } from "@mui/material/utils";
 
 export const Moon = createSvgIcon(
   <svg
@@ -8,5 +8,5 @@ export const Moon = createSvgIcon(
   >
     <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
   </svg>,
-  'Moon',
+  "Moon"
 );

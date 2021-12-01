@@ -17,7 +17,10 @@
     "start": "yarn run start-dev",
     "start-dev": "webpack serve --config=config/webpack/dev.js",
     "clean-dist": "rimraf dist/*",
-    "lint": "eslint src/**/*.{ts,tsx}",
+    "legacy:format": "prettier --config .prettierrc './src/**/*.{ts,tsx,js,jsx}' --write",
+    "legacy:lint": "eslint src/**/*.{ts,tsx}",
+    "format": "prettier --write src/**/*.ts{,x}",
+    "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint:fix": "yarn lint --fix",
     "lint:quiet": "yarn lint --quiet",
     "gen:api": "swagger-typescript-api --axios --clean-output -p ../api/openapi/apiV1.swagger.json -o ./src/api/gen -n index.ts"

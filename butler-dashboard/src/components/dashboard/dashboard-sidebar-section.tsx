@@ -30,12 +30,13 @@ const renderNavItems = ({
 }): JSX.Element => (
   <List disablePadding>
     {items.reduce(
-      (acc, item) => reduceChildRoutes({
-        acc,
-        item,
-        depth,
-        path
-      }),
+      (acc, item) =>
+        reduceChildRoutes({
+          acc,
+          item,
+          depth,
+          path
+        }),
       []
     )}
   </List>
@@ -94,12 +95,14 @@ const reduceChildRoutes = ({
   return acc;
 };
 
-export const DashboardSidebarSection: FC<DashboardSidebarSectionProps> = (props) => {
+export const DashboardSidebarSection: FC<DashboardSidebarSectionProps> = (
+  props
+) => {
   const { items, path, title, ...other } = props;
 
   return (
     <List
-      subheader={(
+      subheader={
         <ListSubheader
           disableGutters
           disableSticky
@@ -114,7 +117,7 @@ export const DashboardSidebarSection: FC<DashboardSidebarSectionProps> = (props)
         >
           {title}
         </ListSubheader>
-      )}
+      }
       {...other}
     >
       {renderNavItems({

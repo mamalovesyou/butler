@@ -1,7 +1,6 @@
 import type { FC } from 'react';
 import PropTypes from 'prop-types';
 import {
-  Avatar,
   Box,
   Divider,
   ListItemIcon,
@@ -12,11 +11,12 @@ import {
 } from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Cog as CogIcon } from '../../icons/cog';
-import { UserCircle as UserCircleIcon } from '../../icons/user-circle';
 import { useDispatch } from 'react-redux';
 import { ACCOUNT_ROOT_PATH } from '../../routes';
 import { Link } from 'react-router-dom';
 import { logout } from '../../features/auth';
+import { UserAvatar } from '../user-avatar';
+import { useAuth } from '../../hooks/use-auth';
 
 interface AccountPopoverProps {
   anchorEl: null | Element;
@@ -28,12 +28,12 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
   const { anchorEl, onClose, open, ...other } = props;
   const dispatch = useDispatch();
 
-  const user = {
-    avatar: '/static/mock-images/avatars/avatar-anika_visser.png',
-    name: 'Anika Visser'
-  };
+  const { user } = useAuth();
+  const fullName = `${user?.firstName} ${user?.lastName}`;
 
-  const handleLogout = async (): Promise<void> => { dispatch(logout()) };
+  const handleLogout = async (): Promise<void> => {
+    dispatch(logout());
+  };
 
   return (
     <Popover
@@ -56,29 +56,13 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
           display: 'flex'
         }}
       >
-        <Avatar
-          src={user.avatar}
-          sx={{
-            height: 40,
-            width: 40
-          }}
-        >
-          <UserCircleIcon fontSize="small" />
-        </Avatar>
+        <UserAvatar name={fullName} />
         <Box
           sx={{
             ml: 1
           }}
         >
-          <Typography variant="body1">
-            {user.name}
-          </Typography>
-          <Typography
-            color="textSecondary"
-            variant="body2"
-          >
-            Acme Inc
-          </Typography>
+          <Typography variant="body1">{user.firstName}</Typography>
         </Box>
       </Box>
       <Divider />
@@ -88,11 +72,7 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
             <CogIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText
-            primary={(
-              <Typography variant="body1">
-                Settings
-              </Typography>
-            )}
+            primary={<Typography variant="body1">Settings</Typography>}
           />
         </MenuItem>
         <Divider />
@@ -101,11 +81,7 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
             <LogoutIcon fontSize="small" />
           </ListItemIcon>
           <ListItemText
-            primary={(
-              <Typography variant="body1">
-                Logout
-              </Typography>
-            )}
+            primary={<Typography variant="body1">Logout</Typography>}
           />
         </MenuItem>
       </Box>

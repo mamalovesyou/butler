@@ -1,4 +1,4 @@
-import { createSvgIcon } from '@mui/material/utils';
+import { createSvgIcon } from "@mui/material/utils";
 
 export const Dot = createSvgIcon(
   <svg
@@ -6,11 +6,7 @@ export const Dot = createSvgIcon(
     viewBox="0 0 20 20"
     fill="currentColor"
   >
-    <circle
-      cx="10"
-      cy="10"
-      r="3"
-    />
+    <circle cx="10" cy="10" r="3" />
   </svg>,
-  'Dot',
+  "Dot"
 );

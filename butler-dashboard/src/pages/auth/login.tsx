@@ -1,9 +1,7 @@
 import { FC, useEffect } from 'react';
-import {
-  Box, Card, Container, Divider, Typography,
-} from '@mui/material';
+import { Box, Card, Container, Divider, Typography } from '@mui/material';
 import { Link } from 'react-router-dom';
-import { push } from 'redux-first-history'
+import { push } from 'redux-first-history';
 import { useDispatch } from 'react-redux';
 import { JWTLogin } from '../../components/auth/jwt-login';
 import { Logo } from '../../components/logo';
@@ -14,14 +12,11 @@ const Login: FC = () => {
   const dispatch = useDispatch();
   const { isAuthenticated } = useAuth();
 
-  useEffect(
-    () => {
-      if (isAuthenticated) {
-        dispatch(push(DASHBOARD_ROOT_PATH));
-      }
-    },
-    [],
-  );
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(push(DASHBOARD_ROOT_PATH));
+    }
+  }, []);
 
   return (
     <Box
@@ -30,7 +25,7 @@ const Login: FC = () => {
         backgroundColor: 'background.default',
         display: 'flex',
         flexDirection: 'column',
-        minHeight: '100vh',
+        minHeight: '100vh'
       }}
     >
       <Container
@@ -38,65 +33,47 @@ const Login: FC = () => {
         sx={{
           py: {
             xs: '60px',
-            md: '120px',
-          },
+            md: '120px'
+          }
         }}
       >
-        <Card
-          elevation={16}
-          sx={{ p: 4 }}
-        >
+        <Card elevation={16} sx={{ p: 4 }}>
           <Box
             sx={{
               alignItems: 'center',
               display: 'flex',
               flexDirection: 'column',
-              justifyContent: 'center',
+              justifyContent: 'center'
             }}
           >
-            <Link
-              to={DASHBOARD_ROOT_PATH}
-            >
+            <Link to={DASHBOARD_ROOT_PATH}>
               <Logo
                 sx={{
                   height: 40,
-                  width: 40,
+                  width: 40
                 }}
               />
             </Link>
-            <Typography variant="h4">
-              Login
-            </Typography>
-            <Typography
-              color="textSecondary"
-              sx={{ mt: 2 }}
-              variant="body2"
-            >
+            <Typography variant="h4">Login</Typography>
+            <Typography color="textSecondary" sx={{ mt: 2 }} variant="body2">
               Welcome back !
             </Typography>
           </Box>
           <Box
             sx={{
               flexGrow: 1,
-              mt: 3,
+              mt: 3
             }}
           >
             <JWTLogin />
           </Box>
           <Divider sx={{ my: 3 }} />
 
-          <Link
-            to={REGISTER_ROOT_PATH}
-            style={{ textDecoration: 'none' }}
-          >
-            <Typography
-              color="textSecondary"
-              variant="body2"
-            >
+          <Link to={REGISTER_ROOT_PATH} style={{ textDecoration: 'none' }}>
+            <Typography color="textSecondary" variant="body2">
               Create new account
             </Typography>
           </Link>
-
         </Card>
       </Container>
     </Box>

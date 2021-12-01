@@ -30,7 +30,7 @@ export interface Review {
 
 export interface Activity {
   id: string;
-  action: 'new_job' | 'new_team_member' | 'created';
+  action: "new_job" | "new_team_member" | "created";
   addedJob?: string;
   addedMember?: string;
   author: string;

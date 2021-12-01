@@ -3,8 +3,11 @@ package workspace
 import (
 	"context"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/matthieuberger/butler/internal/logger"
 	"github.com/matthieuberger/butler/internal/services"
 	"github.com/matthieuberger/butler/internal/services/gen/workspace"
+	"github.com/matthieuberger/butler/internal/services/gen/connectors"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
@@ -22,7 +25,16 @@ func NewWorkspaceGatewayService(addr string, opts []grpc.DialOption) *WorkspaceR
 
 // RegisterREST WorkspaceService to the specified mux
 func (s *WorkspaceRESTService) RegisterREST(mux *runtime.ServeMux, endpoint string, opts []grpc.DialOption) error {
-	return workspace.RegisterWorkspaceServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts)
+	ctx := context.Background()
+	if err := connectors.RegisterConnectorsServiceHandlerFromEndpoint(ctx, mux, endpoint, opts); err != nil {
+		logger.Fatal(ctx, "Unable to register connectors endpoints", zap.Error(err))
+		return err
+	}
+	if err := workspace.RegisterWorkspaceServiceHandlerFromEndpoint(context.Background(), mux, endpoint, opts); err != nil {
+		logger.Fatal(ctx, "Unable to register workspace endpoints", zap.Error(err))
+		return err
+	}
+	return nil
 }
 
 // ServiceName WorkspaceService to the specified mux

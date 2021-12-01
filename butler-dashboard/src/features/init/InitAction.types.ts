@@ -1,5 +1,5 @@
 import { PersistedState } from 'redux-persist';
-import { AuthStateType } from "../auth";
+import { AuthStateType } from '../auth';
 
 // REDUX
 export const REDUX_INIT = '@@INIT';
@@ -12,8 +12,7 @@ export const PERSIST_PURGE = 'perist/PURGE';
 // ROUTER
 export const ROUTER_LOCATION_CHANGE = '@@router/LOCATION_CHANGE';
 
-
 export interface IActionRehydrate {
-    type: typeof PERSIST_REHYDRATE,
-    payload: PersistedState & { auth: AuthStateType }
+  type: typeof PERSIST_REHYDRATE;
+  payload: PersistedState & { auth: AuthStateType };
 }

@@ -1,4 +1,4 @@
-import { createSvgIcon } from '@mui/material/utils';
+import { createSvgIcon } from "@mui/material/utils";
 
 export const Refresh = createSvgIcon(
   <svg
@@ -12,5 +12,5 @@ export const Refresh = createSvgIcon(
       clipRule="evenodd"
     />
   </svg>,
-  'Refresh',
+  "Refresh"
 );

@@ -2,6 +2,7 @@ env:
   browser: true
   es2021: true
 extends:
+  - plugin:prettier/recommended
   - plugin:react/recommended
   - airbnb
   - plugin:@typescript-eslint/recommended
@@ -13,9 +14,13 @@ parserOptions:
   ecmaVersion: 13
   sourceType: module
 plugins:
+  - prettier
   - react
   - '@typescript-eslint'
-rules: 
+rules:
+  indent: 0
+  comma-dangle: 0
+  implicit-arrow-linebreak: 0
   semi: 0
   no-shadow: 0
   no-unused-expressions: 0
@@ -28,6 +33,7 @@ rules:
   react/require-default-props: 0
   react/no-children-prop: 0
   import/prefer-default-export: 0
+  react/jsx-one-expression-per-line: 0
   react/function-component-definition: 
     - 1
     - namedComponents: arrow-function
@@ -38,10 +44,6 @@ rules:
       - .tsx
       - .ts
   dot-notation: 0
-  max-len:
-    - 0
-    - 80
-    - 4
   import/extensions:
     - error
     - ignorePackages

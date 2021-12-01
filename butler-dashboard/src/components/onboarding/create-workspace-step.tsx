@@ -1,7 +1,13 @@
 import type { FC } from 'react';
 import * as Yup from 'yup';
 import PropTypes from 'prop-types';
-import { Box, Button, FormHelperText, TextField, Typography } from '@mui/material';
+import {
+  Box,
+  Button,
+  FormHelperText,
+  TextField,
+  Typography
+} from '@mui/material';
 import { useFormik } from 'formik';
 import { ArrowRight as ArrowRightIcon } from '../../icons/arrow-right';
 import { useDispatch } from 'react-redux';
@@ -28,44 +34,31 @@ export const CreateWorkspaceStep: FC<CreateWorkspaceStepProps> = (props) => {
     },
     validationSchema: Yup.object({
       organizationId: Yup.string().required(),
-      name: Yup
-        .string()
-        .max(255)
-        .required('Name is required'),
-      description: Yup
-        .string()
+      name: Yup.string().max(255).required('Name is required'),
+      description: Yup.string()
     }),
     onSubmit: async (values, helpers): Promise<void> => {
-
-      dispatch(createWorkspaceRequest({
-        organizationID: values.organizationId,
-        name: values.name,
-        description: values.description
-      }))
+      dispatch(
+        createWorkspaceRequest({
+          organizationID: values.organizationId,
+          name: values.name,
+          description: values.description
+        })
+      );
 
       // TODO: Display errors
     }
   });
 
-
-
   return (
     <div {...other}>
-      <Typography variant="h6">
-        Create a workspace
+      <Typography variant="h6">Create a workspace</Typography>
+      <Typography color="textSecondary" sx={{ mt: 2 }} variant="body2">
+        You can think a workspace as a group. For instance, if you work for
+        multiples companies you will have a different workspace for each of
+        them.
       </Typography>
-      <Typography
-        color="textSecondary"
-        sx={{ mt: 2 }}
-        variant="body2"
-      >
-        You can think a workspace as a group. For instance, if you work for multiples companies you will have a different workspace for each of them.
-      </Typography>
-      <form
-        noValidate
-        onSubmit={formik.handleSubmit}
-        {...props}
-      >
+      <form noValidate onSubmit={formik.handleSubmit} {...props}>
         <Box sx={{ mt: 3 }}>
           <TextField
             autoFocus
@@ -81,7 +74,9 @@ export const CreateWorkspaceStep: FC<CreateWorkspaceStepProps> = (props) => {
             value={formik.values.name}
           />
           <TextField
-            error={Boolean(formik.touched.description && formik.errors.description)}
+            error={Boolean(
+              formik.touched.description && formik.errors.description
+            )}
             fullWidth
             helperText={formik.touched.description && formik.errors.description}
             label="Description"
@@ -94,15 +89,13 @@ export const CreateWorkspaceStep: FC<CreateWorkspaceStepProps> = (props) => {
           />
           {formik.errors.submit && (
             <Box sx={{ mt: 3 }}>
-              <FormHelperText error>
-                {formik.errors.submit}
-              </FormHelperText>
+              <FormHelperText error>{formik.errors.submit}</FormHelperText>
             </Box>
           )}
         </Box>
         <Box sx={{ pt: 2 }}>
           <Button
-            endIcon={(<ArrowRightIcon fontSize="small" />)}
+            endIcon={<ArrowRightIcon fontSize="small" />}
             type="submit"
             variant="contained"
             disabled={formik.isSubmitting}

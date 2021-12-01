@@ -8,7 +8,10 @@ import { HistoryRouter } from 'redux-first-history/rr6';
 import { AppRoutes } from './routes';
 import { createTheme } from './theme';
 import { store, persistor, history } from './features';
-import { SettingsConsumer, SettingsProvider } from './contexts/settings-context';
+import {
+  SettingsConsumer,
+  SettingsProvider
+} from './contexts/settings-context';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -22,7 +25,7 @@ ReactDOM.render(
                   theme={createTheme({
                     direction: settings.direction,
                     responsiveFontSizes: settings.responsiveFontSizes,
-                    mode: settings.theme,
+                    mode: settings.theme
                   })}
                 >
                   <CssBaseline />
@@ -36,12 +39,13 @@ ReactDOM.render(
       </PersistGate>
     </ReduxProvider>
   </React.StrictMode>,
-  document.getElementById('root'),
+  document.getElementById('root')
 );
 
 // Hot Module Replacement (HMR) - Remove this snippet to remove HMR.
 // Learn more: https://www.snowpack.dev/concepts/hot-module-replacement
 if (undefined /* [snowpack] import.meta.hot */) {
   // @ts-ignore
-  undefined/* [snowpack] import.meta.hot */.accept();
+  undefined /* [snowpack] import.meta.hot */
+    .accept();
 }

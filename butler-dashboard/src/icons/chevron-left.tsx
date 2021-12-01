@@ -1,4 +1,4 @@
-import { createSvgIcon } from '@mui/material/utils';
+import { createSvgIcon } from "@mui/material/utils";
 
 export const ChevronLeft = createSvgIcon(
   <svg
@@ -12,5 +12,5 @@ export const ChevronLeft = createSvgIcon(
       clipRule="evenodd"
     />
   </svg>,
-  'ChevronLeft',
+  "ChevronLeft"
 );

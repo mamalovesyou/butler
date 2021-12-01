@@ -1,4 +1,10 @@
-import { V1SignInRequest, V1AuthenticatedUser, V1RefreshRequest, V1SignUpRequest, GoogleRpcStatus } from "../../api";
+import {
+  V1SignInRequest,
+  V1AuthenticatedUser,
+  V1RefreshRequest,
+  V1SignUpRequest,
+  GoogleRpcStatus
+} from '../../api';
 
 export const LOGIN_REQUEST = 'LOGIN_REQUEST';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
@@ -16,57 +22,64 @@ export const LOGOUT = 'LOGOUT';
 
 // LOGIN
 export interface ILoginRequest {
-    type: typeof LOGIN_REQUEST;
-    payload: V1SignInRequest
+  type: typeof LOGIN_REQUEST;
+  payload: V1SignInRequest;
 }
 
 export interface ILoginSuccess {
-    type: typeof LOGIN_SUCCESS;
-    payload: V1AuthenticatedUser;
+  type: typeof LOGIN_SUCCESS;
+  payload: V1AuthenticatedUser;
 }
 
 export interface ILoginFailure {
-    type: typeof LOGIN_FAILURE;
-    error: GoogleRpcStatus;
+  type: typeof LOGIN_FAILURE;
+  error: GoogleRpcStatus;
 }
 
 // SIGNUP
 export interface ISignupRequest {
-    type: typeof SIGNUP_REQUEST;
-    payload: V1SignUpRequest
+  type: typeof SIGNUP_REQUEST;
+  payload: V1SignUpRequest;
 }
 
 export interface ISignupSuccess {
-    type: typeof SIGNUP_SUCCESS;
-    payload: V1AuthenticatedUser;
+  type: typeof SIGNUP_SUCCESS;
+  payload: V1AuthenticatedUser;
 }
 
 export interface ISignupFailure {
-    type: typeof SIGNUP_FAILURE;
-    error: GoogleRpcStatus;
+  type: typeof SIGNUP_FAILURE;
+  error: GoogleRpcStatus;
 }
 
 // REFRESH TOKEN
 export interface IRefreshRequest {
-    type: typeof REFRESH_TOKEN_REQUEST;
-    payload: V1RefreshRequest;
+  type: typeof REFRESH_TOKEN_REQUEST;
+  payload: V1RefreshRequest;
 }
 
 export interface IRefreshSuccess {
-    type: typeof REFRESH_TOKEN_SUCCESS;
-    payload: V1AuthenticatedUser;
+  type: typeof REFRESH_TOKEN_SUCCESS;
+  payload: V1AuthenticatedUser;
 }
 
 export interface IRefreshFailure {
-    type: typeof REFRESH_TOKEN_FAILURE;
-    error: GoogleRpcStatus;
+  type: typeof REFRESH_TOKEN_FAILURE;
+  error: GoogleRpcStatus;
 }
 
 export interface ILogout {
-    type: typeof LOGOUT;
+  type: typeof LOGOUT;
 }
 
-export type AuthActionType = ILoginRequest | ILoginSuccess | ILoginFailure 
-                            | ISignupRequest | ISignupSuccess | ISignupFailure
-                            | IRefreshRequest | IRefreshSuccess | IRefreshFailure 
-                            | ILogout;
+export type AuthActionType =
+  | ILoginRequest
+  | ILoginSuccess
+  | ILoginFailure
+  | ISignupRequest
+  | ISignupSuccess
+  | ISignupFailure
+  | IRefreshRequest
+  | IRefreshSuccess
+  | IRefreshFailure
+  | ILogout;

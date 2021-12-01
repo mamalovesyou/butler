@@ -223,7 +223,7 @@ func RegisterWorkspaceServiceHandlerFromEndpoint(ctx context.Context, mux *runti
 
 // RegisterWorkspaceServiceHandler registers the http handlers for service WorkspaceService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterWorkspaceServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
+func RegisterWorkspaceServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
 	return RegisterWorkspaceServiceHandlerClient(ctx, mux, NewWorkspaceServiceClient(conn))
 }
 

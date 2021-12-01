@@ -1,4 +1,4 @@
-import { createSvgIcon } from '@mui/material/utils';
+import { createSvgIcon } from "@mui/material/utils";
 
 export const ChartSquareBar = createSvgIcon(
   <svg
@@ -12,5 +12,5 @@ export const ChartSquareBar = createSvgIcon(
       clipRule="evenodd"
     />
   </svg>,
-  'ChartSquareBar',
+  "ChartSquareBar"
 );

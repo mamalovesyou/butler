@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import { loginRequest } from '../../features/auth';
 
 export const JWTLogin: FC = (props) => {
-
   const dispatch = useDispatch();
 
   const formik = useFormik({
@@ -16,33 +15,26 @@ export const JWTLogin: FC = (props) => {
       submit: null
     },
     validationSchema: Yup.object({
-      email: Yup
-        .string()
+      email: Yup.string()
         .email('Must be a valid email')
         .max(255)
         .required('Email is required'),
-      password: Yup
-        .string()
-        .max(255)
-        .required('Password is required')
+      password: Yup.string().max(255).required('Password is required')
     }),
     onSubmit: async (values, helpers): Promise<void> => {
-      
-      dispatch(loginRequest({
-        email: values.email,
-        password: values.password
-      }))
+      dispatch(
+        loginRequest({
+          email: values.email,
+          password: values.password
+        })
+      );
 
       // TODO: Display errors
     }
   });
 
   return (
-    <form
-      noValidate
-      onSubmit={formik.handleSubmit}
-      {...props}
-    >
+    <form noValidate onSubmit={formik.handleSubmit} {...props}>
       <TextField
         autoFocus
         error={Boolean(formik.touched.email && formik.errors.email)}
@@ -70,9 +62,7 @@ export const JWTLogin: FC = (props) => {
       />
       {formik.errors.submit && (
         <Box sx={{ mt: 3 }}>
-          <FormHelperText error>
-            {formik.errors.submit}
-          </FormHelperText>
+          <FormHelperText error>{formik.errors.submit}</FormHelperText>
         </Box>
       )}
       <Box sx={{ mt: 2 }}>

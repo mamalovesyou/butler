@@ -6,7 +6,6 @@ import { useDispatch } from 'react-redux';
 import { createWorkspaceRequest } from '../../../features/workspace';
 
 export const CreateWorkspace: FC = (props) => {
-
   const dispatch = useDispatch();
 
   const formik = useFormik({
@@ -16,30 +15,20 @@ export const CreateWorkspace: FC = (props) => {
       submit: null
     },
     validationSchema: Yup.object({
-      name: Yup
-        .string()
-        .max(255)
-        .required('Name is required'),
-        description: Yup
-        .string()
+      name: Yup.string().max(255).required('Name is required'),
+      description: Yup.string()
     }),
     onSubmit: async (values, helpers): Promise<void> => {
-      
       // dispatch(createWorkspaceRequest({
       //   name: values.name,
       //   description: values.description
       // }))
-
       // TODO: Display errors
     }
   });
 
   return (
-    <form
-      noValidate
-      onSubmit={formik.handleSubmit}
-      {...props}
-    >
+    <form noValidate onSubmit={formik.handleSubmit} {...props}>
       <TextField
         autoFocus
         error={Boolean(formik.touched.name && formik.errors.name)}
@@ -67,9 +56,7 @@ export const CreateWorkspace: FC = (props) => {
       />
       {formik.errors.submit && (
         <Box sx={{ mt: 3 }}>
-          <FormHelperText error>
-            {formik.errors.submit}
-          </FormHelperText>
+          <FormHelperText error>{formik.errors.submit}</FormHelperText>
         </Box>
       )}
       <Box sx={{ mt: 2 }}>

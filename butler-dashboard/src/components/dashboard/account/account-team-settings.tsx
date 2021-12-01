@@ -26,14 +26,8 @@ export const AccountTeamSettings: FC = () => (
   <Card>
     <CardContent>
       <div>
-        <Typography variant="h6">
-          Invite members
-        </Typography>
-        <Typography
-          color="textSecondary"
-          variant="body2"
-          sx={{ mt: 1 }}
-        >
+        <Typography variant="h6">Invite members</Typography>
+        <Typography color="textSecondary" variant="body2" sx={{ mt: 1 }}>
           You currently pay for 2 Editor Seats.
         </Typography>
       </div>
@@ -68,10 +62,7 @@ export const AccountTeamSettings: FC = () => (
             )
           }}
         />
-        <Button
-          sx={{ m: 1.5 }}
-          variant="contained"
-        >
+        <Button sx={{ m: 1.5 }} variant="contained">
           Send Invite
         </Button>
       </Box>
@@ -80,12 +71,8 @@ export const AccountTeamSettings: FC = () => (
       <Table sx={{ minWidth: 400 }}>
         <TableHead>
           <TableRow>
-            <TableCell>
-              Member
-            </TableCell>
-            <TableCell>
-              Role
-            </TableCell>
+            <TableCell>Member</TableCell>
+            <TableCell>Role</TableCell>
             <TableCell />
           </TableRow>
         </TableHead>
@@ -108,22 +95,15 @@ export const AccountTeamSettings: FC = () => (
                   <UserCircleIcon fontSize="small" />
                 </Avatar>
                 <div>
-                  <Typography variant="subtitle2">
-                    Cao Yu
-                  </Typography>
-                  <Typography
-                    color="textSecondary"
-                    variant="body2"
-                  >
+                  <Typography variant="subtitle2">Cao Yu</Typography>
+                  <Typography color="textSecondary" variant="body2">
                     cao.yu@devias.io
                   </Typography>
                 </div>
               </Box>
             </TableCell>
             <TableCell>
-              <SeverityPill>
-                owner
-              </SeverityPill>
+              <SeverityPill>owner</SeverityPill>
             </TableCell>
             <TableCell align="right">
               <IconButton>
@@ -149,23 +129,15 @@ export const AccountTeamSettings: FC = () => (
                   }}
                 />
                 <div>
-                  <Typography variant="subtitle2">
-                    Cao Yu
-                  </Typography>
-                  <Typography
-                    variant="body2"
-                    color="textSecondary"
-                  >
+                  <Typography variant="subtitle2">Cao Yu</Typography>
+                  <Typography variant="body2" color="textSecondary">
                     cao.yu@devias.io
                   </Typography>
                 </div>
               </Box>
             </TableCell>
             <TableCell>
-              <Typography
-                color="textSecondary"
-                variant="body2"
-              >
+              <Typography color="textSecondary" variant="body2">
                 Editor
               </Typography>
             </TableCell>

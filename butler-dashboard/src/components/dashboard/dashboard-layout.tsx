@@ -6,17 +6,15 @@ import { DashboardSidebar } from './dashboard-sidebar';
 import { Box } from '@mui/material';
 import { Outlet } from 'react-router-dom';
 
-const DashboardLayoutRoot = styled('div')(
-  ({ theme }) => ({
-    display: 'flex',
-    flex: '1 1 auto',
-    maxWidth: '100%',
-    paddingTop: 64,
-    [theme.breakpoints.up('lg')]: {
-      paddingLeft: 280
-    }
-  })
-);
+const DashboardLayoutRoot = styled('div')(({ theme }) => ({
+  display: 'flex',
+  flex: '1 1 auto',
+  maxWidth: '100%',
+  paddingTop: 64,
+  [theme.breakpoints.up('lg')]: {
+    paddingLeft: 280
+  }
+}));
 
 export const DashboardLayout: FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);

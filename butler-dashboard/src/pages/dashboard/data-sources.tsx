@@ -1,7 +1,16 @@
-import type { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { Box, Container, Divider, Typography } from '@mui/material';
+import { ConnectorsCatalogList } from '../../components/dashboard/data-sources/connectors-catalog-list';
+import { listCatalogConnectorsRequest } from '../../features/connectors';
+import { useDispatch } from 'react-redux';
 
 const DataSources: FC = () => {
+
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    dispatch(listCatalogConnectorsRequest());
+  }, []);
 
   return (
     <>
@@ -13,11 +22,9 @@ const DataSources: FC = () => {
         }}
       >
         <Container maxWidth="md">
-          <Typography variant="h4">
-            Data Sources
-          </Typography>
+          <Typography variant="h4">Data Sources</Typography>
           <Divider sx={{ mb: 3 }} />
-          <Typography variant="h5">Comming soon</Typography>
+          <ConnectorsCatalogList />
         </Container>
       </Box>
     </>

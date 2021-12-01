@@ -1,4 +1,4 @@
-import { createSvgIcon } from '@mui/material/utils';
+import { createSvgIcon } from "@mui/material/utils";
 
 export const LockClosed = createSvgIcon(
   <svg
@@ -12,5 +12,5 @@ export const LockClosed = createSvgIcon(
       clipRule="evenodd"
     />
   </svg>,
-  'LockClosed',
+  "LockClosed"
 );
