@@ -19,10 +19,10 @@ jobs:
       - name: Set RELEASE_VERSION env
         run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
-  credentials:
+  dashboard:
     needs: release-tag
     runs-on: ubuntu-latest
-    name: Configure credentials and login ECR
+    name: Build and Push Dashboard
     steps:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
@@ -35,11 +35,6 @@ jobs:
           id: login-ecr
           uses: aws-actions/amazon-ecr-login@v1
 
-
-  dashboard:
-    needs: credentials
-    name: Build and Push Dashboard
-    steps:
       - name: Build and tag butler-dashbaord
         id: build-image
         env:
@@ -49,3 +44,23 @@ jobs:
         run: |
           # Build a docker container and push it to ECR
           make ci.docker.dashboard
+
+  release:
+    needs: dashboard
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Changelog
+          id: github_release
+          uses: mikepenz/release-changelog-builder-action@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+          uses: actions/create-release@v1
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: ${{ github.ref }}
+            body: ${{steps.github_release.outputs.changelog}}
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
