@@ -21,7 +21,7 @@ jobs:
         run: echo ::set-output name=version::${GITHUB_REF##*/}
 
   dashboard:
-    needs: fetch_tag
+    needs: version
     runs-on: ubuntu-latest
     name: Build and Push Dashboard
     steps:
