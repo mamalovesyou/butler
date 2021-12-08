@@ -1,24 +1,24 @@
 on:
   pull_request:
     branches:
-      - master
+      - release
 
 name: Build and Push images
 
 jobs:
-  fetch_tag:
+  version_number:
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/tags/v')
+    if: startsWith(github.ref, 'refs/heads/v')
     name: Set release tag version
     outputs:
-      tag: ${{ steps.vars.outputs.tag }}
+      version: ${{ steps.vars.outputs.version }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Set tag
         id: vars
-        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
+        run: echo ::set-output name=version::${GITHUB_REF##*/}
 
   dashboard:
     needs: fetch_tag
