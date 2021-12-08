@@ -173,8 +173,8 @@ docker.dev.clean: ## Clean docker dev evironment
 
 ci.docker.dashboard: ## Build docker image for butler-dashboard
 	@echo "Build & push docker image for dashboard"
-	docker build -t ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG} -f $(DASHBOARD_DIR)/Dockerfile .
-    docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
+	docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f $(DASHBOARD_DIR)/Dockerfile .
+    docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 
 # PROTO
 # TODO: Add --validate_out="module=$(MODULE_NAME),lang=go:." when module will be fixed
