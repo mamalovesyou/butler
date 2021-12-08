@@ -9,15 +9,16 @@ on:
 name: Build and Push images
 
 jobs:
-  release-tag:
+  tag:
     runs-on: ubuntu-latest
     name: Set release tag version
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Set RELEASE_VERSION env
-        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+      - name: Set tag
+        id: vars
+        run: echo ::set-output name=tag::${GITHUB_REF#refs/*/}
 
   dashboard:
     needs: release-tag
@@ -27,9 +28,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: list files and dir
-        run: |
-          ls
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -46,8 +44,9 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           ECR_REPOSITORY: ${{ secrets.AWS_ECR_REPO_NAME }}
-          IMAGE_TAG: ${{ env.RELEASE_VERSION }}
+          IMAGE_TAG: ${{ jobs.tag.steps.vars.outputs.tag }}
         run: |
+          echo $ECR_REGISTRY $ECR_REPOSITORY $IMAGE_TAG
           # Build a docker container and push it to ECR
           make ci.docker.dashboard
 
