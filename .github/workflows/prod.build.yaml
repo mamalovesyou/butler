@@ -1,0 +1,66 @@
+on:
+  push:
+    branches: [ master ]
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+' # Push events to any matching semantic tag. For example, 1.10.1 or 2.0.0.
+      # https://docs.npmjs.com/about-semantic-versioning
+
+name: Build and Push images
+
+jobs:
+  release-tag:
+    runs-on: ubuntu-latest
+    name: Set release tag version
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Set RELEASE_VERSION env
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
+  dashboard:
+    needs: release-tag
+    runs-on: ubuntu-latest
+    name: Build and Push Dashboard
+    steps:
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+          id: login-ecr
+          uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build and tag butler-dashbaord
+        id: build-image
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: ${{ secrets.AWS_ECR_REPO_NAME }}
+          IMAGE_TAG: ${{ env.RELEASE_VERSION }}
+        run: |
+          # Build a docker container and push it to ECR
+          make ci.docker.dashboard
+
+  release:
+    needs: dashboard
+    name: Create Release
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build Changelog
+          id: github_release
+          uses: mikepenz/release-changelog-builder-action@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Release
+          uses: actions/create-release@v1
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: ${{ github.ref }}
+            body: ${{steps.github_release.outputs.changelog}}
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
