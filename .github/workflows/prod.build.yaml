@@ -1,8 +1,10 @@
 on:
-  pull_request:
-    tags:
-      - 'v*.*.*'
+  push:
     branches: [ master ]
+    # Sequence of patterns matched against refs/tags
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+' # Push events to any matching semantic tag. For example, 1.10.1 or 2.0.0.
+      # https://docs.npmjs.com/about-semantic-versioning
 
 name: Build and Push images
 
