@@ -26,6 +26,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: list files and dir
         run: |
           ls
       - name: Configure AWS credentials
