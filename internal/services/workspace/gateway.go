@@ -3,10 +3,10 @@ package workspace
 import (
 	"context"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/matthieuberger/butler/internal/logger"
-	"github.com/matthieuberger/butler/internal/services"
-	"github.com/matthieuberger/butler/internal/services/gen/workspace"
-	"github.com/matthieuberger/butler/internal/services/gen/connectors"
+	"github.com/butlerhq/butler/internal/logger"
+	"github.com/butlerhq/butler/internal/services"
+	"github.com/butlerhq/butler/internal/services/gen/workspace"
+	"github.com/butlerhq/butler/internal/services/gen/connectors"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )

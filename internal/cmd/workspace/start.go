@@ -4,13 +4,13 @@ import (
 	"context"
 	"time"
 
-	postgres2 "github.com/matthieuberger/butler/internal/postgres"
+	postgres2 "github.com/butlerhq/butler/internal/postgres"
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 
-	"github.com/matthieuberger/butler/internal/logger"
-	"github.com/matthieuberger/butler/internal/protocol/grpc"
-	"github.com/matthieuberger/butler/internal/services/workspace"
+	"github.com/butlerhq/butler/internal/logger"
+	"github.com/butlerhq/butler/internal/protocol/grpc"
+	"github.com/butlerhq/butler/internal/services/workspace"
 	"github.com/spf13/cobra"
 )
 

@@ -1,7 +1,7 @@
 package repositories
 
 import (
-	"github.com/matthieuberger/butler/internal/services/auth/models"
+	"github.com/butlerhq/butler/internal/services/auth/models"
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )

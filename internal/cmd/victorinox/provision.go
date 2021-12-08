@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/matthieuberger/butler/internal/postgres"
-	"github.com/matthieuberger/butler/internal/services"
-	"github.com/matthieuberger/butler/internal/utils"
+	"github.com/butlerhq/butler/internal/postgres"
+	"github.com/butlerhq/butler/internal/services"
+	"github.com/butlerhq/butler/internal/utils"
 	"go.uber.org/zap"
 
-	"github.com/matthieuberger/butler/internal/logger"
+	"github.com/butlerhq/butler/internal/logger"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

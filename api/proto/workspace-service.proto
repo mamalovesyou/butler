@@ -1,12 +1,11 @@
 syntax = "proto3";
-option go_package = "github.com/matthieuberger/butler/internal/services/gen/workspace";
+option go_package = "github.com/butlerhq/butler/butler-proto/gen/workspace";
 package v1;
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "protoc-gen-validate/validate/validate.proto";
 
 service WorkspaceService {
   rpc ListOrganizations(google.protobuf.Empty) returns (OrganizationListResponse) {
@@ -22,15 +21,26 @@ service WorkspaceService {
     };
   }
 
-  rpc CreateWorkspace(CreateWorkspaceRequest) returns (WorkspaceResponse) {
+  rpc InviteOrganizationMember(IniviteOrganizationMemberRequest) returns (Invitation) {
     option (google.api.http) = {
-      post: "/v1/workspaces"
-      body: "*"
+      post: "/v1/organizations/{organization_id}/members/invite"
+      body: "invitation"
     };
   }
 
-  rpc AddOrganizationMember(AddOrganizationMemberRequest) returns (OrganizationResponse) {}
-  rpc AddWorkspaceMember(AddWorkspaceMemberRequest) returns (OrganizationResponse) {}
+  rpc CreateWorkspace(CreateWorkspaceRequest) returns (WorkspaceResponse) {
+    option (google.api.http) = {
+      post: "/v1/organizations/{organization_id}/workspaces"
+      body: "workspace"
+    };
+  }
+
+  rpc InviteWorkspaceMember(InviteWorkspaceMemberRequest) returns (Invitation) {
+    option (google.api.http) = {
+      post: "/v1/workspaces/{workspace_id}/invites"
+      body: "invitation"
+    };
+  }
 }
 
 message OrganizationListResponse {
@@ -38,7 +48,7 @@ message OrganizationListResponse {
 }
 
 message CreateOrganizationRequest {
-  string name = 1 [(validate.rules).string.min_len = 2];
+  string name = 1;
   string userRole = 2;
 }
 
@@ -47,48 +57,72 @@ message OrganizationResponse {
 }
 
 message CreateWorkspaceRequest {
-  string organizationID = 1;
-  string name = 2 [(validate.rules).string.min_len = 2];
-  string description = 3;
+  string organization_id = 1;
+  message WorkspaceInfo {
+    string name = 2;
+    string description = 3;
+  }
+  WorkspaceInfo workspace = 2;
 }
 
 message WorkspaceResponse {
   Workspace workspace = 1;
 }
 
-message AddOrganizationMemberRequest {
-  UserMember member = 1;
-  string organizationID = 2;
+message InviteInfos {
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+  string role = 5;
 }
 
-message AddWorkspaceMemberRequest {
-  UserMember member = 1;
-  string workspaceID = 2;
+message IniviteOrganizationMemberRequest {
+  InviteInfos invitation = 1;
+  string organization_id = 2;
+}
+
+message InviteWorkspaceMemberRequest {
+  InviteInfos invitation = 1;
+  string workspace_id = 2;
 }
 
 message Organization {
-  string ID = 1;
+  string id = 1;
   string name = 2;
-  string ownerID = 3;
+  string owner_id = 3;
   repeated Workspace workspaces = 4;
   repeated UserMember members = 5;
-  google.protobuf.Timestamp createdAt = 6;
-  google.protobuf.Timestamp updatedAt = 7;
+  repeated Invitation invitations = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
 }
 
 message Workspace {
-  string ID = 1;
+  string id = 1;
   string name = 2;
   string description = 3;
-  string organizationID = 4;
+  string organization_id = 4;
   repeated UserMember members = 5;
-  google.protobuf.Timestamp createdAt = 6;
-  google.protobuf.Timestamp updatedAt = 7;
+  repeated Invitation invitations = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
 }
 
 message UserMember {
-  string userID = 1;
-  string firstName = 2;
-  string lastName = 3;
-  string role = 4;
+  string user_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string role = 5;
+  google.protobuf.Timestamp updated_at = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+message Invitation {
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+  string role = 5;
+  google.protobuf.Timestamp expires_at = 6;
+  google.protobuf.Timestamp created_at = 7;
 }

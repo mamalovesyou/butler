@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"github.com/google/uuid"
-	"github.com/matthieuberger/butler/internal/services/workspace/models"
+	"github.com/butlerhq/butler/internal/services/workspace/models"
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
 )

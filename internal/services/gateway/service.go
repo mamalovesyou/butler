@@ -2,7 +2,7 @@ package gateway
 
 import (
 	"context"
-	"github.com/matthieuberger/butler/internal/logger"
+	"github.com/butlerhq/butler/internal/logger"
 	"go.uber.org/zap"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"

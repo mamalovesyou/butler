@@ -1,5 +1,5 @@
 PROJECT_NAME := butler
-MODULE_NAME := github.com/matthieuberger/$(PROJECT_NAME)
+MODULE_NAME := github.com/butlerhq/$(PROJECT_NAME)
 BIN := $(CURDIR)/bin
 BIN_AIR := $(CURDIR)/tmp
 CMD := $(CURDIR)/cmd

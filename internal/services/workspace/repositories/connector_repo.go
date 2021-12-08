@@ -2,8 +2,8 @@ package repositories
 
 import (
 	"context"
-	"github.com/matthieuberger/butler/internal/logger"
-	"github.com/matthieuberger/butler/internal/services/workspace/models"
+	"github.com/butlerhq/butler/internal/logger"
+	"github.com/butlerhq/butler/internal/services/workspace/models"
 	"gorm.io/gorm"
 )
 

@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "github.com/matthieuberger/butler/internal/services/gen/connectors";
+option go_package = "github.com/butlerhq/butler/butler-proto/gen/connectors";
 package v1;
 
 import "google/protobuf/timestamp.proto";

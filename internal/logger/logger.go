@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
-	"github.com/matthieuberger/butler/internal/environment"
+	"github.com/butlerhq/butler/internal/environment"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )

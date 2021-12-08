@@ -1,5 +1,5 @@
 syntax = "proto3";
-option go_package = "github.com/matthieuberger/butler/internal/services/gen/auth";
+option go_package = "github.com/butlerhq/butler/butler-proto/gen/auth";
 package v1;
 
 import "google/protobuf/timestamp.proto";
@@ -56,6 +56,15 @@ service AuthService {
     option (google.api.http) = {
       post: "/v1/auth/signup"
       body: "*"
+    };
+    option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+      security: {} // Disable security key
+    };
+  }
+  rpc SignUpWithInvite(SignUpWithInvitationRequest) returns (AuthenticatedUser) {
+    option (google.api.http) = {
+      post: "/v1/auth/signup/invites/{invitationId}"
+      body: "infos"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       security: {} // Disable security key
@@ -156,4 +165,17 @@ message ListUsersRequest {
 
 message ListUsersResponse {
   repeated User users = 1;
+}
+
+message SignUpWithInvitationRequest {
+  string invitationId = 1;
+  message SignupInfo {
+    oneof binding{
+      string organizationId = 2;
+      string workspaceId = 3;
+    }
+    string token = 4;
+    string password = 5;
+  }
+  SignupInfo infos = 2;
 }

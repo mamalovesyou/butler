@@ -15,7 +15,7 @@ limitations under the License.
 */
 package main
 
-import "github.com/matthieuberger/butler/internal/cmd/gateway"
+import "github.com/butlerhq/butler/internal/cmd/gateway"
 
 func main() {
 	gateway.Execute()

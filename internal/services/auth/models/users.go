@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/matthieuberger/butler/internal/services/gen/auth"
+	"github.com/butlerhq/butler/internal/services/gen/auth"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

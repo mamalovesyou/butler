@@ -2,7 +2,7 @@ package models
 
 import (
 	"github.com/google/uuid"
-	"github.com/matthieuberger/butler/internal/services/gen/workspace"
+	"github.com/butlerhq/butler/internal/services/gen/workspace"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 

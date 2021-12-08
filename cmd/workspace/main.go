@@ -16,7 +16,7 @@ limitations under the License.
 package main
 
 import (
-	"github.com/matthieuberger/butler/internal/cmd/workspace"
+	"github.com/butlerhq/butler/internal/cmd/workspace"
 )
 
 func main() {

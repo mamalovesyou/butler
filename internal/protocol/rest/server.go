@@ -3,7 +3,7 @@ package rest
 import (
 	"context"
 	"fmt"
-	"github.com/matthieuberger/butler/internal/protocol/grpc/middlewares"
+	"github.com/butlerhq/butler/internal/protocol/grpc/middlewares"
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
@@ -14,8 +14,8 @@ import (
 	"time"
 
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
-	"github.com/matthieuberger/butler/internal/logger"
-	"github.com/matthieuberger/butler/internal/protocol/rest/middleware"
+	"github.com/butlerhq/butler/internal/logger"
+	"github.com/butlerhq/butler/internal/protocol/rest/middleware"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/cors"
 )

@@ -2,6 +2,9 @@
 #######################################
 # Use node image to build app
 FROM node:16 AS build
+
+## Installing needed lib for node_modules/optipng-bin
+#RUN apk --no-cache add pkgconfig autoconf automake libtool nasm build-base zlib-dev
 # set working directory
 WORKDIR /app
 
@@ -26,7 +29,7 @@ RUN rm -rf ./*
 # Copies static resources from build stage
 COPY --from=build /app/dist .
 # Copies nginx config
-COPY --from=build /app/config/nginx/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/config/nginx/nginx.conf /etc/nginx/conf.d/default.conf
 
 # Containers run nginx with global directives and daemon off
 ENTRYPOINT ["nginx", "-g", "daemon off;"]

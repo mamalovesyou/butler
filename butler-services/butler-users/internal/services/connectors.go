@@ -1,13 +1,13 @@
-package usecases
+package services
 
 import (
 	"context"
 	"encoding/json"
+	"github.com/butlerhq/butler/butler-core/logger"
+	"github.com/butlerhq/butler/butler-proto/gen/connectors"
+	"github.com/butlerhq/butler/butler-services/butler-users/internal/models"
+	"github.com/butlerhq/butler/butler-services/butler-users/internal/repositories"
 	"github.com/google/uuid"
-	"github.com/matthieuberger/butler/internal/logger"
-	"github.com/matthieuberger/butler/internal/services/gen/connectors"
-	"github.com/matthieuberger/butler/internal/services/workspace/models"
-	"github.com/matthieuberger/butler/internal/services/workspace/repositories"
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"gorm.io/gorm"
@@ -19,7 +19,7 @@ type ConnectorsUseCase struct {
 }
 
 func NewConnectorsUseCase(db *gorm.DB) *ConnectorsUseCase {
-	return &ConnectorsUseCase {
+	return &ConnectorsUseCase{
 		ConnectorRepo: repositories.NewConnectorRepo(db),
 	}
 }
@@ -30,16 +30,16 @@ func (uc *ConnectorsUseCase) ListCatalogConnectors(ctx context.Context, req *con
 	defer span.Finish()
 
 	google := &connectors.CatalogConnector{
-		Id: uuid.NewString(),
-		Name: "google",
+		Id:       uuid.NewString(),
+		Name:     "google",
 		AuthType: "oauth2",
-		AuthUrl: GoogleConnectorConfig.AuthCodeURL("aradomstate"),
+		AuthUrl:  GoogleConnectorConfig.AuthCodeURL("aradomstate"),
 	}
 	linkedin := &connectors.CatalogConnector{
-		Id: uuid.NewString(),
-		Name: "linkedin",
+		Id:       uuid.NewString(),
+		Name:     "linkedin",
 		AuthType: "oauth2",
-		AuthUrl: LinkedInConnectorConfig.AuthCodeURL("aradomstate"),
+		AuthUrl:  LinkedInConnectorConfig.AuthCodeURL("aradomstate"),
 	}
 
 	return &connectors.CatalogConnectorList{
@@ -86,9 +86,9 @@ func (uc *ConnectorsUseCase) GetOauthConnectorAuthorization(ctx context.Context,
 
 	connector := &models.Connector{
 		WorkspaceID: uuid.MustParse(req.WorkspaceId),
-		Provider: req.Code.Name,
-		AuthScheme: models.OAUTH2,
-		ExpiresIn: token.Expiry,
+		Provider:    req.Code.Name,
+		AuthScheme:  models.OAUTH2,
+		ExpiresIn:   token.Expiry,
 		Secret: &models.ConnectorSecret{
 			Value: string(data),
 		},

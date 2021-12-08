@@ -1,8 +1,8 @@
-package usecases
+package services
 
 import (
 	"context"
-	"github.com/matthieuberger/butler/internal/logger"
+	"github.com/butlerhq/butler/internal/logger"
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"

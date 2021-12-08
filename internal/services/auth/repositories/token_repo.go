@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v8"
-	"github.com/matthieuberger/butler/internal/jwt"
-	"github.com/matthieuberger/butler/internal/logger"
+	"github.com/butlerhq/butler/internal/jwt"
+	"github.com/butlerhq/butler/internal/logger"
 	"go.uber.org/zap"
 )
 

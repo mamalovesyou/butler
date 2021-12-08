@@ -2,11 +2,11 @@ package gateway
 
 import (
 	"context"
-	"github.com/matthieuberger/butler/internal/logger"
-	"github.com/matthieuberger/butler/internal/protocol/rest"
-	"github.com/matthieuberger/butler/internal/services/auth"
-	"github.com/matthieuberger/butler/internal/services/gateway"
-	"github.com/matthieuberger/butler/internal/services/workspace"
+	"github.com/butlerhq/butler/internal/logger"
+	"github.com/butlerhq/butler/internal/protocol/rest"
+	"github.com/butlerhq/butler/internal/services/auth"
+	"github.com/butlerhq/butler/internal/services/gateway"
+	"github.com/butlerhq/butler/internal/services/workspace"
 	"github.com/opentracing/opentracing-go"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"

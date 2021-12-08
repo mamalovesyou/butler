@@ -1,11 +1,11 @@
 package auth
 
 import (
-	"github.com/matthieuberger/butler/internal/logger"
-	"github.com/matthieuberger/butler/internal/postgres"
-	"github.com/matthieuberger/butler/internal/redis"
-	"github.com/matthieuberger/butler/internal/services"
-	"github.com/matthieuberger/butler/internal/utils"
+	"github.com/butlerhq/butler/internal/logger"
+	"github.com/butlerhq/butler/internal/postgres"
+	"github.com/butlerhq/butler/internal/redis"
+	"github.com/butlerhq/butler/internal/services"
+	"github.com/butlerhq/butler/internal/utils"
 	"github.com/spf13/viper"
 )
 
