@@ -8,7 +8,6 @@ name: Build and Push images
 jobs:
   version:
     runs-on: ubuntu-latest
-    if: startsWith(github.ref, 'refs/heads/v')
     name: Set release tag version
     outputs:
       version: ${{ steps.vars.outputs.version }}
