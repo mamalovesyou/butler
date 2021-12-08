@@ -7,7 +7,7 @@ PKG_LIST := $(shell go list ./... | grep -v vendor)
 CMD_PKG := $(shell go list $(CMD)/... | grep -v vendor)
 COV_PKG := $(shell go list ./... | grep -v gen | tr '\n' ',')
 TOOLS := $(CURDIR)/tools
-WEBAPP := $(CURDIR)/webapp
+DASHBOARD_DIR := $(CURDIR)/butler-dashboard
 
 AIR_TARGET=tmp/main
 TARGET_PKG=$(MODULE_NAME)/${PACKAGE_PATH}
@@ -167,6 +167,14 @@ docker.dev.clean: ## Clean docker dev evironment
 	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.dev.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
 	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.dev.yml rm -f
 
+#########################
+###         CI        ###
+#########################
+
+ci.docker.dashboard: ## Build docker image for butler-dashboard
+	@echo "Build & push docker image for dashboard"
+	docker build -t ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG} -f $(DASHBOARD_DIR)/Dockerfile .
+    docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
 
 # PROTO
 # TODO: Add --validate_out="module=$(MODULE_NAME),lang=go:." when module will be fixed
