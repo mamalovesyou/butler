@@ -24,22 +24,25 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and tag butler-dashbaord
+      - name: Build and push butler-dashboard
         id: build-image
+        working-directory: butler-dashboard
         env:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.AWS_ECR_REPO_NAME }}
+          ECR_REPOSITORY: butler-dashboard
           IMAGE_TAG: ${{ github.head_ref }}
         run: |
-          echo $ECR_REGISTRY $ECR_REPOSITORY $IMAGE_TAG
-          # Build a docker container and push it to ECR
-          make ci.docker.dashboard
+          docker build -t ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG} $(DASHBOARD_DIR)
+          docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
 
   release:
     needs: dashboard
     name: Create Release
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
       - name: Build Changelog
         id: github_release
         uses: mikepenz/release-changelog-builder-action@v1
