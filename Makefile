@@ -167,16 +167,6 @@ docker.dev.clean: ## Clean docker dev evironment
 	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.dev.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
 	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.dev.yml rm -f
 
-#########################
-###         CI        ###
-#########################
-
-ci.docker.dashboard: ## Build docker image for butler-dashboard
-	@echo "Build & push docker image for dashboard"
-	echo ${ECR_REGISTRY} ${ECR_REPOSITORY} ${IMAGE_TAG}
-	docker build -t ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG} $(DASHBOARD_DIR)
-    docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
-
 # PROTO
 # TODO: Add --validate_out="module=$(MODULE_NAME),lang=go:." when module will be fixed
 gen.services: $(PROTO_DIR)/* ## Regenerate go files from proto-rest files
