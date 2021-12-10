@@ -169,5 +169,5 @@ var ConnectorsService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "services/proto/connectors-service.proto",
+	Metadata: "services/connectors/v1/service.proto",
 }

@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.27.1
 // 	protoc        v3.17.3
-// source: api/proto/workspace-service.proto
+// source: services/proto/workspace-service.proto
 
 package workspace
 

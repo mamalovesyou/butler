@@ -24,8 +24,8 @@ scrape_configs:
     static_configs:
       - targets: ['localhost:9090']
   
-  - job_name: 'gobaboon-api'
+  - job_name: 'gobaboon-services'
     scrape_interval: 5s
     static_configs:
-      - targets: ['gobaboon-api:8000']
+      - targets: ['gobaboon-services:8000']
         

@@ -320,7 +320,7 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title api/proto/auth-service.proto
+ * @title services/proto/auth-service.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {

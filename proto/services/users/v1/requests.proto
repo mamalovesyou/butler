@@ -1,0 +1,78 @@
+syntax = "proto3";
+option go_package = "github.com/butlerhq/butler/api/services/users/v1;users";
+package users;
+
+import "protoc-gen-validate/validate/validate.proto";
+
+message SignInRequest {
+  string email = 1 [(validate.rules).string.email = true];
+  string password = 2 [(validate.rules).string.min_len = 8];
+}
+
+message SignUpRequest {
+  string lastName = 1 [(validate.rules).string.min_len = 2];
+  string firstName = 2 [(validate.rules).string.min_len = 2];
+  string email = 3 [(validate.rules).string.email = true];
+  string password = 4 [(validate.rules).string.min_len = 8];
+  string companyName = 5 [(validate.rules).string.min_len = 2];
+  string companyRole = 6 [(validate.rules).string.min_len = 2];
+}
+
+message SignUpWithInvitationRequest {
+  string invitationId = 1;
+  message SignupInfo {
+    oneof binding{
+      string organizationId = 2;
+      string workspaceId = 3;
+    }
+    string token = 4;
+    string password = 5;
+  }
+  SignupInfo infos = 2;
+}
+
+message SignOutRequest {
+  string accessToken = 1;
+}
+
+message RefreshRequest {
+  string refreshToken = 1;
+}
+
+
+message CreateOrganizationRequest {
+  string name = 1;
+  string userRole = 2;
+}
+
+message CreateWorkspaceRequest {
+  string organization_id = 1;
+  message WorkspaceInfo {
+    string name = 2;
+    string description = 3;
+  }
+  WorkspaceInfo workspace = 2;
+}
+
+message IniviteOrganizationMemberRequest {
+  message OrganizationInviteInfos {
+    string first_name = 2;
+    string last_name = 3;
+    string email = 4;
+    string role = 5;
+  }
+
+  OrganizationInviteInfos invitation = 1;
+  string organization_id = 2;
+}
+
+message InviteWorkspaceMemberRequest {
+  message WorkspaceInviteInfos {
+    string first_name = 2;
+    string last_name = 3;
+    string email = 4;
+    string role = 5;
+  }
+  WorkspaceInviteInfos invitation = 1;
+  string workspace_id = 2;
+}

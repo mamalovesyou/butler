@@ -3,12 +3,12 @@ package grpc
 import (
 	"context"
 	"fmt"
+	"github.com/butlerhq/butler/butler-core/logger"
+	"github.com/butlerhq/butler/butler-core/protocol/grpc/middlewares"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
-	"github.com/butlerhq/butler/butler-core/logger"
-	"github.com/butlerhq/butler/butler-core/protocol/grpc/middlewares"
 	"github.com/opentracing/opentracing-go"
 	"google.golang.org/grpc"
 	"net"
@@ -35,7 +35,7 @@ type GRPCServer struct {
 
 func NewGRPCServer(port string, services []GRPCService, tracer opentracing.Tracer) *GRPCServer {
 
-	// Make sure that log statements internal to gRPC library are logged using the zapLogger as well.
+	// Make sure that log statements services to gRPC library are logged using the zapLogger as well.
 	grpc_zap.ReplaceGrpcLogger(logger.GetLogger())
 
 	opts := []grpc.ServerOption{

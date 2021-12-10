@@ -242,5 +242,5 @@ var WorkspaceService_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "api/proto/workspace-service.proto",
+	Metadata: "services/proto/workspace-service.proto",
 }

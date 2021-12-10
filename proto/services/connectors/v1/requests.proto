@@ -1,0 +1,19 @@
+syntax = "proto3";
+option go_package = "github.com/butlerhq/butler/api/services/connectors/v1;connectors";
+package v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+message WorkspaceRequest {
+  string workspaceId = 1;
+}
+
+message OAuthAuthorizationRequest {
+  string workspaceId = 1;
+  message ConnectorCode {
+    string name = 1;
+    string code = 2;
+  }
+  ConnectorCode code = 2;
+}

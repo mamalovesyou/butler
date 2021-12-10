@@ -31,13 +31,31 @@ DOCKER_COMPOSE_CMD_TEST = $(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-comp
 DOCKER_COMPOSE_CMD_TEST_LOCAL = $(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.local.test.yml
 
 # Protobuf
-PROTO_DIR=api/proto
-PROTO_GO_OUT=internal/api
-PROTOC_DIR_OPTS = -I./vendor/github.com/grpc-ecosystem/grpc-gateway/v2 -I./vendor/github.com/envoyproxy -I./third_party -I.
-PROTO_CMD = protoc $(PROTOC_DIR_OPTS)
-PROTO_GTW_FILE = $(PROTO_DIR)/gateway.proto
-PROTO_TS_OUT_DIR = $(WEBAPP)/api
-PROTOC_GEN_TS_PATH = $(WEBAPP)/node_modules/.bin/protoc-gen-ts
+PROTO_ROOT := proto
+PROTO_FILES := $(shell find ./proto/services -name "*.proto")
+PROTO_DIRS := $(sort $(dir $(PROTO_FILES)))
+PROTO_IMPORTS := -I=$(PROTO_ROOT) -I./vendor/github.com/grpc-ecosystem/grpc-gateway/v2 -I./vendor/github.com/envoyproxy -I./third_party
+PROTO_OUT := api
+
+##### Proto #####
+protoc:
+	@mkdir -p $(PROTO_OUT)
+	@echo $(PROTO_FILE)
+    # Run protoc separately for each directory because of different package names.
+	@for PROTO_FILE in $(PROTO_FILES); do \
+		protoc $(PROTO_IMPORTS) \
+		 	--go_out=module=$(MODULE_NAME):. --go-grpc_out=module=$(MODULE_NAME):. \
+            --grpc-gateway_out . --grpc-gateway_opt module=$(MODULE_NAME) --grpc-gateway_opt logtostderr=true \
+			$${PROTO_FILE} && echo "✅ $${PROTO_FILE}" || (echo "❌ $${PROTO_FILE}"; exit 1); \
+	done
+
+# TODO: Clean this
+#PROTO_GO_OUT=internal/api
+#PROTOC_DIR_OPTS = -I./vendor/github.com/grpc-ecosystem/grpc-gateway/v2 -I./vendor/github.com/envoyproxy -I./third_party -I.
+#PROTO_CMD = protoc $(PROTOC_DIR_OPTS)
+#PROTO_GTW_FILE = $(PROTO_DIR)/gateway.proto
+#PROTO_TS_OUT_DIR = $(WEBAPP)/api
+#PROTOC_GEN_TS_PATH = $(WEBAPP)/node_modules/.bin/protoc-gen-ts
 
 
 # OpenApi
@@ -78,12 +96,12 @@ tools: ## Install tools
 air: ## Build air for developpment
 	time go install github.com/cosmtrek/air
 
-install.victorinox: ## Build api for production
+install.victorinox: ## Build services for production
 	time go install $(CMD)/victorinox
 
 
 # BUILD CMD
-build.dev: ## Build api for Air (Live reloading)
+build.dev: ## Build services for Air (Live reloading)
 	time go build -i -o $(AIR_TARGET) ${TARGET_PKG}
 
 
@@ -180,6 +198,16 @@ gen.services: $(PROTO_DIR)/* ## Regenerate go files from proto-rest files
 		$${file} && echo "✅ $${file} generated" || (echo "❌ $${file} failed"; exit 1); \
 	done
 
+proto.gen.go:
+	@for file in $^ ; do \
+		$(PROTO_CMD) --go_out=module=$(MODULE_NAME):. \
+		--go-grpc_out=module=$(MODULE_NAME):. \
+		--grpc-gateway_out . \
+        --grpc-gateway_opt module=$(MODULE_NAME) \
+		--grpc-gateway_opt logtostderr=true \
+		$${file} && echo "✅ $${file} generated" || (echo "❌ $${file} failed"; exit 1); \
+	done
+
 gen.openapi: $(PROTO_DIR)/* ## Generate openapi doc from proto
 	@echo "Generating swagger from proto files..."
 	@mkdir -p $(OPEN_API_DIR)
@@ -193,7 +221,7 @@ gen.web.old: $(PROTO_DIR)/* ## Generate openapi specs from proto-rest annotation
 	#$(PROTO_CMD) --plugin="protoc-gen-ts=$(PROTOC_GEN_TS_PATH)" \
 #         --js_out="import_style=commonjs,binary:$(PROTO_TS_OUT_DIR)" \
 #         --ts_out="service=true:$(PROTO_TS_OUT_DIR)" $^ \
-#         && echo "✅ Api client generated" || (echo "❌ Failed to generate api client"; exit 1);
+#         && echo "✅ Api client generated" || (echo "❌ Failed to generate services client"; exit 1);
 	$(PROTO_CMD) --js_out="import_style=commonjs,binary:$(PROTO_TS_OUT_DIR)" \
 		--grpc-web_out=import_style=typescript,mode=grpcweb:$(PROTO_TS_OUT_DIR) protoc-gen-validate/validate/validate.proto $^ \
 		&& echo "✅ Api client generated" || (echo "❌ Failed to generate api client"; exit 1);

@@ -1,0 +1,26 @@
+syntax = "proto3";
+option go_package = "github.com/butlerhq/butler/api/services/connectors/v1;connectors";
+package v1;
+
+import "google/api/annotations.proto";
+import "services/connectors/v1/requests.proto";
+import "services/connectors/v1/responses.proto";
+
+service ConnectorsService {
+  rpc ListCatalogConnectors(WorkspaceRequest) returns (CatalogConnectorList) {
+    option (google.api.http) = {
+      get: "/v1/{workspaceId}/catalogs"
+    };
+  }
+  rpc ListWorkspaceConnectors(WorkspaceRequest) returns (WorkspaceConnectorList) {
+    option (google.api.http) = {
+      get: "/v1/{workspaceId}/connectors"
+    };
+  }
+  rpc GetOauthConnectorAuthorization(OAuthAuthorizationRequest) returns (WorkspaceConnector) {
+    option (google.api.http) = {
+      post: "/v1/{workspaceId}/connectors/oauth"
+      body: "code"
+    };
+  }
+}
