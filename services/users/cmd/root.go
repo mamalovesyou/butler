@@ -1,4 +1,4 @@
-package gateway
+package cmd
 
 import (
 	"fmt"
@@ -14,9 +14,9 @@ var (
 	configDir      string
 
 	rootCmd = &cobra.Command{
-		Use:   "gateway",
-		Short: "HeyButler REST API Gateway",
-		Long:  `HeyButler REST Gateway si a rest proxy server that proxy rest request to the right GRPC service.`,
+		Use:   "butler-users",
+		Short: "butler-users is a service that provide auth, permissions, workspace and team management.",
+		Long:  `butler-users is a service that provide auth, permissions, workspace and team management.`,
 	}
 )
 

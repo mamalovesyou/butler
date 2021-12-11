@@ -2,7 +2,7 @@ package repositories
 
 import (
 	"context"
-	"github.com/butlerhq/butler/butler-core/logger"
+	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/services/users/models"
 	"gorm.io/gorm"
 )

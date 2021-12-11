@@ -1,20 +1,20 @@
 kind: Deployment
 apiVersion: apps/v1
 metadata:
-  name: butler-dashboard
+  name: webapp
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: butler-dashboard
+      app: webapp
   template:
     metadata:
       labels:
-        app: butler-dashboard
+        app: webapp
     spec:
       containers:
-        - name: butler-dashboard
-          image: butlerhq/butler-dashboard
+        - name: webapp
+          image: butlerhq/webapp
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 80

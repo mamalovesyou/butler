@@ -2,8 +2,8 @@ package users
 
 import (
 	"context"
-	butlerctx "github.com/butlerhq/butler/butler-core/context"
-	"github.com/butlerhq/butler/butler-core/logger"
+	butlerctx "github.com/butlerhq/butler/internal/context"
+	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/proto/gen/auth"
 	"github.com/butlerhq/butler/proto/gen/connectors"
 	"github.com/butlerhq/butler/proto/gen/workspace"

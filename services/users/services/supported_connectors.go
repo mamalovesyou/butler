@@ -2,7 +2,7 @@ package services
 
 import (
 	"context"
-	"github.com/butlerhq/butler/butler-core/logger"
+	"github.com/butlerhq/butler/internal/logger"
 	"go.uber.org/zap"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"

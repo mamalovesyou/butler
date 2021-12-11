@@ -2,9 +2,6 @@ package gateway
 
 import (
 	"context"
-	"github.com/butlerhq/butler/internal/logger"
-	"go.uber.org/zap"
-
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"google.golang.org/grpc"
 )
@@ -31,15 +28,10 @@ func NewRESTAPIGatewayService(cfg *ServiceConfig) *RESTAPIGatewayService {
 	}
 }
 
-func (gw *RESTAPIGatewayService) RegisterGRPCEndpoints(services ...RESTService) error {
+func (gw *RESTAPIGatewayService) RegisterGRPCServices() error {
 	ctx := context.Background()
-	for _, s := range services {
-		logger.Debug(ctx, "Attempt to rest service", zap.String("name", s.ServiceName()))
-		if err := s.RegisterREST(gw.Mux, s.GRPCAddr(), s.GRPCDialOpts()); err != nil {
-			logger.Error(ctx, "Failted to register rest service", zap.String("name", s.ServiceName()), zap.Error(err))
-			return err
-		}
-		logger.Debug(ctx, "Successfully registered rest service", zap.String("name", s.ServiceName()))
+	if err := RegisterUsersService(ctx, gw.Mux, gw.Config.AuthServiceAddr, gw.DialOptions); err != nil {
+		return err
 	}
 	return nil
 }

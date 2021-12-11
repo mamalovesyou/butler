@@ -3,7 +3,7 @@ package services
 import (
 	"context"
 	"encoding/json"
-	"github.com/butlerhq/butler/butler-core/logger"
+	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/proto/gen/connectors"
 	"github.com/butlerhq/butler/services/users/models"
 	"github.com/butlerhq/butler/services/users/repositories"

@@ -1,10 +1,10 @@
 package users
 
 import (
-	"github.com/butlerhq/butler/butler-core/logger"
-	"github.com/butlerhq/butler/butler-core/postgres"
-	"github.com/butlerhq/butler/butler-core/redis"
-	"github.com/butlerhq/butler/butler-core/utils"
+	"github.com/butlerhq/butler/internal/logger"
+	"github.com/butlerhq/butler/internal/postgres"
+	"github.com/butlerhq/butler/internal/redis"
+	"github.com/butlerhq/butler/internal/utils"
 	"github.com/spf13/viper"
 )
 

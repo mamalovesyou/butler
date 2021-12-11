@@ -2,8 +2,8 @@ package workspace
 
 import (
 	"context"
-	butlerctx "github.com/butlerhq/butler/butler-core/context"
-	"github.com/butlerhq/butler/butler-core/logger"
+	butlerctx "github.com/butlerhq/butler/internal/context"
+	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/proto/gen/workspace"
 	"github.com/butlerhq/butler/services/users/models"
 	"github.com/butlerhq/butler/services/users/services"

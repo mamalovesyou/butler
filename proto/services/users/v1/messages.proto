@@ -5,6 +5,15 @@ package users;
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
 
+message User {
+  string ID = 1;
+  string email = 2;
+  string firstName = 3;
+  string lastName = 4;
+  google.protobuf.Timestamp createdAt = 6;
+  google.protobuf.Timestamp updatedAt = 7;
+}
+
 message Organization {
   string id = 1;
   string name = 2;

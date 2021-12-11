@@ -1,2 +1,5 @@
-butler-dashboard/*
+webapp/*
 vendor/*
+LICENSE
+README.md
+proto/*
