@@ -35,6 +35,7 @@ ifndef CGO_ENABLED
 	endif
 endif
 
+DOCKER_REPO ?= butlerhq
 DOCKER_IMAGE_TAG ?= test
 
 # Git
@@ -79,7 +80,7 @@ open-api:
 
 ##### Binaries #####
 
-services: clean-bins butler-users
+services: clean-bins butler-users butler-gateway
 
 clean-bins:
 	@echo "Delete old binaries..."
@@ -89,22 +90,22 @@ clean-bins:
 butler-gateway:
 	@printf "Build butler-gateway service with OS: $(GOOS), ARCH: $(GOARCH)..."
 	@mkdir -p $(BIN)
-	CGO_ENABLED=$(CGO_ENABLED) go build -o $(BIN)/butler-gateway cmd/services/gateway/main.go
+	CGO_ENABLED=$(CGO_ENABLED) go build -o $(BIN)/butler-gateway cmd/gateway/main.go
 
 butler-users:
 	@printf "Build butler-users service with OS: $(GOOS), ARCH: $(GOARCH)..."
 	@mkdir -p $(BIN)
-	CGO_ENABLED=$(CGO_ENABLED) go build -o $(BIN)/butler-users cmd/services/users/main.go
+	CGO_ENABLED=$(CGO_ENABLED) go build -o $(BIN)/butler-users cmd/users/main.go
 
 
 ##### Docker #####
 docker-service-gateway:
 	@printf "Building docker image butlerhq/butler-users:$(DOCKER_IMAGE_TAG)..."
-	docker build . -t butlerhq/butler-gateway:$(DOCKER_IMAGE_TAG) --build-arg TARGET=service-gateway
+	docker build . -t $(DOCKER_REPO)/butler-gateway:$(DOCKER_IMAGE_TAG) --target service-gateway
 
 docker-service-users:
 	@printf "Building docker image butlerhq/butler-users:$(DOCKER_IMAGE_TAG)..."
-	docker build . -t butlerhq/butler-users:$(DOCKER_IMAGE_TAG) --build-arg TARGET=service-users
+	docker build . -t $(DOCKER_REPO)/butler-users:$(DOCKER_IMAGE_TAG) --target service-users
 
 
 
@@ -114,12 +115,15 @@ lint: ## Lint the files
 test: ## Run unittests
 	@go test -short ${PKG_LIST}
 
+vendor: ## Vendor dependencies
+	@echo "Running go.mod vendor"
+	@go mod vendor
 
 tidy: ## Clean go.mod dependencies
 	@echo "Running go.mod tidy..."
 	@go mod tidy
 
-dependencies: tidy ## Download and install dependencies
+dependencies: vendor ## Download and install dependencies
 	@echo "Download and install dependencies, tools..."
 	cat $(TOOLS)/tools.go | grep _ | awk -F'"' '{print $$2}' | xargs -tI % go install % \
     		&& echo "✅ Tools installed" || (echo "❌ Failed to install tools"; exit 1);

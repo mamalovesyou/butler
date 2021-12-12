@@ -320,7 +320,7 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title services/proto/auth-service.proto
+ * @title services/proto/user-service.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
@@ -330,7 +330,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags AuthService
      * @name AuthServiceRefreshToken
-     * @request POST:/v1/auth/refresh
+     * @request POST:/v1/user/refresh
      * @secure
      */
     authServiceRefreshToken: (body: V1RefreshRequest, params: RequestParams = {}) =>
@@ -349,7 +349,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags AuthService
      * @name AuthServiceSignIn
-     * @request POST:/v1/auth/signin
+     * @request POST:/v1/user/signin
      * @secure
      */
     authServiceSignIn: (body: V1SignInRequest, params: RequestParams = {}) =>
@@ -368,7 +368,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags AuthService
      * @name AuthServiceSignOut
-     * @request POST:/v1/auth/signout
+     * @request POST:/v1/user/signout
      * @secure
      */
     authServiceSignOut: (body: V1SignOutRequest, params: RequestParams = {}) =>
@@ -387,7 +387,7 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      *
      * @tags AuthService
      * @name AuthServiceSignUp
-     * @request POST:/v1/auth/signup
+     * @request POST:/v1/user/signup
      * @secure
      */
     authServiceSignUp: (body: V1SignUpRequest, params: RequestParams = {}) =>

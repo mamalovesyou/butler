@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"github.com/butlerhq/butler/services/users"
 	"time"
 
 	postgres2 "github.com/butlerhq/butler/internal/postgres"
@@ -11,7 +12,6 @@ import (
 
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/internal/protocol/grpc"
-	"github.com/butlerhq/butler/internal/services/auth"
 	"github.com/spf13/cobra"
 )
 
@@ -24,7 +24,7 @@ var (
 			ctx := context.Background()
 
 			// Load config
-			cfg, err := auth.LoadConfig(configDir, configFileName)
+			cfg, err := users.LoadConfig(configDir, configFileName)
 			if err != nil {
 				logger.Fatalf(ctx, "Failed to load config: %+v", err)
 			}
@@ -49,10 +49,12 @@ var (
 
 			// Initialize redis
 			rdb := redis.NewRedisClient(cfg.Redis)
-			authService := auth.NewAuthService(cfg, postgres.DB, rdb)
 
-			server := grpc.NewGRPCServer(cfg.Port, []grpc.GRPCService{authService}, tracer)
-			server.Serve()
+			// Serve
+			grpcServer := grpc.NewGRPCServer(cfg.Port, tracer)
+			usersService := users.NewUsersService(cfg, postgres.DB, rdb)
+			usersService.RegisterGRPCServer(grpcServer.Server)
+			grpcServer.Serve()
 		},
 	}
 )

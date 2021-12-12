@@ -11,6 +11,7 @@ import (
 type ServiceConfig struct {
 	Environment     string
 	Port            string
+	JWTSecret       string `mapstructure:"jwtSecret"`
 	Postgres        *postgres.PostgresConfig
 	Redis           *redis.RedisConfig
 	Jaeger          *logger.JaegerConfig

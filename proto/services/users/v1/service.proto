@@ -16,40 +16,43 @@ service UsersService {
   // Authentication
   rpc SignIn(SignInRequest) returns (AuthenticatedUser) {
     option (google.api.http) = {
-      post: "/v1/auth/signin"
+      post: "/v1/user/signin"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       security: {} // Disable security key
     };
   }
+
   rpc SignUp(SignUpRequest) returns (AuthenticatedUser) {
     option (google.api.http) = {
-      post: "/v1/auth/signup"
+      post: "/v1/user/signup"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       security: {} // Disable security key
     };
   }
+
   rpc SignUpWithInvite(SignUpWithInvitationRequest) returns (AuthenticatedUser) {
     option (google.api.http) = {
-      post: "/v1/auth/signup/invites/{invitationId}"
+      post: "/v1/user/signup/invites/{invitationId}"
       body: "infos"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       security: {} // Disable security key
     };
   }
+
   rpc SignOut(SignOutRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/v1/auth/signout"
+      post: "/v1/user/signout"
       body: "*"
     };
   }
   rpc RefreshToken(RefreshRequest) returns (AuthenticatedUser) {
     option (google.api.http) = {
-      post: "/v1/auth/refresh"
+      post: "/v1/user/refresh"
       body: "*"
     };
   }

@@ -39,7 +39,7 @@ auth:
   jwtSecret: super-jwt-secret
   postgres:
     <<: *postgres
-    name: auth
+    name: user
   redis:
     <<: *redis
   logger: 
@@ -51,7 +51,7 @@ auth:
 workspace:
   <<: *default
   port: 3002
-  authServiceAddr: "auth:3001"
+  authServiceAddr: "user:3001"
   postgres:
     <<: *postgres
     name: workspace
@@ -65,7 +65,7 @@ workspace:
 gateway:
   <<: *default
   port: 8080
-  authServiceAddr: "auth:3001"
+  authServiceAddr: "user:3001"
   workspaceServiceAddr: "workspace:3002"
   dashboardOriginUrl: "http://localhost:3000"
   logger:

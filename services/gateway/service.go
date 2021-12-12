@@ -2,36 +2,50 @@ package gateway
 
 import (
 	"context"
+	"github.com/butlerhq/butler/api/services/users/v1"
+	"github.com/butlerhq/butler/internal/logger"
+	"github.com/butlerhq/butler/internal/protocol/grpc/middlewares"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
+	"github.com/opentracing/opentracing-go"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 
-type RESTAPIGatewayService struct {
-	Config      *ServiceConfig
-	Mux         *runtime.ServeMux
-	DialOptions []grpc.DialOption
+const (
+	ServiceName = "butler-gateway"
+)
+
+type RESTGatewayService struct {
+	Config          *ServiceConfig
+	Mux             *runtime.ServeMux
+	GRPCDialOptions []grpc.DialOption
 }
 
-type RESTService interface {
-	ServiceName() string
-	RegisterREST(*runtime.ServeMux, string, []grpc.DialOption) error
-	GRPCAddr() string
-	GRPCDialOpts() []grpc.DialOption
-}
-
-func NewRESTAPIGatewayService(cfg *ServiceConfig) *RESTAPIGatewayService {
+func NewRESTGatewayService(cfg *ServiceConfig, tracer opentracing.Tracer) *RESTGatewayService {
 	mux := runtime.NewServeMux()
-	return &RESTAPIGatewayService{
-		Config:      cfg,
-		Mux:         mux,
-		DialOptions: []grpc.DialOption{grpc.WithInsecure()},
+
+	opts := []grpc.DialOption{
+		grpc.WithUnaryInterceptor(middlewares.OpenTracingUnaryClientInterceptor(tracer)),
+		grpc.WithStreamInterceptor(middlewares.OpenTracingStreamClientInterceptor(tracer)),
+		grpc.WithInsecure(),
+	}
+
+	return &RESTGatewayService{
+		Config:          cfg,
+		Mux:             mux,
+		GRPCDialOptions: opts,
 	}
 }
 
-func (gw *RESTAPIGatewayService) RegisterGRPCServices() error {
+func (gw *RESTGatewayService) RegisterGRPCServices() error {
 	ctx := context.Background()
-	if err := RegisterUsersService(ctx, gw.Mux, gw.Config.AuthServiceAddr, gw.DialOptions); err != nil {
+
+	// Register users service
+	err := users.RegisterUsersServiceHandlerFromEndpoint(ctx, gw.Mux, gw.Config.UsersServiceAddr, gw.GRPCDialOptions)
+	if err != nil {
+		logger.Fatal(ctx, "Unable to register users service", zap.Error(err))
 		return err
 	}
+
 	return nil
 }

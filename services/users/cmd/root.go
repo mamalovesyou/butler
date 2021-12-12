@@ -2,9 +2,8 @@ package cmd
 
 import (
 	"fmt"
-	"os"
-
 	"github.com/spf13/cobra"
+	"os"
 )
 
 // rootCmd represents the base command when called without any subcommands
@@ -15,8 +14,8 @@ var (
 
 	rootCmd = &cobra.Command{
 		Use:   "butler-users",
-		Short: "butler-users is a service that provide auth, permissions, workspace and team management.",
-		Long:  `butler-users is a service that provide auth, permissions, workspace and team management.`,
+		Short: "butler-users is a service that provide user, permissions, workspace and team management.",
+		Long:  `butler-users is a service that provide user, permissions, workspace and team management.`,
 	}
 )
 

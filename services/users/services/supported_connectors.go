@@ -13,7 +13,7 @@ var (
 	GoogleConnectorConfig = oauth2.Config{
 		ClientID:     "133098310007-oq0arc40c3o9821rmcq9oen5bncnn1ru.apps.googleusercontent.com",
 		ClientSecret: "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",
-		Scopes:       []string{"https://www.googleapis.com/auth/adwords"},
+		Scopes:       []string{"https://www.googleapis.com/user/adwords"},
 		Endpoint:     google.Endpoint,
 		RedirectURL:  "http://localhost:3000/oauth",
 	}

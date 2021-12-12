@@ -62,8 +62,8 @@ func (repo *OrganizationRepo) FindByUserID(userID string) (*models.Organization,
 	return org, nil
 }
 
-func (repo *OrganizationRepo) ListByUserID(userID string) ([]*models.Organization, error) {
-	result := []*models.Organization{}
+func (repo *OrganizationRepo) ListByUserID(userID string) ([]models.Organization, error) {
+	result := []models.Organization{}
 	// .Where("id IN (SELECT organization_id FROM organization_members WHERE user_id = ?)", userID)
 	if err := repo.db.Preload("Workspaces").Preload("UserMembers", "user_id = ?", userID).Find(&result).Error; err != nil {
 		return nil, err

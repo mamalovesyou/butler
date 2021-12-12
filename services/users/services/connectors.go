@@ -3,8 +3,8 @@ package services
 import (
 	"context"
 	"encoding/json"
+	"github.com/butlerhq/butler/api/services/connectors/v1"
 	"github.com/butlerhq/butler/internal/logger"
-	"github.com/butlerhq/butler/proto/gen/connectors"
 	"github.com/butlerhq/butler/services/users/models"
 	"github.com/butlerhq/butler/services/users/repositories"
 	"github.com/google/uuid"
@@ -15,7 +15,6 @@ import (
 
 type ConnectorsUseCase struct {
 	ConnectorRepo *repositories.ConnectorRepo
-	connectors.UnimplementedConnectorsServiceServer
 }
 
 func NewConnectorsUseCase(db *gorm.DB) *ConnectorsUseCase {

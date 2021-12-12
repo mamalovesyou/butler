@@ -3,8 +3,6 @@ package rest
 import (
 	"context"
 	"fmt"
-	"github.com/butlerhq/butler/internal/protocol/grpc/middlewares"
-	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"net/http"
@@ -13,9 +11,9 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/internal/protocol/rest/middleware"
+	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/rs/cors"
 )
@@ -23,14 +21,12 @@ import (
 type RESTServerConfig struct {
 	Port           string
 	Mux            *runtime.ServeMux
-	Tracer         opentracing.Tracer
 	AllowedOrigins []string
 }
 
 type RESTServer struct {
-	server         *http.Server
-	port           string
-	GRPCClientOpts []grpc.DialOption
+	server *http.Server
+	port   string
 }
 
 type GRPCClientInterceptors struct {
@@ -39,11 +35,6 @@ type GRPCClientInterceptors struct {
 }
 
 func NewRESTServer(cfg *RESTServerConfig) *RESTServer {
-
-	opts := []grpc.DialOption{
-		grpc.WithUnaryInterceptor(middlewares.OpenTracingUnaryClientInterceptor(cfg.Tracer)),
-		grpc.WithStreamInterceptor(middlewares.OpenTracingStreamClientInterceptor(cfg.Tracer)),
-	}
 
 	c := cors.New(cors.Options{
 		AllowedOrigins: cfg.AllowedOrigins,
@@ -70,8 +61,7 @@ func NewRESTServer(cfg *RESTServerConfig) *RESTServer {
 			Addr:    fmt.Sprintf(":%s", cfg.Port),
 			Handler: mux,
 		},
-		port:           cfg.Port,
-		GRPCClientOpts: opts,
+		port: cfg.Port,
 	}
 
 }

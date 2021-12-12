@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/butlerhq/butler/proto/gen/workspace"
+	"github.com/butlerhq/butler/api/services/users/v1"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -19,8 +19,8 @@ func (u *Organization) TableName() string {
 }
 
 // ToPb return the workspace.Organization of an Organization model
-func (o *Organization) ToPb() *workspace.Organization {
-	pb := &workspace.Organization{
+func (o *Organization) ToPb() *users.Organization {
+	pb := &users.Organization{
 		Id:        o.ID.String(),
 		OwnerId:   o.OwnerID.String(),
 		Name:      o.Name,
@@ -28,13 +28,13 @@ func (o *Organization) ToPb() *workspace.Organization {
 		UpdatedAt: timestamppb.New(o.UpdatedAt),
 	}
 
-	members := make([]*workspace.UserMember, len(o.UserMembers))
+	members := make([]*users.UserMember, len(o.UserMembers))
 	for i, m := range o.UserMembers {
 		members[i] = m.ToPb()
 	}
 	pb.Members = members
 
-	workspaces := make([]*workspace.Workspace, len(o.Workspaces))
+	workspaces := make([]*users.Workspace, len(o.Workspaces))
 	for i, w := range o.Workspaces {
 		workspaces[i] = w.ToPb()
 	}
@@ -55,8 +55,8 @@ func (u *OrganizationMember) TableName() string {
 }
 
 // ToPb return the workspace.UserMember of a OrganizationMember
-func (m *OrganizationMember) ToPb() *workspace.UserMember {
-	return &workspace.UserMember{
+func (m *OrganizationMember) ToPb() *users.UserMember {
+	return &users.UserMember{
 		UserId: m.UserID.String(),
 		Role:   m.Role,
 	}

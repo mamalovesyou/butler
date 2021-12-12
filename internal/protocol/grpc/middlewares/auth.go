@@ -13,12 +13,12 @@ func emptyAuthFunc(ctx context.Context) (context.Context, error) {
 	return ctx, nil
 }
 
-// AuthUnary returns grpc.UnaryServerInterceptor that turn on auth.
+// AuthUnary returns grpc.UnaryServerInterceptor that turn on user.
 func AuthUnary() grpc.UnaryServerInterceptor {
 	return grpc_auth.UnaryServerInterceptor(emptyAuthFunc)
 }
 
-// AuthStream returns grpc.StreamServerInterceptor that turn on auth.
+// AuthStream returns grpc.StreamServerInterceptor that turn on user.
 func AuthStream() grpc.StreamServerInterceptor {
 	return grpc_auth.StreamServerInterceptor(emptyAuthFunc)
 }

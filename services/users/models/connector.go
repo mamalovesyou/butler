@@ -2,7 +2,7 @@ package models
 
 import (
 	"database/sql/driver"
-	"github.com/butlerhq/butler/proto/gen/connectors"
+	"github.com/butlerhq/butler/api/services/connectors/v1"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
 	"time"

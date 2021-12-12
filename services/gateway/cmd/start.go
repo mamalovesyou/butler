@@ -4,13 +4,10 @@ import (
 	"context"
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/internal/protocol/rest"
-	"github.com/butlerhq/butler/internal/services/auth"
-	"github.com/butlerhq/butler/internal/services/gateway"
-	"github.com/butlerhq/butler/internal/services/workspace"
+	"github.com/butlerhq/butler/services/gateway"
 	"github.com/opentracing/opentracing-go"
 	"github.com/spf13/cobra"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
 )
 
 var (
@@ -40,26 +37,17 @@ var (
 			defer closer.Close()
 
 			// Create gateway instance
-			gatewayService := gateway.NewRESTAPIGatewayService(cfg)
-			restSrvCfg := &rest.RESTServerConfig{
-				Port:   cfg.Port,
-				Mux:    gatewayService.Mux,
-				Tracer: tracer,
-				// TODO: R
+			gatewayService := gateway.NewRESTGatewayService(cfg, tracer)
+			gatewayService.RegisterGRPCServices()
+
+			// Create rest http server
+			serverCfg := &rest.RESTServerConfig{
+				Port:           cfg.Port,
+				Mux:            gatewayService.Mux,
 				AllowedOrigins: []string{cfg.DashboardOriginUrl},
 			}
 
-			server := rest.NewRESTServer(restSrvCfg)
-
-			// Register services endpoints
-			// TODO: Add credentials for grpc communication
-			opts := append(server.GRPCClientOpts, grpc.WithInsecure())
-			authGwService := auth.NewAuthGatewayService(cfg.AuthServiceAddr, opts)
-			workspaceGwService := workspace.NewWorkspaceGatewayService(cfg.WorkspaceServiceAddr, opts)
-			if err := gatewayService.RegisterGRPCEndpoints(authGwService, workspaceGwService); err != nil {
-				logger.Fatal(ctx, "Failed to register services", zap.Error(err))
-			}
-
+			server := rest.NewRESTServer(serverCfg)
 			server.Serve()
 		},
 	}
