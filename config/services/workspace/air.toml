@@ -8,7 +8,7 @@ tmp_dir = "/tmp"
 
 [build]
 # Just plain old shell command. You could use `make` as well.
-cmd = "time go build -i -o /tmp/workspace/main github.com/matthieuberger/butler/cmd/workspace"
+cmd = "time go build -i -o /tmp/workspace/main github.com/butlerhq/butler/cmd/workspace"
 # Binary file yields from `cmd`.
 bin = "/tmp/workspace/main"
 # Customize binary.

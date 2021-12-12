@@ -1,5 +1,7 @@
+.PHONY: proto
+
 PROJECT_NAME := butler
-MODULE_NAME := github.com/matthieuberger/$(PROJECT_NAME)
+MODULE_NAME := github.com/butlerhq/$(PROJECT_NAME)
 BIN := $(CURDIR)/bin
 BIN_AIR := $(CURDIR)/tmp
 CMD := $(CURDIR)/cmd
@@ -17,9 +19,24 @@ DEPLOYMENT := $(CURDIR)/deployment
 DOCKER_COMPOSE := $(DEPLOYMENT)/docker-compose
 DOCKER_COMPOSE_CLEAN_FLAGS=--volumes --rmi local --remove-orphans
 
+##### Arguments ######
 
-# Dockerfiles
-API_DOCKERFILE=build/api/Dockerfile
+GOOS ?= $(shell go env GOOS)
+GOARCH ?= $(shell go env GOARCH)
+GOPATH ?= $(shell go env GOPATH)
+GOBIN ?= $(if $(shell go env GOBIN),$(shell go env GOBIN),$(GOPATH)/bin)
+
+# Name resolution requires cgo to be enabled on macOS and Windows: https://golang.org/pkg/net/#hdr-Name_Resolution.
+ifndef CGO_ENABLED
+	ifeq ($(GOOS),linux)
+	CGO_ENABLED := 0
+	else
+	CGO_ENABLED := 1
+	endif
+endif
+
+DOCKER_REPO ?= butlerhq
+DOCKER_IMAGE_TAG ?= test
 
 # Git
 GIT_CURRENT_SHA=$(shell git rev-parse --short HEAD)
@@ -30,25 +47,67 @@ DOCKER_COMPOSE_CMD = $(DOCKER_COMPOSE_ENV) docker-compose -p $(PROJECT_NAME)
 DOCKER_COMPOSE_CMD_TEST = $(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.test.yml
 DOCKER_COMPOSE_CMD_TEST_LOCAL = $(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.local.test.yml
 
+# Open Api
+OPEN_API_OUT=config/openapi
+OPEN_API_NAME=api
+OPEN_API_FILE=$(OPEN_API_OUT)/$(OPEN_API_NAME).swagger.json
+
 # Protobuf
-PROTO_DIR=api/proto
-PROTO_GO_OUT=internal/api
-PROTOC_DIR_OPTS = -I./vendor/github.com/grpc-ecosystem/grpc-gateway/v2 -I./vendor/github.com/envoyproxy -I./third_party -I.
-PROTO_CMD = protoc $(PROTOC_DIR_OPTS)
-PROTO_GTW_FILE = $(PROTO_DIR)/gateway.proto
-PROTO_TS_OUT_DIR = $(WEBAPP)/api
-PROTOC_GEN_TS_PATH = $(WEBAPP)/node_modules/.bin/protoc-gen-ts
+PROTO_ROOT := proto
+PROTO_FILES := $(shell find ./proto/services -name "*.proto")
+PROTO_DIRS := $(sort $(dir $(PROTO_FILES)))
+PROTO_IMPORTS := -I=$(PROTO_ROOT) -I./vendor/github.com/grpc-ecosystem/grpc-gateway/v2 -I./vendor/github.com/envoyproxy -I./third_party
+PROTO_OUT := api
+PROTO_CMD := protoc $(PROTO_IMPORTS)
+
+##### Proto #####
+proto:
+	@mkdir -p $(PROTO_OUT)
+    # Run protoc separately for each directory because of different package names.
+	@for PROTO_FILE in $(PROTO_FILES); do \
+		protoc $(PROTO_IMPORTS) \
+		 	--go_out=module=$(MODULE_NAME):. --go-grpc_out=module=$(MODULE_NAME):. \
+            --grpc-gateway_out . --grpc-gateway_opt module=$(MODULE_NAME) --grpc-gateway_opt logtostderr=true \
+			$${PROTO_FILE} && echo "✅ $${PROTO_FILE}" || (echo "❌ $${PROTO_FILE}"; exit 1); \
+	done
+
+open-api:
+	@mkdir -p $(OPEN_API_OUT)
+	@echo $(PROTO_FILES)
+	protoc $(PROTO_IMPORTS) \
+    	--openapiv2_out=openapi_naming_strategy=fqn,allow_merge=true,merge_file_name=$(OPEN_API_NAME),logtostderr=true:$(OPEN_API_OUT) \
+    	$(PROTO_FILES)
+
+##### Binaries #####
+
+services: clean-bins butler-users butler-gateway
+
+clean-bins:
+	@echo "Delete old binaries..."
+	@rm -f $(BIN)/butler-users
+	@rm -f $(BIN)/butler-gateway
+
+butler-gateway:
+	@printf "Build butler-gateway service with OS: $(GOOS), ARCH: $(GOARCH)..."
+	@mkdir -p $(BIN)
+	CGO_ENABLED=$(CGO_ENABLED) go build -o $(BIN)/butler-gateway cmd/gateway/main.go
+
+butler-users:
+	@printf "Build butler-users service with OS: $(GOOS), ARCH: $(GOARCH)..."
+	@mkdir -p $(BIN)
+	CGO_ENABLED=$(CGO_ENABLED) go build -o $(BIN)/butler-users cmd/users/main.go
 
 
-# OpenApi
-OPEN_API_DIR=api/openapi
-OPEN_API_NAME=apiV1
-OPEN_API_FILE=$(OPEN_API_DIR)/$(OPEN_API_NAME).swagger.json
+##### Docker #####
+docker-service-gateway:
+	@printf "Building docker image butlerhq/butler-users:$(DOCKER_IMAGE_TAG)..."
+	docker build . -t $(DOCKER_REPO)/butler-gateway:$(DOCKER_IMAGE_TAG) --target service-gateway
+
+docker-service-users:
+	@printf "Building docker image butlerhq/butler-users:$(DOCKER_IMAGE_TAG)..."
+	docker build . -t $(DOCKER_REPO)/butler-users:$(DOCKER_IMAGE_TAG) --target service-users
 
 
-all: build.all
-
-# TOOLS
 
 lint: ## Lint the files
 	@golint -set_exit_status ${PKG_LIST}
@@ -56,89 +115,21 @@ lint: ## Lint the files
 test: ## Run unittests
 	@go test -short ${PKG_LIST}
 
-race: vendor ## Run data race detector
-	@go test -race -short ${PKG_LIST}
-
-msan: vendor ## Run memory sanitizer
-	@go test -msan -short ${PKG_LIST}
-
-vendor: ## Vendor go.mod dependencies
-	@echo "Download vendor dependencies..."
-	go mod vendor
+vendor: ## Vendor dependencies
+	@echo "Running go.mod vendor"
+	@go mod vendor
 
 tidy: ## Clean go.mod dependencies
-	@echo "Cleaning go.mod dependencies..."
+	@echo "Running go.mod tidy..."
 	@go mod tidy
 
-tools: ## Install tools
-	@echo "Installing tools..."
+dependencies: vendor ## Download and install dependencies
+	@echo "Download and install dependencies, tools..."
 	cat $(TOOLS)/tools.go | grep _ | awk -F'"' '{print $$2}' | xargs -tI % go install % \
-		&& echo "✅ Tools installed" || (echo "❌ Failed to install tools"; exit 1);
-
-air: ## Build air for developpment
-	time go install github.com/cosmtrek/air
-
-install.victorinox: ## Build api for production
-	time go install $(CMD)/victorinox
-
-
-# BUILD CMD
-build.dev: ## Build api for Air (Live reloading)
-	time go build -i -o $(AIR_TARGET) ${TARGET_PKG}
-
-
-# Run tests TEST
-unit: ## Run unit tests
-	@go test -short -coverpkg=$(COV_PKG) -coverprofile=.coverage.txt ./...
-
-e2e: ## Run e2e tests
-	@echo "Running e2e tests..."
-	@go test -v ./test/e2e/... --tags=e2e
-
-
-# Run test environment
-test.e2e.infra.start: ## Start e2e tests evironment with docker-compose
-	@echo "Starting e2e tests env..."
-	@docker-compose -f $(DOCKER_COMPOSE)/docker-compose.test.yml up --build --no-deps postgres-test api-test
-
-test.e2e.start: ## Run e2e tests
-	@echo "Running e2e tests..."
-	@docker-compose -f $(DOCKER_COMPOSE)/docker-compose.test.yml up --build --no-deps e2e-test
-
-test.e2e.clean: ## Clean e2e tests env
-	@docker-compose -f $(DOCKER_COMPOSE)/docker-compose.test.yml down
-
-test.e2e:
-	# Build containers
-	$(DOCKER_COMPOSE_CMD_TEST) build --progress=plain
-	# Run service containers, except for test container
-	$(DOCKER_COMPOSE_CMD_TEST) up -d --renew-anon-volumes --remove-orphans --force-recreate postgres-test api-test
-	# Run migrations
-	$(DOCKER_COMPOSE_CMD_TEST) run --rm migrations
-	# Run the tests
-	$(DOCKER_COMPOSE_CMD_TEST) run --rm tests
-	# Run cleanup
-	$(DOCKER_COMPOSE_CMD_TEST) down
-
-
-test.e2e.local.infra:
-	# Build containers
-	$(DOCKER_COMPOSE_CMD_TEST_LOCAL) build --progress=plain
-	# Run service containers, except for test container
-	$(DOCKER_COMPOSE_CMD_TEST_LOCAL) up -d --remove-orphans --renew-anon-volumes --force-recreate postgres-test api-test
-	# Run migrations
-	$(DOCKER_COMPOSE_CMD_TEST_LOCAL) run --rm migrations
-
-test.e2e.local.start:
-	# Run the tests
-	$(DOCKER_COMPOSE_CMD_TEST_LOCAL) up --force-recreate tests
+    		&& echo "✅ Tools installed" || (echo "❌ Failed to install tools"; exit 1);
 
 
 
-# CONTAINERS
-container.api.base:
-	@echo "Building api container..."
-	@DOCKER_BUILDKIT=1 docker build --target base -t $(PROJECT_NAME)-api:latest -t $(PROJECT_NAME)-api:$(GIT_CURRENT_SHA) -f $(API_DOCKERFILE) .
 
 # DOCKER ENV
 docker.dev.infra: ## Start dev environment with docker
@@ -176,44 +167,6 @@ ci.docker.dashboard: ## Build docker image for butler-dashboard
 	echo ${ECR_REGISTRY} ${ECR_REPOSITORY} ${IMAGE_TAG}
 	docker build -t ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG} -f $(DASHBOARD_DIR)/Dockerfile .
     docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
-
-# PROTO
-# TODO: Add --validate_out="module=$(MODULE_NAME),lang=go:." when module will be fixed
-gen.services: $(PROTO_DIR)/* ## Regenerate go files from proto-rest files
-	@for file in $^ ; do \
-		$(PROTO_CMD) --go_out=module=$(MODULE_NAME):. \
-		--go-grpc_out=module=$(MODULE_NAME):. \
-		--grpc-gateway_out . \
-        --grpc-gateway_opt module=$(MODULE_NAME) \
-		--grpc-gateway_opt logtostderr=true \
-		$${file} && echo "✅ $${file} generated" || (echo "❌ $${file} failed"; exit 1); \
-	done
-
-gen.openapi: $(PROTO_DIR)/* ## Generate openapi doc from proto
-	@echo "Generating swagger from proto files..."
-	@mkdir -p $(OPEN_API_DIR)
-	@$(PROTO_CMD) \
-    	--openapiv2_out=openapi_naming_strategy=fqn,allow_merge=true,merge_file_name=$(OPEN_API_NAME),logtostderr=true:$(OPEN_API_DIR) $^ \
-		&& echo "✅ Succesffuly generated swagger file" || (echo "❌ Failed generated swagger file"; exit 1); \
-
-gen.web.old: $(PROTO_DIR)/* ## Generate openapi specs from proto-rest annotations
-	@echo "Generating typescript api client..."
-	@mkdir -p $(PROTO_TS_OUT_DIR)
-	#$(PROTO_CMD) --plugin="protoc-gen-ts=$(PROTOC_GEN_TS_PATH)" \
-#         --js_out="import_style=commonjs,binary:$(PROTO_TS_OUT_DIR)" \
-#         --ts_out="service=true:$(PROTO_TS_OUT_DIR)" $^ \
-#         && echo "✅ Api client generated" || (echo "❌ Failed to generate api client"; exit 1);
-	$(PROTO_CMD) --js_out="import_style=commonjs,binary:$(PROTO_TS_OUT_DIR)" \
-		--grpc-web_out=import_style=typescript,mode=grpcweb:$(PROTO_TS_OUT_DIR) protoc-gen-validate/validate/validate.proto $^ \
-		&& echo "✅ Api client generated" || (echo "❌ Failed to generate api client"; exit 1);
-
-gen.web: $(PROTO_DIR)/* ## Generate openapi specs from proto-rest annotations
-	@echo "Generating typescript api client..."
-	@mkdir -p $(PROTO_TS_OUT_DIR)
-	$(PROTO_CMD) --plugin=./webapp/node_modules/.bin/protoc-gen-ts_proto \
-		--ts_proto_opt=outputServices=false --ts_proto_opt=outputClientImpl=grpc-web \
-		--ts_proto_out=$(PROTO_TS_OUT_DIR) $(PROTO_GTW_FILE) \
-		&& echo "✅ Api client generated" || (echo "❌ Failed to generate api client"; exit 1);
 
 clean: docker.dev.clean ## Clean all
 	@echo "Cleaning ..."

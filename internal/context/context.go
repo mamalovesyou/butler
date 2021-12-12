@@ -9,7 +9,7 @@ import (
 var (
 	contextKeyIdentity = contextKey("identity")
 	contextKeyUserID   = contextKey("userID")
-	ctxTagUserID       = "auth.userid"
+	ctxTagUserID       = "user.userid"
 )
 
 type contextKey string

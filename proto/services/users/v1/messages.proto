@@ -1,0 +1,56 @@
+syntax = "proto3";
+option go_package = "github.com/butlerhq/butler/api/services/users/v1;users";
+package users;
+
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/empty.proto";
+
+message User {
+  string ID = 1;
+  string email = 2;
+  string firstName = 3;
+  string lastName = 4;
+  google.protobuf.Timestamp createdAt = 6;
+  google.protobuf.Timestamp updatedAt = 7;
+}
+
+message Organization {
+  string id = 1;
+  string name = 2;
+  string owner_id = 3;
+  repeated Workspace workspaces = 4;
+  repeated UserMember members = 5;
+  repeated Invitation invitations = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+message Workspace {
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string organization_id = 4;
+  repeated UserMember members = 5;
+  repeated Invitation invitations = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+}
+
+message UserMember {
+  string user_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string role = 5;
+  google.protobuf.Timestamp updated_at = 6;
+  google.protobuf.Timestamp created_at = 7;
+}
+
+message Invitation {
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string email = 4;
+  string role = 5;
+  google.protobuf.Timestamp expires_at = 6;
+  google.protobuf.Timestamp created_at = 7;
+}

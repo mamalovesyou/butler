@@ -1,0 +1,24 @@
+syntax = "proto3";
+option go_package = "github.com/butlerhq/butler/api/services/users/v1;users";
+package users;
+
+import "services/users/v1/messages.proto";
+
+// The response message containing the User.
+message AuthenticatedUser {
+  User user = 1;
+  string accessToken = 2;
+  string refreshToken = 3;
+}
+
+message OrganizationListResponse {
+  repeated Organization organizations = 1;
+}
+
+message OrganizationResponse {
+  Organization organization = 1;
+}
+
+message WorkspaceResponse {
+  Workspace workspace = 1;
+}

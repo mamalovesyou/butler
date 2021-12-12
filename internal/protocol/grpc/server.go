@@ -3,12 +3,12 @@ package grpc
 import (
 	"context"
 	"fmt"
+	"github.com/butlerhq/butler/internal/logger"
+	"github.com/butlerhq/butler/internal/protocol/grpc/middlewares"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	grpc_zap "github.com/grpc-ecosystem/go-grpc-middleware/logging/zap"
 	grpc_validator "github.com/grpc-ecosystem/go-grpc-middleware/validator"
 	grpc_prometheus "github.com/grpc-ecosystem/go-grpc-prometheus"
-	"github.com/matthieuberger/butler/internal/logger"
-	"github.com/matthieuberger/butler/internal/protocol/grpc/middlewares"
 	"github.com/opentracing/opentracing-go"
 	"google.golang.org/grpc"
 	"net"
@@ -28,14 +28,13 @@ type Interceptors struct {
 }
 
 type GRPCServer struct {
-	Port     string
-	Server   *grpc.Server
-	Services []GRPCService
+	Port   string
+	Server *grpc.Server
 }
 
-func NewGRPCServer(port string, services []GRPCService, tracer opentracing.Tracer) *GRPCServer {
+func NewGRPCServer(port string, tracer opentracing.Tracer) *GRPCServer {
 
-	// Make sure that log statements internal to gRPC library are logged using the zapLogger as well.
+	// Make sure that log statements services to gRPC library are logged using the zapLogger as well.
 	grpc_zap.ReplaceGrpcLogger(logger.GetLogger())
 
 	opts := []grpc.ServerOption{
@@ -58,9 +57,8 @@ func NewGRPCServer(port string, services []GRPCService, tracer opentracing.Trace
 	}
 
 	return &GRPCServer{
-		Port:     port,
-		Server:   grpc.NewServer(opts...),
-		Services: services,
+		Port:   port,
+		Server: grpc.NewServer(opts...),
 	}
 }
 
@@ -75,16 +73,12 @@ func (srv *GRPCServer) Serve() {
 		logger.Fatalf(ctx, "Fail to listen on port %s. %+v", port, err)
 	}
 
-	for _, service := range srv.Services {
-		service.RegisterGRPC(srv.Server)
-	}
-
 	// Adding prometheus
 	grpc_prometheus.Register(srv.Server)
 	signal.Notify(quit, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
 	go srv.gracefulShutdown(quit, done)
 
-	logger.Infof(ctx, "Starting server on port %s", port)
+	logger.Infof(ctx, "Starting Server on port %s", port)
 	if err := srv.Server.Serve(listen); err != nil {
 		logger.Fatalf(ctx, "Fail to serve on port %s. %+v", port, err)
 	}
