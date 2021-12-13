@@ -1,3 +1,4 @@
+//go:build tools
 // +build tools
 
 package tools
@@ -5,11 +6,9 @@ package tools
 import (
 	_ "github.com/cosmtrek/air"
 	_ "github.com/envoyproxy/protoc-gen-validate"
-	_ "github.com/joho/godotenv"
-	_ "github.com/golang-migrate/migrate/v4"
-	_ "github.com/butlerhq/butler/cmd/victorinox"
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway"
 	_ "github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2"
+	_ "github.com/joho/godotenv"
 	_ "google.golang.org/grpc/cmd/protoc-gen-go-grpc"
 	_ "google.golang.org/protobuf/cmd/protoc-gen-go"
 )

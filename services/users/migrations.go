@@ -1,6 +1,8 @@
 package users
 
-import "embed"
+import (
+	"embed"
+)
 
-//go:embed migrations
+//go:embed migrations/*.sql
 var EmbedMigrations embed.FS

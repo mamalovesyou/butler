@@ -1,0 +1,28 @@
+default: &default
+  environment: dev
+
+logger: &logger
+  <<: *default
+  disableCaller: true
+  disableStacktrace: false
+  encoding: json
+  level: debug
+
+
+# Config for Postgres
+postgres: &postgres
+  <<: *default
+  host: postgres
+  port: 5432
+  defaultName: postgres
+  name: postgres
+  user: postgres
+  password: password
+
+# Config for User Profile service
+victorinox:
+  <<: *default
+  postgres:
+    <<: *postgres
+  logger:
+    <<: *logger

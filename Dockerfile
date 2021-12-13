@@ -6,8 +6,13 @@ RUN apk add --update make
 WORKDIR /butler
 COPY . .
 
-RUN make dependencies
+RUN make vendor
+RUN make tools
 RUN make services
+
+# butler-victorinox
+FROM scratch as victorinox
+COPY --from=builder /butler/bin/butler-victorinox /butler-victorinox
 
 # butler-users service
 FROM scratch as service-users
