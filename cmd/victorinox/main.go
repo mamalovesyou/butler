@@ -15,8 +15,8 @@ limitations under the License.
 */
 package main
 
-import "github.com/butlerhq/butler/internal/cmd/victorinox"
+import "github.com/butlerhq/butler/tools/victorinox/cmd"
 
 func main() {
-	victorinox.Execute()
+	cmd.Execute()
 }

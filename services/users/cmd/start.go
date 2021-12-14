@@ -6,7 +6,7 @@ import (
 	"github.com/butlerhq/butler/services/users"
 	"time"
 
-	postgres2 "github.com/butlerhq/butler/internal/postgres"
+	"github.com/butlerhq/butler/internal/postgres"
 	"github.com/butlerhq/butler/internal/redis"
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
@@ -29,7 +29,7 @@ var (
 			if err := utils.ReadYAMLConfig(cfgFilePath, cfgKey, cfg); err != nil {
 				logger.Fatalf(ctx, "Failed to load config: %+v", err)
 			}
-			logger.Info(ctx, "Starting Users service", zap.Any("config", cfg))
+			logger.Debug(ctx, "Starting Users service", zap.Any("config", cfg))
 
 			// Update logger with config and init tracer
 			logger.UpdateAppLoggerWithConfig(cfg.Logger)
@@ -43,9 +43,9 @@ var (
 
 			// Initialize DB connection
 			timeout := 5 * time.Second
-			postgres := postgres2.NewPostgresGorm(cfg.Postgres)
-			if err := postgres.ConnectLoop(timeout); err != nil {
-				logger.Fatalw(ctx, "Cannot connect to postgres.", "error", err)
+			pgGorm := postgres.NewPostgresGorm(cfg.Postgres)
+			if err := pgGorm.ConnectLoop(timeout); err != nil {
+				logger.Fatal(ctx, "Cannot connect to postgres.", zap.Error(err))
 			}
 
 			// Initialize redis
@@ -53,7 +53,7 @@ var (
 
 			// Serve
 			grpcServer := grpc.NewGRPCServer(cfg.Port, tracer)
-			usersService := users.NewUsersService(cfg, postgres.DB, rdb)
+			usersService := users.NewUsersService(cfg, pgGorm.DB, rdb)
 			usersService.RegisterGRPCServer(grpcServer.Server)
 			grpcServer.Serve()
 		},

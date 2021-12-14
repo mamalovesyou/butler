@@ -44,7 +44,7 @@ func (pg *Postgres) ConnectLoop(timeout time.Duration, withoutDB bool) (err erro
 		select {
 		case <-timeoutExceeded:
 			err = fmt.Errorf("Failed to connect DB after %s timeout", timeout)
-			return
+			return err
 
 		case <-ticker.C:
 			if err = pg.Connect(pg.Config, withoutDB); err == nil {

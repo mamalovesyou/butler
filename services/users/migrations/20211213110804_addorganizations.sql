@@ -1,3 +1,5 @@
+-- +goose Up
+-- +goose StatementBegin
 CREATE TABLE IF NOT EXISTS organizations (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name VARCHAR(255) NOT NULL,
@@ -5,7 +7,7 @@ CREATE TABLE IF NOT EXISTS organizations (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     deleted_at TIMESTAMP WITH TIME ZONE DEFAULT NULL
-);
+                             );
 
 CREATE TABLE IF NOT EXISTS workspaces (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -15,7 +17,7 @@ CREATE TABLE IF NOT EXISTS workspaces (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     deleted_at TIMESTAMP WITH TIME ZONE DEFAULT NULL
-);
+                             );
 
 CREATE INDEX IF NOT EXISTS workspaces_organization_idx ON workspaces( organization_id );
 
@@ -27,7 +29,7 @@ CREATE TABLE IF NOT EXISTS organization_members (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     deleted_at TIMESTAMP WITH TIME ZONE DEFAULT NULL
-);
+                             );
 
 CREATE INDEX IF NOT EXISTS organization_members_organization_idx ON organization_members( organization_id );
 
@@ -39,6 +41,24 @@ CREATE TABLE IF NOT EXISTS workspace_members (
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     deleted_at TIMESTAMP WITH TIME ZONE DEFAULT NULL
-);
+                             );
 
 CREATE INDEX IF NOT EXISTS workspace_members_workspace_idx ON workspace_members( workspace_id );
+
+-- +goose StatementEnd
+
+-- +goose Down
+-- +goose StatementBegin
+DROP EXTENSION IF EXISTS "uuid-ossp";
+
+DROP TABLE IF EXISTS organizations;
+
+DROP TABLE IF EXISTS workspaces;
+DROP INDEX IF EXISTS workspaces_organization_idx;
+
+DROP TABLE IF EXISTS organization_members;
+DROP INDEX IF EXISTS organization_members_organization_idx;
+
+DROP TABLE IF EXISTS workspace_members;
+DROP INDEX IF EXISTS workspace_members_workspace_idx;
+-- +goose StatementEnd

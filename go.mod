@@ -15,6 +15,7 @@ require (
 	github.com/jackc/pgconn v1.10.1
 	github.com/joho/godotenv v1.4.0
 	github.com/opentracing/opentracing-go v1.2.0
+	github.com/pressly/goose/v3 v3.4.1
 	github.com/prometheus/client_golang v1.11.0
 	github.com/rs/cors v1.8.0
 	github.com/spf13/cobra v1.2.1
@@ -58,7 +59,7 @@ require (
 	github.com/jackc/pgx/v4 v4.14.0 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jinzhu/now v1.1.3 // indirect
-	github.com/lib/pq v1.10.2 // indirect
+	github.com/lib/pq v1.10.3 // indirect
 	github.com/lyft/protoc-gen-star v0.5.3 // indirect
 	github.com/magiconair/properties v1.8.5 // indirect
 	github.com/mattn/go-colorable v0.1.8 // indirect

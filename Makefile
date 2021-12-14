@@ -43,7 +43,7 @@ GIT_CURRENT_SHA=$(shell git rev-parse --short HEAD)
 
 # Docker compose
 DOCKER_COMPOSE_ENV = COMPOSE_DOCKER_CLI_BUILD=1
-DOCKER_COMPOSE_CMD = $(DOCKER_COMPOSE_ENV) docker-compose -p $(PROJECT_NAME)
+DOCKER_COMPOSE_CMD = docker-compose -p $(PROJECT_NAME)
 DOCKER_COMPOSE_CMD_TEST = $(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.test.yml
 DOCKER_COMPOSE_CMD_TEST_LOCAL = $(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.local.test.yml
 
@@ -79,13 +79,22 @@ open-api:
     	$(PROTO_FILES)
 
 ##### Binaries #####
+tools: clean-tools-bins butler-victorinox
+services: clean-services-bins butler-users butler-gateway
 
-services: clean-bins butler-users butler-gateway
+clean-tools-bins:
+	@echo "Delete old binaries..."
+	@rm -f $(BIN)/butler-victorinox
 
-clean-bins:
+clean-services-bins:
 	@echo "Delete old binaries..."
 	@rm -f $(BIN)/butler-users
 	@rm -f $(BIN)/butler-gateway
+
+butler-victorinox:
+	@printf "Build butler-victorinox with OS: $(GOOS), ARCH: $(GOARCH)..."
+	@mkdir -p $(BIN)
+	CGO_ENABLED=$(CGO_ENABLED) go build -o $(BIN)/butler-victorinox cmd/victorinox/main.go
 
 butler-gateway:
 	@printf "Build butler-gateway service with OS: $(GOOS), ARCH: $(GOARCH)..."
@@ -99,6 +108,10 @@ butler-users:
 
 
 ##### Docker #####
+docker-victorinox:
+	@printf "Building docker image butlerhq/butler-victorinox:$(DOCKER_IMAGE_TAG)..."
+	docker build . -t $(DOCKER_REPO)/butler-victorinox:$(DOCKER_IMAGE_TAG) --target victorinox
+
 docker-service-gateway:
 	@printf "Building docker image butlerhq/butler-users:$(DOCKER_IMAGE_TAG)..."
 	docker build . -t $(DOCKER_REPO)/butler-gateway:$(DOCKER_IMAGE_TAG) --target service-gateway
@@ -123,22 +136,21 @@ tidy: ## Clean go.mod dependencies
 	@echo "Running go.mod tidy..."
 	@go mod tidy
 
-dependencies: vendor ## Download and install dependencies
-	@echo "Download and install dependencies, tools..."
-	cat $(TOOLS)/tools.go | grep _ | awk -F'"' '{print $$2}' | xargs -tI % go install % \
-    		&& echo "✅ Tools installed" || (echo "❌ Failed to install tools"; exit 1);
-
+#tools: vendor ## Download and install dependencies
+#	@echo "Download and install dependencies, tools..."
+#	 cat $(TOOLS)/tools.go | grep _ | awk -F'"' '{print $$2}' | xargs -tI % go install % \
+#    		&& echo "✅ Tools installed" || (echo "❌ Failed to install tools"; exit 1);
 
 
 
 # DOCKER ENV
 docker.dev.infra: ## Start dev environment with docker
 	@echo "Starting dev infra..."
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans postgres redis jaeger swagger-ui
+	@$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans postgres
 
-docker.dev.provision: ## Provision databases
+docker.dev.migrate: ## Provision databases
 	@echo "Starting victorinox..."
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans victorinox
+	@$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans victorinox
 
 
 docker.dev.services: ## Start services with docker in dev environment
