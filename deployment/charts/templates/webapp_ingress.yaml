@@ -1,0 +1,29 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: butler-webapp
+  labels:
+    app.kubernetes.io/name: butler-webapp
+    app.kubernetes.io/component: service
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+  annotations:
+    {{- if not .Values.services.certManager.enabled }}
+    cert-manager.io/cluster-issuer: {{ .Values.services.certManager.issuerName }}
+    {{- end }}
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+    - host: {{ .Values.services.webapp.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: butler-webapp
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - {{ .Values.services.webapp.host }}
+      secretName: "{{ .Values.services.webapp.host }}-cert"

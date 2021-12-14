@@ -1,0 +1,9 @@
+{{- if .Values.postgres.external }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{- include "users.postgresdb" . -}}
+spec:
+  type: ExternalName
+  externalName: {{ .Values.postgres.externalName }}
+{{- end }}

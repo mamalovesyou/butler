@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"github.com/butlerhq/butler/internal/utils"
 	"github.com/butlerhq/butler/services/users"
 	"time"
 
@@ -24,8 +25,8 @@ var (
 			ctx := context.Background()
 
 			// Load config
-			cfg, err := users.LoadConfig(configDir, configFileName)
-			if err != nil {
+			cfg := &users.ServiceConfig{}
+			if err := utils.ReadYAMLConfig(cfgFilePath, cfgKey, cfg); err != nil {
 				logger.Fatalf(ctx, "Failed to load config: %+v", err)
 			}
 			logger.Info(ctx, "Starting Users service", zap.Any("config", cfg))

@@ -9,8 +9,8 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var (
 	// Flags variables
-	configFileName string
-	configDir      string
+	cfgFilePath string
+	cfgKey      string
 
 	rootCmd = &cobra.Command{
 		Use:   "butler-users",
@@ -29,6 +29,6 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&configFileName, "filename", "f", "config.yml", "Config file name")
-	rootCmd.PersistentFlags().StringVarP(&configDir, "dir", "", ".", "Config file directory")
+	rootCmd.PersistentFlags().StringVarP(&cfgFilePath, "config", "c", "config.yml", "Config file path")
+	rootCmd.PersistentFlags().StringVarP(&cfgKey, "key", "", "", "Config key")
 }

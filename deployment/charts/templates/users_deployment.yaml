@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: butler-users
+  labels:
+    app.kubernetes.io/name: butler-users
+    app.kubernetes.io/component: service
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: butler-users
+      app.kubernetes.io/component: service
+      app.kubernetes.io/version: {{ .Chart.AppVersion }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: butler-users
+        app.kubernetes.io/component: service
+        app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    spec:
+      containers:
+        - name: butler-users
+          image: "{{ .Values.image.repository }}/butler-users:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: config-volume
+            mountPath: /app/config.yaml
+            subPath: config.yaml
+          ports:
+            - name: http
+              containerPort: {{ .Values.services.users.containerPort }}
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http

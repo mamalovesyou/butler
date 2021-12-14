@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: butler-gateway
+  labels:
+    app.kubernetes.io/name: butler-gateway
+    app.kubernetes.io/component: service
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: butler-gateway
+      app.kubernetes.io/component: service
+      app.kubernetes.io/version: {{ .Chart.AppVersion }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: butler-gateway
+        app.kubernetes.io/component: service
+        app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    spec:
+      containers:
+        - name: butler-gateway
+          image: "{{ .Values.image.repository }}/butler-gateway:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+            - mountPath: /config/config.yaml
+              name: config-volume
+              subPath: config.yaml
+          ports:
+            - name: http
+              containerPort: {{ .Values.services.gateway.containerPort }}
+              protocol: TCP
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+      volumes:
+        - name: config-volume
+          configMap:
+            name: butler-gateway
