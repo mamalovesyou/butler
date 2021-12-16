@@ -1,0 +1,80 @@
+name: "Build artifacts"
+
+on: pull_request
+
+jobs:
+
+  version:
+    runs-on: ubuntu-latest
+    if: startsWith(github.ref, 'refs/heads/v')
+    name: Set release tag version
+    outputs:
+      version: ${{ steps.vars.outputs.version }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Extract version from release or hotfix
+          if: ${{ startsWith(github.event.pull_request.head.ref, 'release/') }} || ${{ startsWith(github.event.pull_request.head.ref, 'hotfix/') }}
+          run: |
+            BRANCH_NAME="${{ github.event.pull_request.head.ref }}" \
+            echo ::set-output name=version::${BRANCH_NAME#release/}
+
+      - name: Extract version from git commit sha
+        if: ${{ !startsWith(github.event.pull_request.head.ref, 'release/') }} && ${{ !startsWith(github.event.pull_request.head.ref, 'hotfix/') }}
+        run: |
+          echo ::set-output name=version::${GITHUB_SHA::7}
+
+  build-services:
+    needs: version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v1
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build and push services
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          DOCKER_IMAGE_TAG: ${{ needs.version.outputs.version }}
+          DOCKER_PUSH: true
+        run: |
+          DOCKER_REPO="$ECR_REGISTRY/butlerhq" \
+          make docker-services
+
+  build-webapp:
+    needs: version
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Configure AWS credentials
+          uses: aws-actions/configure-aws-credentials@v1
+          with:
+            aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+            aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+            aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build and push webapp
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          DOCKER_IMAGE_TAG: ${{ needs.version.outputs.version }}
+          DOCKER_PUSH: true
+        run: |
+          DOCKER_REPO="$ECR_REGISTRY/butlerhq" \
+          make docker-webapp

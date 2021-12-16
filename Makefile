@@ -33,7 +33,8 @@ ifndef CGO_ENABLED
 	endif
 endif
 
-DOCKER_REPO ?= butlerhq
+DOCKER_PUSH ?= false
+DOCKER_REGISTRY ?= butlerhq
 DOCKER_IMAGE_TAG ?= test
 
 # Git
@@ -107,27 +108,43 @@ butler-users:
 
 
 ##### Docker #####
-docker-all: docker-service-gateway docker-service-users docker-service-webapp docker-victorinox
+docker-all: docker-service-gateway docker-service-users docker-webapp docker-victorinox
 
 .PHONY: docker-victorinox
 docker-victorinox:
-	@printf "Building docker image butlerhq/butler-victorinox:$(DOCKER_IMAGE_TAG)...\n"
-	@docker build . -t $(DOCKER_REPO)/butler-victorinox:$(DOCKER_IMAGE_TAG) --target victorinox
+	@printf "Building docker image  $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG)...\n"
+	docker build . -t $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG) --target victorinox
+	@if [ $(DOCKER_PUSH) = true ]; then \
+  		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG)...\n" \
+		docker push $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG); \
+	fi
 
-.PHONY: docker-service-webapp
-docker-service-webapp:
-	@printf "Building docker image butlerhq/butler-webapp:$(DOCKER_IMAGE_TAG)...\n"
-	@docker build ./webapp -t $(DOCKER_REPO)/butler-webapp:$(DOCKER_IMAGE_TAG) --target prod
+.PHONY: docker-webapp
+docker-webapp:
+	@printf "Building docker image $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG)...\n"
+	docker build ./webapp -t $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG) --target prod
+	@if [ $(DOCKER_PUSH) = true ]; then \
+		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG)...\n" \
+		docker push $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG); \
+	fi
 
 .PHONY: docker-service-gateway
 docker-service-gateway:
-	@printf "Building docker image butlerhq/butler-gateway:$(DOCKER_IMAGE_TAG)...\n"
-	@docker build . -t $(DOCKER_REPO)/butler-gateway:$(DOCKER_IMAGE_TAG) --target service-gateway
+	@printf "Building docker image $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG)...\n"
+	@docker build . -t $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG) --target service-gateway
+	@if [ $(DOCKER_PUSH) = true ]; then \
+		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG)...\n" \
+		docker push $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG); \
+	fi
 
 .PHONY: docker-service-users
 docker-service-users:
-	@printf "Building docker image butlerhq/butler-users:$(DOCKER_IMAGE_TAG)...\n"
-	@docker build . -t $(DOCKER_REPO)/butler-users:$(DOCKER_IMAGE_TAG) --target service-users
+	@printf "Building docker image $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG)...\n"
+	@docker build . -t $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG) --target service-users
+	@if [ $(DOCKER_PUSH) = true ]; then \
+		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG)...\n" \
+		docker push $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG); \
+	fi
 
 
 
