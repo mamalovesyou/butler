@@ -3,7 +3,6 @@ name: "Build artifacts"
 on: pull_request
 
 jobs:
-
   version:
     runs-on: ubuntu-latest
     name: Set release tag version
