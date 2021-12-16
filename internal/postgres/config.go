@@ -4,6 +4,16 @@ import (
 	"fmt"
 )
 
+var (
+	DefaultPostgresConfig = PostgresConfig{
+		Host:     "postgres",
+		Port:     "5432",
+		Name:     "postgres",
+		User:     "postgres",
+		Password: "password",
+	}
+)
+
 // PostgresConfig contains infos needed to open a postgres connection
 type PostgresConfig struct {
 	Host     string

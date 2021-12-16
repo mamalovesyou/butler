@@ -6,14 +6,21 @@ import (
 	"github.com/go-redis/redis/v8"
 )
 
+var DefaultRedisConfig = RedisConfig{
+	Host:     "redis",
+	Port:     "6379",
+	DB:       0,
+	Username: "",
+	Password: "",
+}
+
 // RedisConfig contains infos needed to open a postgres connection
 type RedisConfig struct {
-	Host         string `mapstructure:"host"`
-	Port         string `mapstructure:"port"`
-	DB           int    `mapstructure:"db`
-	MinIdleConns int
-	PoolSize     int
-	Password     string
+	Host     string
+	Port     string
+	DB       int
+	Username string
+	Password string
 }
 
 // GetAddr redis address
@@ -26,11 +33,10 @@ func (cfg *RedisConfig) GetAddr() string {
 func NewRedisClient(cfg *RedisConfig) *redis.Client {
 
 	client := redis.NewClient(&redis.Options{
-		Addr: cfg.GetAddr(),
-		// MinIdleConns: cfg.MinIdleConns,
-		// PoolSize:     cfg.PoolSize,
-		// Password:     cfg.Password, // no password set
-		DB: cfg.DB, // use default DB
+		Addr:     cfg.GetAddr(),
+		Username: cfg.Username,
+		Password: cfg.Password,
+		DB:       cfg.DB, // use default DB
 	})
 
 	return client

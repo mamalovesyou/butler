@@ -11,13 +11,19 @@ import (
 	"github.com/uber/jaeger-lib/metrics"
 )
 
+var DefaultJaegerConfig = JaegerConfig{
+	ServiceName: "butler",
+	Host:        "host",
+	LogSpans:    true,
+}
+
 type JaegerConfig struct {
 	ServiceName string
 	Host        string
 	LogSpans    bool
 }
 
-// New Jaeger client
+// NewJaegerTracer set up a global opentracing.Tracer
 func NewJaegerTracer(cfg *JaegerConfig) (opentracing.Tracer, io.Closer, error) {
 	jaegerCfgInstance := jaegercfg.Configuration{
 		ServiceName: cfg.ServiceName,

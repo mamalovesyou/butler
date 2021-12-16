@@ -1,0 +1,72 @@
+# Default values for webapp.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+environment: local
+
+replicaCount: 1
+
+provisionStore:
+  elasticsearch: false
+
+jaeger:
+  host: "jaeger-agent:6831"
+  logSpans: true
+
+image:
+  repository: butlerhq
+  pullPolicy: IfNotPresent
+  # Overrides the image tag whose default is the chart appVersion.
+  tag: ""
+
+certManager:
+  enabled: true
+  issuerName: letsencrypt-prod
+
+services:
+  webapp:
+    containerPort: 80
+    host: app.heybutler.io
+  users:
+    jwtSecret: superSecret
+    containerPort: 5001
+    postgres:
+      external: false
+      host: external.postgres.org
+      port: 5432
+      name: butler_users
+      user: butler-users-svc
+      password: password
+  gateway:
+    containerPort: 5000
+    host: api.heybutler.io
+
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+
+resources:
+   limits:
+     cpu: 200m
+     memory: 256Mi
+   requests:
+     cpu: 100m
+     memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80

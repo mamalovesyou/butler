@@ -3,13 +3,15 @@ package victorinox
 import (
 	"context"
 	"embed"
+	"sort"
+	"strings"
+	"time"
+
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/internal/postgres"
 	"github.com/butlerhq/butler/services/users"
 	"github.com/pressly/goose/v3"
 	"go.uber.org/zap"
-	"sort"
-	"time"
 )
 
 var (
@@ -21,7 +23,7 @@ var (
 )
 
 type GooseMigrations struct {
-	dbConfig     *postgres.PostgresConfig
+	dbConfig     postgres.PostgresConfig
 	migrationMap map[string]embed.FS
 }
 
@@ -41,10 +43,12 @@ func IsSupportedGooseCmd(cmd string) bool {
 }
 
 func (m *GooseMigrations) RunGooseMigration(ctx context.Context, name, cmd string, args ...string) error {
+	name = strings.TrimSpace(name)
+	logger.Infof(ctx, "Available migrations %+v", m.migrationMap)
 	logger.Infof(ctx, "Applying migrations %s", name)
 
 	// Initialize DB connection
-	pg := postgres.NewPostgresGorm(m.dbConfig)
+	pg := postgres.NewPostgresGorm(&m.dbConfig)
 	if err := pg.ConnectLoop(5 * time.Second); err != nil {
 		logger.Fatal(ctx, "Cannot connect to postgres.", zap.Error(err))
 	}
