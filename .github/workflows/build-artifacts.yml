@@ -17,34 +17,30 @@ jobs:
         id: release
         if: startsWith(github.event.pull_request.head.ref, 'release/')
         run: |
-          BRANCH_NAME="${{ github.event.pull_request.head.ref }}" \
-          VERSION=${BRANCH_NAME#release/}
-          echo ::set-output name=version::$VERSION
+          echo "::set-output name=version::${BRANCH_NAME#release/}"
 
       - name: Extract version from hotfix
         id: hotfix
         if: startsWith(github.event.pull_request.head.ref, 'hotfix/')
         run: |
-          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
-          VERSION=${BRANCH_NAME#hotfix/}
-          echo ::set-output name=version::$VERSION
+          echo "::set-output name=version::${BRANCH_NAME#hotfix/}"
 
       - name: Extract version from git commit sha
+        id: commit
         if: ${{ !startsWith(github.event.pull_request.head.ref, 'release/') && !startsWith(github.event.pull_request.head.ref, 'hotfix/') }}
+        run: |
+          echo "::set-output name=version::${{ github.event.pull_request.head.sha }}"
+
+      - name: Print version
+        id: version
         run: |
           if [ "${{ steps.release.outputs.version }}" != "" ]; then
             echo "::set-output name=version_number::${{ steps.release.outputs.version }}"
           elif [ "${{ steps.hotfix.outputs.version }}" != "" ]; then
             echo "::set-output name=version_number::${{ steps.hotfix.outputs.version }}"
           else
-            echo "::set-output name=version_number::${{ github.event.pull_request.head.sha }}"
+            echo "::set-output name=version_number::${{ steps.commit.outputs.version }}"
           fi
-
-      - name: Print version
-        id: version
-        run: |
-          echo "Sha: ${{ github.event.pull_request.head.sha }}"
-          echo "Version: ${{ steps.vars.outputs.version }}"
 
   build-services:
     needs: version
