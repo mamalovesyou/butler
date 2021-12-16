@@ -1,5 +1,3 @@
-.PHONY: proto
-
 PROJECT_NAME := butler
 MODULE_NAME := github.com/butlerhq/$(PROJECT_NAME)
 BIN := $(CURDIR)/bin
@@ -61,6 +59,7 @@ PROTO_OUT := api
 PROTO_CMD := protoc $(PROTO_IMPORTS)
 
 ##### Proto #####
+.PHONY: proto
 proto:
 	@mkdir -p $(PROTO_OUT)
     # Run protoc separately for each directory because of different package names.
@@ -108,17 +107,27 @@ butler-users:
 
 
 ##### Docker #####
+docker-all: docker-service-gateway docker-service-users docker-service-webapp docker-victorinox
+
+.PHONY: docker-victorinox
 docker-victorinox:
-	@printf "Building docker image butlerhq/butler-victorinox:$(DOCKER_IMAGE_TAG)..."
-	docker build . -t $(DOCKER_REPO)/butler-victorinox:$(DOCKER_IMAGE_TAG) --target victorinox
+	@printf "Building docker image butlerhq/butler-victorinox:$(DOCKER_IMAGE_TAG)...\n"
+	@docker build . -t $(DOCKER_REPO)/butler-victorinox:$(DOCKER_IMAGE_TAG) --target victorinox
 
+.PHONY: docker-service-webapp
+docker-service-webapp:
+	@printf "Building docker image butlerhq/butler-webapp:$(DOCKER_IMAGE_TAG)...\n"
+	@docker build ./webapp -t $(DOCKER_REPO)/butler-webapp:$(DOCKER_IMAGE_TAG) --target prod
+
+.PHONY: docker-service-gateway
 docker-service-gateway:
-	@printf "Building docker image butlerhq/butler-users:$(DOCKER_IMAGE_TAG)..."
-	docker build . -t $(DOCKER_REPO)/butler-gateway:$(DOCKER_IMAGE_TAG) --target service-gateway
+	@printf "Building docker image butlerhq/butler-gateway:$(DOCKER_IMAGE_TAG)...\n"
+	@docker build . -t $(DOCKER_REPO)/butler-gateway:$(DOCKER_IMAGE_TAG) --target service-gateway
 
+.PHONY: docker-service-users
 docker-service-users:
-	@printf "Building docker image butlerhq/butler-users:$(DOCKER_IMAGE_TAG)..."
-	docker build . -t $(DOCKER_REPO)/butler-users:$(DOCKER_IMAGE_TAG) --target service-users
+	@printf "Building docker image butlerhq/butler-users:$(DOCKER_IMAGE_TAG)...\n"
+	@docker build . -t $(DOCKER_REPO)/butler-users:$(DOCKER_IMAGE_TAG) --target service-users
 
 
 
@@ -128,6 +137,7 @@ lint: ## Lint the files
 test: ## Run unittests
 	@go test -short ${PKG_LIST}
 
+.PHONY: vendor
 vendor: ## Vendor dependencies
 	@echo "Running go.mod vendor"
 	@go mod vendor
@@ -180,10 +190,18 @@ ci.docker.dashboard: ## Build docker image for butler-dashboard
 	docker build -t ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG} -f $(DASHBOARD_DIR)/Dockerfile .
     docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
 
-clean: docker.dev.clean ## Clean all
-	@echo "Cleaning ..."
-	rm -rf $(BIN)
-	rm -rf $(CURDIR)/tmp
+########################
+###     Minikube     ###
+.PHONY: minikube-start
+minikube-start:
+	@echo "Starting minikube..."
+	@minikube start --profile new --kubernetes-version=v1.20.0 --cpus 4 --memory 6144
+
+.PHONY: minikube-env
+minikube-env:
+	@echo "Loading minikube docker-env..."
+	$(shell eval $(minikube -p new docker-env))
 
 help: ## Display this help screen
 	@grep -h -E '^[a-zA-Z_-]+(\.[a-zA-Z_-]+)*:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
