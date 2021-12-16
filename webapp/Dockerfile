@@ -1,29 +1,28 @@
 # Base Image
-FROM node:16 AS base
+FROM node:16-alpine AS base
 WORKDIR /app
+
+RUN apk --update --no-cache add automake git alpine-sdk nasm autoconf build-base \
+		zlib \
+		zlib-dev \
+		libpng \
+		libpng-dev\
+		libwebp \
+		libwebp-dev \
+		libjpeg-turbo \
+		libjpeg-turbo-dev
 
 # Install dependencies
 COPY package.json .
 RUN yarn install
 
-# Dev image
-FROM base AS dev
-COPY . .
-
-ENV PLATFORM_ENV dev
-ENV APP_VERSION 0.0.1
-ENV API_BASE_URL api.heybutler.local
-ENV WEBAPP_BASE_URL app.heybutler.local
-
-RUN yarn start
-
 # Build image
 FROM base AS build
 
-ENV PLATFORM_ENV dev
+ENV BUILD_TARGET prod
 ENV APP_VERSION 0.0.1
 ENV API_BASE_URL api.heybutler.local
-ENV WEBAPP_BASE_URL app.heybutler.local
+ENV APP_BASE_URL app.heybutler.local
 
 COPY . .
 RUN yarn build

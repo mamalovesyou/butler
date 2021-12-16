@@ -1,14 +1,14 @@
 import { AxiosInstance } from "axios";
 
 enum PlatformEnv {
-  PRODUCTION = "production",
-  DEVELOPMENT = "development",
+  PROD = "prod",
+  DEV = "dev",
 }
 
-const { PLATFORM_ENV } = process.env;
+const { BUILD_TARGET } = process.env;
 const { APP_VERSION } = process.env;
 const { API_BASE_URL } = process.env;
-const { WEBAPP_BASE_URL } = process.env;
+const { APP_BASE_URL } = process.env;
 
 export const updateAxiosInstance = (instance: AxiosInstance): void => {
   instance.defaults.baseURL = API_BASE_URL;
@@ -16,4 +16,4 @@ export const updateAxiosInstance = (instance: AxiosInstance): void => {
 };
 
 export const isProductionPlatformEnv = (): boolean =>
-    PLATFORM_ENV === PlatformEnv.PRODUCTION;
+    BUILD_TARGET === PlatformEnv.PROD;
