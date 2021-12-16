@@ -17,18 +17,21 @@ jobs:
         if: startsWith(github.event.pull_request.head.ref, 'release/')
         run: |
           BRANCH_NAME="${{ github.event.pull_request.head.ref }}" \
-          echo "::set-output name=version::${BRANCH_NAME#release/}"
+          VERSION=${BRANCH_NAME#release/}
+          echo ::set-output name=version::$VERSION
 
       - name: Extract version from hotfix
         if: startsWith(github.event.pull_request.head.ref, 'hotfix/')
         run: |
-          BRANCH_NAME="${{ github.event.pull_request.head.ref }}" \
-          echo "::set-output name=version::${BRANCH_NAME#hotfix/}"
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          VERSION=${BRANCH_NAME#hotfix/}
+          echo ::set-output name=version::$VERSION
 
       - name: Extract version from git commit sha
         if: ${{ !startsWith(github.event.pull_request.head.ref, 'release/') && !startsWith(github.event.pull_request.head.ref, 'hotfix/') }}
         run: |
-          echo "::set-output name=version::${{ github.event.pull_request.head.sha }}"
+          VERSION=${{ github.event.pull_request.head.sha }}
+          echo ::set-output name=version::$VERSION
       - name: Print version
         run: |
           echo "Sha: ${{ github.event.pull_request.head.sha }}"
@@ -40,6 +43,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
+
+      - name: Test version
+        env:
+          NEEDS: ${{ toJson(needs) }}
+        run: echo "$NEEDS"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
