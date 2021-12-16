@@ -71,7 +71,7 @@ jobs:
           DOCKER_IMAGE_TAG: ${{ needs.version.outputs.version }}
           DOCKER_PUSH: true
         run: |
-          DOCKER_REPO="$ECR_REGISTRY/butlerhq" \
+          DOCKER_REGISTRY="$ECR_REGISTRY/butlerhq" \
           make docker-services
 
   build-victorinox:
@@ -98,7 +98,7 @@ jobs:
           DOCKER_IMAGE_TAG: ${{ needs.version.outputs.version }}
           DOCKER_PUSH: true
         run: |
-          DOCKER_REPO="$ECR_REGISTRY/butlerhq" \
+          DOCKER_REGISTRY="$ECR_REGISTRY/butlerhq" \
           make docker-victorinox
 
   build-webapp:
@@ -125,5 +125,5 @@ jobs:
           DOCKER_IMAGE_TAG: ${{ needs.version.outputs.version }}
           DOCKER_PUSH: true
         run: |
-          DOCKER_REPO="$ECR_REGISTRY/butlerhq" \
+          DOCKER_REGISTRY="$ECR_REGISTRY/butlerhq" \
           make docker-webapp
