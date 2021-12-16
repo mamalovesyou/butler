@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name}}-svc-webapp
+  labels:
+    app.kubernetes.io/name: service-webapp
+    app.kubernetes.io/instance: {{ .Release.Name}}
+    app.kubernetes.io/component: service
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: service-webapp
+      app.kubernetes.io/instance: {{ .Release.Name}}
+      app.kubernetes.io/component: service
+      app.kubernetes.io/version: {{ .Chart.AppVersion }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: service-webapp
+        app.kubernetes.io/instance: {{ .Release.Name}}
+        app.kubernetes.io/component: service
+        app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    spec:
+      containers:
+        - name: butler-svc-webapp
+          image: "{{ .Values.image.repository }}/butler-webapp:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http

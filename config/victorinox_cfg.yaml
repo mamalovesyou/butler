@@ -1,0 +1,14 @@
+environment: dev
+logger:
+  disableCaller: true
+  disableStacktrace: false
+  encoding: json
+  level: debug
+# Config for Postgres
+postgres:
+  host: postgres
+  port: 5432
+  defaultName: postgres
+  name: postgres
+  user: postgres
+  password: password
