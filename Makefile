@@ -109,6 +109,8 @@ butler-users:
 
 ##### Docker #####
 docker-all: docker-service-gateway docker-service-users docker-webapp docker-victorinox
+docker-services: docker-service-gateway docker-service-users
+docker-tools: docker-victorinox
 
 .PHONY: docker-victorinox
 docker-victorinox:
