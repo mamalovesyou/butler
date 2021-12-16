@@ -28,9 +28,10 @@ jobs:
       - name: Extract version from git commit sha
         if: ${{ !startsWith(github.event.pull_request.head.ref, 'release/') && !startsWith(github.event.pull_request.head.ref, 'hotfix/') }}
         run: |
-          echo "::set-output name=version::$(git rev-parse --short HEAD)"
+          echo "::set-output name=version::${{ github.event.pull_request.head.sha }}"
       - name: Print version
         run: |
+          echo "Sha: ${{ github.event.pull_request.head.sha }}"
           echo "Version: ${{ steps.vars.outputs.version }}"
 
   build-services:
