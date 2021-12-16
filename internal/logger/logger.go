@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 	"github.com/butlerhq/butler/internal/environment"
+	"github.com/grpc-ecosystem/go-grpc-middleware/logging/zap/ctxzap"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 )
@@ -30,7 +30,7 @@ var (
 		"fatal":  zapcore.FatalLevel,
 	}
 
-	DefaultConfig = &LoggerConfig{
+	DefaultLoggerConfig = LoggerConfig{
 		Environment:       "dev",
 		DisableCaller:     true,
 		DisableStacktrace: false,

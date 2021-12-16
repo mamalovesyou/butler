@@ -2,12 +2,12 @@ package cmd
 
 import (
 	"context"
+
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/internal/protocol/rest"
 	"github.com/butlerhq/butler/services/gateway"
 	"github.com/opentracing/opentracing-go"
 	"github.com/spf13/cobra"
-	"go.uber.org/zap"
 )
 
 var (
@@ -19,16 +19,9 @@ var (
 
 			ctx := context.Background()
 
-			//Load config
-			cfg, err := gateway.LoadConfig(configDir, configFileName)
-			if err != nil {
-				logger.Fatalf(ctx, "Failed to load config: %+v", err)
-			}
-			logger.Info(ctx, "Starting Gateway microservice", zap.Any("config", cfg))
-
 			// Update logger with config and init tracer
-			logger.UpdateAppLoggerWithConfig(cfg.Logger)
-			tracer, closer, err := logger.NewJaegerTracer(cfg.Jaeger)
+			logger.UpdateAppLoggerWithConfig(&gatewayCfg.Logger)
+			tracer, closer, err := logger.NewJaegerTracer(&gatewayCfg.Jaeger)
 			if err != nil {
 				logger.Fatalf(ctx, "Cannot create jaeger tracer: %+v", err)
 			}
@@ -37,14 +30,14 @@ var (
 			defer closer.Close()
 
 			// Create gateway instance
-			gatewayService := gateway.NewRESTGatewayService(cfg, tracer)
+			gatewayService := gateway.NewRESTGatewayService(&gatewayCfg, tracer)
 			gatewayService.RegisterGRPCServices()
 
 			// Create rest http server
 			serverCfg := &rest.RESTServerConfig{
-				Port:           cfg.Port,
+				Port:           gatewayCfg.Port,
 				Mux:            gatewayService.Mux,
-				AllowedOrigins: []string{cfg.DashboardOriginUrl},
+				AllowedOrigins: []string{gatewayCfg.DashboardOriginUrl},
 			}
 
 			server := rest.NewRESTServer(serverCfg)

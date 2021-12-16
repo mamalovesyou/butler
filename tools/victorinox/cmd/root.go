@@ -1,22 +1,38 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
 
+	"github.com/butlerhq/butler/internal/config"
+	"github.com/butlerhq/butler/internal/logger"
+	"github.com/butlerhq/butler/tools/victorinox"
 	"github.com/spf13/cobra"
+	"go.uber.org/zap"
 )
+
+type TestStruct struct {
+	Environment string `env="ENVIRONMENT"`
+}
 
 // rootCmd represents the base command when called without any subcommands
 var (
 	// Flags variables
-	configFileName string
-	configDir      string
+	cfgFilePath string
+	cfgKey      string
+
+	victorinoxCfg = victorinox.DefaultVictorinoxConfig
 
 	rootCmd = &cobra.Command{
 		Use:   "victorinox",
 		Short: "Victorinox is a collection of tool to help manage infrastructure and databases.",
 		Long:  `Victorinox is a collection of tool to help manage infrastructure and databases.`,
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			ctx := context.Background()
+			config.ReadConfig(cfgFilePath, cfgKey, &victorinoxCfg)
+			logger.Debug(ctx, "Starting victorinox", zap.Any("config", victorinoxCfg))
+		},
 	}
 )
 
@@ -30,6 +46,6 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&configFileName, "filename", "f", "config.yml", "Config file name")
-	rootCmd.PersistentFlags().StringVarP(&configDir, "dir", "", ".", "Config file directory")
+	rootCmd.PersistentFlags().StringVarP(&cfgFilePath, "config", "c", "config.yml", "Config file path")
+	rootCmd.PersistentFlags().StringVarP(&cfgKey, "key", "", "", "Config key")
 }

@@ -2,9 +2,9 @@ package cmd
 
 import (
 	"context"
-	"github.com/butlerhq/butler/internal/utils"
-	"github.com/butlerhq/butler/services/users"
 	"time"
+
+	"github.com/butlerhq/butler/services/users"
 
 	"github.com/butlerhq/butler/internal/postgres"
 	"github.com/butlerhq/butler/internal/redis"
@@ -24,16 +24,9 @@ var (
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := context.Background()
 
-			// Load config
-			cfg := &users.ServiceConfig{}
-			if err := utils.ReadYAMLConfig(cfgFilePath, cfgKey, cfg); err != nil {
-				logger.Fatalf(ctx, "Failed to load config: %+v", err)
-			}
-			logger.Debug(ctx, "Starting Users service", zap.Any("config", cfg))
-
 			// Update logger with config and init tracer
-			logger.UpdateAppLoggerWithConfig(cfg.Logger)
-			tracer, closer, err := logger.NewJaegerTracer(cfg.Jaeger)
+			logger.UpdateAppLoggerWithConfig(&usersConfig.Logger)
+			tracer, closer, err := logger.NewJaegerTracer(&usersConfig.Jaeger)
 			if err != nil {
 				logger.Fatalf(ctx, "Cannot create jaeger tracer: %+v", err)
 			}
@@ -43,17 +36,17 @@ var (
 
 			// Initialize DB connection
 			timeout := 5 * time.Second
-			pgGorm := postgres.NewPostgresGorm(cfg.Postgres)
+			pgGorm := postgres.NewPostgresGorm(&usersConfig.Postgres)
 			if err := pgGorm.ConnectLoop(timeout); err != nil {
 				logger.Fatal(ctx, "Cannot connect to postgres.", zap.Error(err))
 			}
 
 			// Initialize redis
-			rdb := redis.NewRedisClient(cfg.Redis)
+			rdb := redis.NewRedisClient(&usersConfig.Redis)
 
 			// Serve
-			grpcServer := grpc.NewGRPCServer(cfg.Port, tracer)
-			usersService := users.NewUsersService(cfg, pgGorm.DB, rdb)
+			grpcServer := grpc.NewGRPCServer(usersConfig.Port, tracer)
+			usersService := users.NewUsersService(&usersConfig, pgGorm.DB, rdb)
 			usersService.RegisterGRPCServer(grpcServer.Server)
 			grpcServer.Serve()
 		},
