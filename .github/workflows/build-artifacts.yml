@@ -8,12 +8,13 @@ jobs:
     runs-on: ubuntu-latest
     name: Set release tag version
     outputs:
-      version: ${{ steps.vars.outputs.version }}
+      version: ${{ steps.version.outputs.version_number }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Extract version from release
+        id: release
         if: startsWith(github.event.pull_request.head.ref, 'release/')
         run: |
           BRANCH_NAME="${{ github.event.pull_request.head.ref }}" \
@@ -21,6 +22,7 @@ jobs:
           echo ::set-output name=version::$VERSION
 
       - name: Extract version from hotfix
+        id: hotfix
         if: startsWith(github.event.pull_request.head.ref, 'hotfix/')
         run: |
           BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
@@ -30,9 +32,16 @@ jobs:
       - name: Extract version from git commit sha
         if: ${{ !startsWith(github.event.pull_request.head.ref, 'release/') && !startsWith(github.event.pull_request.head.ref, 'hotfix/') }}
         run: |
-          VERSION=${{ github.event.pull_request.head.sha }}
-          echo ::set-output name=version::$VERSION
+          if [ "${{ steps.release.outputs.version }}" == "" ]; then
+            echo "::set-output name=version_number::${{ steps.release.outputs.version }}"
+          elif [ "${{ steps.hotfix.outputs.version }}" == "" ]; then
+            echo "::set-output name=version_number::${{ steps.hotfix.outputs.version }}"
+          else
+            echo "::set-output name=version_number::${{ github.event.pull_request.head.sha }}"
+          fi
+
       - name: Print version
+        id: version
         run: |
           echo "Sha: ${{ github.event.pull_request.head.sha }}"
           echo "Version: ${{ steps.vars.outputs.version }}"
