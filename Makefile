@@ -124,11 +124,13 @@ docker-victorinox:
 .PHONY: docker-webapp
 docker-webapp:
 	@printf "Building docker image $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG)...\n"
-	docker build ./webapp -t $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG) --target prod
+	cd ./webapp && docker build . -t $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG) --target prod
 	@if [ $(DOCKER_PUSH) = true ]; then \
 		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG)...\n"; \
 		docker push $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG); \
 	fi
+	@cd ..
+
 
 .PHONY: docker-service-gateway
 docker-service-gateway:
@@ -199,18 +201,10 @@ docker.dev.clean: ## Clean docker dev evironment
 	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.dev.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
 	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.dev.yml rm -f
 
-#########################
-###         CI        ###
-#########################
-
-ci.docker.dashboard: ## Build docker image for butler-dashboard
-	@echo "Build & push docker image for dashboard"
-	echo ${ECR_REGISTRY} ${ECR_REPOSITORY} ${IMAGE_TAG}
-	docker build -t ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG} -f $(DASHBOARD_DIR)/Dockerfile .
-    docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
 
 ########################
 ###     Minikube     ###
+########################
 .PHONY: minikube-start
 minikube-start:
 	@echo "Starting minikube..."
