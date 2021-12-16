@@ -27,8 +27,8 @@ jobs:
           echo ::set-output name=version::${BRANCH_NAME#hotfix/}
 
       - name: Extract version from git commit sha
-        if: ${{ !startsWith(github.event.pull_request.head.ref, 'release/') && !startsWith(github.event.pull_request.head.ref, 'hotfix/') }}
         run: |
+          echo ${{ github.event.pull_request.head.ref }}
           echo ::set-output name=version::${GITHUB_SHA::7}
 
   build-services:
