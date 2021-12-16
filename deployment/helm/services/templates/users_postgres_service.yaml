@@ -1,0 +1,16 @@
+{{- if .Values.services.users.postgres.external }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name}}-postgresql-users
+  annotations:
+    "helm.sh/hook-weight": "1"
+  labels:
+    app.kubernetes.io/name: postgresql-users
+    app.kubernetes.io/instance: {{ .Release.Name}}
+    app.kubernetes.io/component: postgresql
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+spec:
+  type: ExternalName
+  externalName: {{ .Values.services.users.postgres.host }}
+{{- end }}

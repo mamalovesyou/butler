@@ -2,13 +2,14 @@ package cmd
 
 import (
 	"context"
+
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/tools/victorinox"
 	"github.com/spf13/cobra"
 )
 
 var (
-	services   []string
+	service    string
 	migrateCmd = &cobra.Command{
 		Use:   "migrate",
 		Short: "SQL schema  migration cli for butler services",
@@ -29,21 +30,14 @@ var (
 				arguments = append(arguments, args[1:]...)
 			}
 
-			// Load config
-			cfg, err := victorinox.LoadConfig(configDir, configFileName)
-			if err != nil {
-				logger.Fatalf(ctx, "Failed to load config: %+v", err)
-			}
-			migrations := victorinox.NewGooseMigrations(cfg)
+			migrations := victorinox.NewGooseMigrations(&victorinoxCfg)
 
-			for _, name := range services {
-				migrations.RunGooseMigration(ctx, name, gooseCmd, args...)
-			}
+			migrations.RunGooseMigration(ctx, service, gooseCmd, args...)
 		},
 	}
 )
 
 func init() {
-	rootCmd.PersistentFlags().StringSliceVarP(&services, "services", "s", []string{"users"}, "Services name")
+	rootCmd.PersistentFlags().StringVarP(&service, "service", "s", "users", "Services name")
 	rootCmd.AddCommand(migrateCmd)
 }

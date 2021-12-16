@@ -1,8 +1,14 @@
 package cmd
 
 import (
+	"context"
 	"fmt"
 	"os"
+
+	"github.com/butlerhq/butler/internal/config"
+	"github.com/butlerhq/butler/internal/logger"
+	"github.com/butlerhq/butler/services/gateway"
+	"go.uber.org/zap"
 
 	"github.com/spf13/cobra"
 )
@@ -10,13 +16,20 @@ import (
 // rootCmd represents the base command when called without any subcommands
 var (
 	// Flags variables
-	configFileName string
-	configDir      string
+	cfgFilePath string
+	cfgKey      string
+
+	gatewayCfg = gateway.DefaultGatewayConfig
 
 	rootCmd = &cobra.Command{
 		Use:   "gateway",
 		Short: "HeyButler REST API Gateway",
 		Long:  `HeyButler REST Gateway si a rest proxy server that proxy rest request to the right GRPC service.`,
+		PersistentPreRun: func(cmd *cobra.Command, args []string) {
+			ctx := context.Background()
+			config.ReadConfig(cfgFilePath, cfgKey, &gatewayCfg)
+			logger.Debug(ctx, "Starting users", zap.Any("config", gatewayCfg))
+		},
 	}
 )
 
@@ -30,6 +43,6 @@ func Execute() {
 }
 
 func init() {
-	rootCmd.PersistentFlags().StringVarP(&configFileName, "filename", "f", "config.yml", "Config file name")
-	rootCmd.PersistentFlags().StringVarP(&configDir, "dir", "", ".", "Config file directory")
+	rootCmd.PersistentFlags().StringVarP(&cfgFilePath, "config", "c", "config.yml", "Config file path")
+	rootCmd.PersistentFlags().StringVarP(&cfgKey, "key", "", "", "Config key")
 }

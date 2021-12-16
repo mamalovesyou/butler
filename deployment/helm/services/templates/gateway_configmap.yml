@@ -1,0 +1,18 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name}}-svc-gateway
+  labels:
+    app.kubernetes.io/name: service-gateway
+    app.kubernetes.io/instance: {{ .Release.Name}}
+    app.kubernetes.io/component: service
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+data:
+  ENVIRONMENT: {{ default "local" .Values.environment | quote }}
+  PORT: {{ default "5000" .Values.services.gateway.containerPort | quote }}
+  LOGGER_LEVEL: "debug"
+  LOGGER_ENCODING: "json"
+  LOGGER_DISABLE_CALLER: "true"
+  LOGGER_DISABLE_STACKTRACE: "false"
+  JAEGER_HOST: {{ default "jaeger-agent:6831" .Values.jaeger.host | quote }}
+  USERSERVICEADDR: "butler-users:5000"
