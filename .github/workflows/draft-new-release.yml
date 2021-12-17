@@ -19,19 +19,21 @@ jobs:
       - uses: actions/checkout@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          ref: develop
+          ref: master
 
       - name: Create release branch
         run: |
           echo ${{ github.ref }}
-#          git checkout -B release/${{ github.event.inputs.version }}
-
+          git fetch origin develop:develop
+          git reset --hard develop
 
       - name: Bump webapp version
         run: cd webapp && yarn version --new-version ${{ github.event.inputs.version }} --no-git-tag-version
 
       - name: List file
-        run: ls .github/workflows
+        run: |
+          ls .github/workflows
+          echo ${{ github.ref }}
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3
@@ -42,7 +44,6 @@ jobs:
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
           branch: release/${{ github.event.inputs.version }}
-          base: master
           delete-branch: true
           title: |
             RELEASE: v${{ github.event.inputs.version }}
