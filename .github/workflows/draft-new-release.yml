@@ -64,4 +64,4 @@ jobs:
           labels: |
             release
             automated pr
-          draft: true
+          draft: false
