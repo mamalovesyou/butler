@@ -5,7 +5,7 @@ on: pull_request
 jobs:
   version:
     runs-on: ubuntu-latest
-    name: Set release tag version
+    name: Version number
     outputs:
       version: ${{ steps.version.outputs.version_number }}
     steps:
@@ -16,13 +16,17 @@ jobs:
         id: release
         if: startsWith(github.event.pull_request.head.ref, 'release/')
         run: |
-          echo "::set-output name=version::${BRANCH_NAME#release/}"
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          VERSION=${BRANCH_NAME#release/}
+          echo "::set-output name=version::$VERSION"
 
       - name: Extract version from hotfix
         id: hotfix
         if: startsWith(github.event.pull_request.head.ref, 'hotfix/')
         run: |
-          echo "::set-output name=version::${BRANCH_NAME#hotfix/}"
+          BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
+          VERSION=${BRANCH_NAME#hotfix/}
+          echo "::set-output name=version::$VERSION"
 
       - name: Extract version from git commit sha
         id: commit
@@ -30,7 +34,7 @@ jobs:
         run: |
           echo "::set-output name=version::${{ github.event.pull_request.head.sha }}"
 
-      - name: Print version
+      - name: Set version number
         id: version
         run: |
           if [ "${{ steps.release.outputs.version }}" != "" ]; then

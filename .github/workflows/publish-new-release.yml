@@ -8,42 +8,84 @@ on:
       - closed
 
 jobs:
-  release:
-    name: Publish new release
-    runs-on: ubuntu-latest
+  version:
     if: github.event.pull_request.merged == true # only merged pull requests must trigger this job
+    runs-on: ubuntu-latest
+    name: Version number
+    outputs:
+      version: ${{ steps.version.outputs.version_number }}
     steps:
-      - name: Extract version from branch name (for release branches)
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Extract version from release
+        id: release
         if: startsWith(github.event.pull_request.head.ref, 'release/')
         run: |
           BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
           VERSION=${BRANCH_NAME#release/}
-          echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
-      - name: Extract version from branch name (for hotfix branches)
+          echo "::set-output name=version::$VERSION"
+
+      - name: Extract version from hotfix
+        id: hotfix
         if: startsWith(github.event.pull_request.head.ref, 'hotfix/')
         run: |
           BRANCH_NAME="${{ github.event.pull_request.head.ref }}"
           VERSION=${BRANCH_NAME#hotfix/}
-          echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
-      - name: Create Release
-        uses: thomaseizinger/create-release@1.0.0
-        env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-        with:
-          target_commitish: ${{ github.event.pull_request.merge_commit_sha }}
-          tag_name: ${{ env.RELEASE_VERSION }}
-          name: ${{ env.RELEASE_VERSION }}
-          draft: false
-          prerelease: false
+          echo "::set-output name=version::$VERSION"
 
-      - name: Merge master into dev branch
-        uses: thomaseizinger/create-pull-request@1.0.0
-        env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+      - name: Set version number
+        id: version
+        run: |
+          if [ "${{ steps.release.outputs.version }}" != "" ]; then
+            echo "::set-output name=version_number::${{ steps.release.outputs.version }}"
+          elif [ "${{ steps.hotfix.outputs.version }}" != "" ]; then
+            echo "::set-output name=version_number::${{ steps.hotfix.outputs.version }}"
+          else
+            exit(1);
+          fi
+
+# TODO: Publsih new release in github
+#  release:
+#    name: Publish new release
+#    runs-on: ubuntu-latest
+#    needs: version
+#    steps:
+#      - name: Create Release
+#        uses: thomaseizinger/create-release@1.0.0
+#        env:
+#          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+#        with:
+#          target_commitish: ${{ github.event.pull_request.merge_commit_sha }}
+#          tag_name: ${{ needs.version.outputs.version }}
+#          name: ${{ needs.version.outputs.version }}
+#          draft: false
+#          prerelease: false
+
+  sync_branches:
+    name: Sync master and develop branches
+    runs-on: ubuntu-latest
+    needs: version
+    steps:
+      - uses: actions/checkout@v2
         with:
-          head: master
-          base: dev
-          title: Merge master into dev branch
+          token: ${{ secrets.PAT_TOKEN }}
+
+      - name: Create pull request
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.PAT_TOKEN }}
+          commit-message: Release ${{ github.event.inputs.version }}
+          committer: GitHub <noreply@github.com>
+          author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
+          signoff: false
+          branch: master
+          delete-branch: false
+          title: "POST-RELEASE: Sync master -> develop"
           body: |
-            This PR merges the master branch back into dev.
-            This happens to ensure that the updates that happend on the release branch, i.e. CHANGELOG and manifest updates are also present on the dev branch.
+            This PR merges the master branch back into develop.
+            This happens to ensure that the updates that happend on the release branch, i.e. CHANGELOG and manifest updates are also present on the develop branch.
+          labels: |
+            release
+            automated pr
+          draft: false
