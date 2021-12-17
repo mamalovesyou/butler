@@ -38,7 +38,7 @@ jobs:
 
       - name: Push new release branch
         run: |
-          git push origin release/${{ github.event.inputs.version }}
+          git push -f origin release/${{ github.event.inputs.version }}
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3
