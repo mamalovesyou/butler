@@ -4,12 +4,8 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: 'The version you want to release.'
+        description: 'The Release Version'
         required: true
-
-permissions:
-  contents: write
-  pull-requests: write
 
 jobs:
   draft-new-release:
@@ -18,7 +14,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
           ref: master
 
       - name: Create release branch
@@ -38,15 +34,14 @@ jobs:
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_TOKEN }}
           commit-message: Release ${{ github.event.inputs.version }}
           committer: GitHub <noreply@github.com>
           author: ${{ github.actor }} <${{ github.actor }}@users.noreply.github.com>
           signoff: false
           branch: release/${{ github.event.inputs.version }}
           delete-branch: true
-          title: |
-            RELEASE: v${{ github.event.inputs.version }}
+          title: "RELEASE: ${{ github.event.inputs.version }} 🚀"
           body: |
             This PR was created in response to a manual trigger of the release workflow [here](https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }})
             This is a new release: v${{ github.event.inputs.version }}
