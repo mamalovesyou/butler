@@ -17,7 +17,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create release branch
-        run: git checkout -b release/${{ github.event.inputs.version }}
+        run: git checkout -B release/${{ github.event.inputs.version }}
 
       # In order to make a commit, we need to initialize a user.
       # You may choose to write something less generic here if you want, it doesn't matter functionality wise.
