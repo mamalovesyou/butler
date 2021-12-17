@@ -1,7 +1,7 @@
 {
   "name": "@butler/dashboard",
   "author": "Matthieu Berger <matthieu@heybutler.io>",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "private": true,
   "repository": {
     "type": "git",
@@ -12,7 +12,6 @@
   },
   "scripts": {
     "env": "dotenv -e .env.local",
-    "dev": "snowpack dev",
     "build": "yarn run clean-dist && webpack --config=config/webpack/prod.js",
     "start": "yarn run start-dev",
     "start-dev": "webpack serve --config=config/webpack/dev.js",

@@ -1,5 +1,3 @@
-.PHONY: proto
-
 PROJECT_NAME := butler
 MODULE_NAME := github.com/butlerhq/$(PROJECT_NAME)
 BIN := $(CURDIR)/bin
@@ -35,7 +33,8 @@ ifndef CGO_ENABLED
 	endif
 endif
 
-DOCKER_REPO ?= butlerhq
+DOCKER_PUSH ?= false
+DOCKER_REGISTRY ?= butlerhq
 DOCKER_IMAGE_TAG ?= test
 
 # Git
@@ -61,6 +60,7 @@ PROTO_OUT := api
 PROTO_CMD := protoc $(PROTO_IMPORTS)
 
 ##### Proto #####
+.PHONY: proto
 proto:
 	@mkdir -p $(PROTO_OUT)
     # Run protoc separately for each directory because of different package names.
@@ -108,17 +108,47 @@ butler-users:
 
 
 ##### Docker #####
+docker-all: docker-service-gateway docker-service-users docker-webapp docker-victorinox
+docker-services: docker-service-gateway docker-service-users
+docker-tools: docker-victorinox
+
+.PHONY: docker-victorinox
 docker-victorinox:
-	@printf "Building docker image butlerhq/butler-victorinox:$(DOCKER_IMAGE_TAG)..."
-	docker build . -t $(DOCKER_REPO)/butler-victorinox:$(DOCKER_IMAGE_TAG) --target victorinox
+	@printf "Building docker image  $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG)...\n"
+	docker build . -t $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG) --target victorinox
+	@if [ $(DOCKER_PUSH) = true ]; then \
+  		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG)...\n"; \
+		docker push $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG); \
+	fi
 
+.PHONY: docker-webapp
+docker-webapp:
+	@printf "Building docker image $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG)...\n"
+	cd ./webapp && docker build . -t $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG) --target prod
+	@if [ $(DOCKER_PUSH) = true ]; then \
+		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG)...\n"; \
+		docker push $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG); \
+	fi
+	@cd ..
+
+
+.PHONY: docker-service-gateway
 docker-service-gateway:
-	@printf "Building docker image butlerhq/butler-users:$(DOCKER_IMAGE_TAG)..."
-	docker build . -t $(DOCKER_REPO)/butler-gateway:$(DOCKER_IMAGE_TAG) --target service-gateway
+	@printf "Building docker image $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG)...\n"
+	@docker build . -t $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG) --target service-gateway
+	@if [ $(DOCKER_PUSH) = true ]; then \
+		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG)...\n"; \
+		docker push $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG); \
+	fi
 
+.PHONY: docker-service-users
 docker-service-users:
-	@printf "Building docker image butlerhq/butler-users:$(DOCKER_IMAGE_TAG)..."
-	docker build . -t $(DOCKER_REPO)/butler-users:$(DOCKER_IMAGE_TAG) --target service-users
+	@printf "Building docker image $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG)...\n"
+	@docker build . -t $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG) --target service-users
+	@if [ $(DOCKER_PUSH) = true ]; then \
+		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG)...\n"; \
+		docker push $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG); \
+	fi
 
 
 
@@ -128,6 +158,7 @@ lint: ## Lint the files
 test: ## Run unittests
 	@go test -short ${PKG_LIST}
 
+.PHONY: vendor
 vendor: ## Vendor dependencies
 	@echo "Running go.mod vendor"
 	@go mod vendor
@@ -170,20 +201,20 @@ docker.dev.clean: ## Clean docker dev evironment
 	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.dev.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
 	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.dev.yml rm -f
 
-#########################
-###         CI        ###
-#########################
 
-ci.docker.dashboard: ## Build docker image for butler-dashboard
-	@echo "Build & push docker image for dashboard"
-	echo ${ECR_REGISTRY} ${ECR_REPOSITORY} ${IMAGE_TAG}
-	docker build -t ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG} -f $(DASHBOARD_DIR)/Dockerfile .
-    docker push ${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}
+########################
+###     Minikube     ###
+########################
+.PHONY: minikube-start
+minikube-start:
+	@echo "Starting minikube..."
+	@minikube start --profile new --kubernetes-version=v1.20.0 --cpus 4 --memory 6144
 
-clean: docker.dev.clean ## Clean all
-	@echo "Cleaning ..."
-	rm -rf $(BIN)
-	rm -rf $(CURDIR)/tmp
+.PHONY: minikube-env
+minikube-env:
+	@echo "Loading minikube docker-env..."
+	$(shell eval $(minikube -p new docker-env))
 
 help: ## Display this help screen
 	@grep -h -E '^[a-zA-Z_-]+(\.[a-zA-Z_-]+)*:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
