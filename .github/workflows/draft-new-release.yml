@@ -31,7 +31,7 @@ jobs:
         run: cd webapp && yarn version --new-version ${{ github.event.inputs.version }} --no-git-tag-version
 
       - name: List file
-        run: ls ./github/workflows
+        run: ls .github/workflows
 
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3
