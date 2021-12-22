@@ -19,6 +19,6 @@ variable "users_db_user" {
 }
 
 variable "users_db_password" {
-  type = string
+  type        = string
   description = "Users service database password"
 }
