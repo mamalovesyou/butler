@@ -1,16 +1,16 @@
 name: Deploy new release (manual)
 
-on:
-  push:
-    branches:
-      - master
-
 #on:
-#  workflow_dispatch:
-#    inputs:
-#      version:
-#        description: 'The Release Version'
-#        required: true
+#  push:
+#    branches:
+#      - master
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The Release Version'
+        required: true
 
 jobs:
   version:
