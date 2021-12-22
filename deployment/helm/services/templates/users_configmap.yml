@@ -13,10 +13,11 @@ data:
   LOGGER_ENCODING: "json"
   LOGGER_DISABLE_CALLER: "true"
   LOGGER_DISABLE_STACKTRACE: "false"
-  JAEGER_HOST: {{ default "jaeger-agent:6831" .Values.jaeger.host | quote }}
-  POSTGRES_HOST: {{ default "" .Values.services.users.postgres.host | quote }}
+  JAEGER_ADDR: {{ default "jaeger-agent:6831" .Values.jaeger.addr | quote }}
+  JAEGER_DISABLED: {{ default "true" (not .Values.jaeger.enabled) | quote }}
+  POSTGRES_HOST: {{ default "localhost" .Values.services.users.postgres.host | quote }}
   POSTGRES_PORT: {{ default "5432" .Values.services.users.postgres.port | quote }}
-  POSTGRES_NAME: {{ default "butler_users" .Values.services.users.postgres.name | quote }}
-  POSTGRES_USER: {{ default "postgres" .Values.services.users.postgres.user | quote }}
+  POSTGRES_NAME: {{ default "users_db" .Values.services.users.postgres.name | quote }}
+  POSTGRES_USER: {{ default "butler" .Values.services.users.postgres.user | quote }}
   POSTGRES_PASSWORD: {{ default "password" .Values.services.users.postgres.password | quote }}
   JWTSECRET: {{ default "superSecret" .Values.services.users.jwtSecret | quote }}

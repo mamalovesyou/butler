@@ -13,19 +13,22 @@ import (
 
 var DefaultJaegerConfig = JaegerConfig{
 	ServiceName: "butler",
-	Host:        "host",
+	Addr:        "jaeger-agent:6831",
 	LogSpans:    true,
+	Disabled:    true,
 }
 
 type JaegerConfig struct {
 	ServiceName string
-	Host        string
+	Addr        string
 	LogSpans    bool
+	Disabled    bool
 }
 
 // NewJaegerTracer set up a global opentracing.Tracer
 func NewJaegerTracer(cfg *JaegerConfig) (opentracing.Tracer, io.Closer, error) {
 	jaegerCfgInstance := jaegercfg.Configuration{
+		Disabled:    cfg.Disabled,
 		ServiceName: cfg.ServiceName,
 		Sampler: &jaegercfg.SamplerConfig{
 			Type:  jaeger.SamplerTypeConst,
@@ -33,7 +36,7 @@ func NewJaegerTracer(cfg *JaegerConfig) (opentracing.Tracer, io.Closer, error) {
 		},
 		Reporter: &jaegercfg.ReporterConfig{
 			LogSpans:           cfg.LogSpans,
-			LocalAgentHostPort: cfg.Host,
+			LocalAgentHostPort: cfg.Addr,
 		},
 	}
 	jLogger := log.StdLogger
