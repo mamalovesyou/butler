@@ -1,9 +1,16 @@
 name: Deploy new release
 
+#on:
+#  push:
+#    branches:
+#      - master
+
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'The Release Version'
+        required: true
 
 jobs:
   version:
@@ -18,12 +25,71 @@ jobs:
 
       - name: Set tag
         id: vars
-        run: echo ::set-output name=version::${GITHUB_REF##*/}
+        # run: echo ::set-output name=version::${GITHUB_REF##*/}
+        run: echo ::set-output name=version::${{ github.event.inputs.version }}
 
-  dashboard:
+  terraform:
     needs: version
+    name: Provision infra
     runs-on: ubuntu-latest
-    name: Build and Push Dashboard
+    outputs:
+      kubeconfig: ${{ steps.outputs.outputs.kubeconfig }}
+      users_db_address: ${{ steps.outputs.outputs.users_db_address }}
+      cert_manager_irsa_role_arn: ${{ steps.outputs.outputs.cert_manager_irsa_role_arn }}
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_REGION: ${{ secrets.AWS_REGION }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Terraform Init
+        uses: hashicorp/setup-terraform@v1
+        with:
+          terraform_wrapper: false
+
+      - name: Terraform format
+        id: fmt
+        working-directory: ./deployment/terraform
+        run: terraform fmt -check
+
+      - name: Terraform init
+        id: init
+        working-directory: ./deployment/terraform
+        run: terraform init
+
+      - name: Terraform validate
+        id: validate
+        working-directory: ./deployment/terraform
+        run: terraform validate -no-color
+
+      - name: Terraform Plan
+        id: plan
+        working-directory: ./deployment/terraform
+        run: terraform plan
+
+      - name: Terraform apply
+        id: apply
+        working-directory: ./deployment/terraform
+        run: terraform apply -auto-approve
+
+      - name: Terraform outputs
+        id: outputs
+        working-directory: ./deployment/terraform
+        run: |
+          KUBECONFIG=$(terraform output kubeconfig_base64)
+          USERS_DB_ADDR=$(terraform output users_db_address)
+          CERT_MANAGER_IRSA_ROLE=$(terraform output cert_manager_irsa_role_arn)
+          echo "::set-output name=kubeconfig::$KUBECONFIG"
+          echo "::set-output name=users_db_address::$USERS_DB_ADDR"
+          echo "::set-output name=cert_manager_irsa_role_arn::$CERT_MANAGER_IRSA_ROLE"
+  deploy:
+    needs: terraform
+    name: Deploy
+    runs-on: ubuntu-latest
+    env:
+      KUBECONFIG: "/etc/k8s/config"
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -35,37 +101,49 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ secrets.AWS_REGION }}
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build and tag butler-dashbaord
-        id: build-image
-        env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
-          ECR_REPOSITORY: ${{ secrets.AWS_ECR_REPO_NAME }}
-          IMAGE_TAG: ${{ needs.version.outputs.version }}
+      - name: Install Helm
         run: |
-          echo $ECR_REGISTRY $ECR_REPOSITORY $IMAGE_TAG
-          # Build a docker container and push it to ECR
-          make ci.docker.dashboard
-
-  release:
-    needs: dashboard
-    name: Create Release
-    runs-on: ubuntu-latest
-    steps:
-      - name: Build Changelog
-        id: github_release
-        uses: mikepenz/release-changelog-builder-action@v1
+          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+      - name: Setup Kube config
+        run: |
+          mkdir -p /etc/k8s/
+          echo ${{ needs.terraform.outputs.kubeconfig }} | base64 -d > $KUBECONFIG
+      - name: Install ingress-nginx
+        id: ingress-nginx
+        run: |
+          helm upgrade ingress-nginx ingress-nginx/ingress-nginx --install \
+            --create-namespace --namespace="ingress-nginx" --wait
+      - name: Install cert-manager
+        id: cert-manager
+        run: |
+          helm upgrade cert-manager jetstack/cert-manager \
+            --install \
+            --namespace cert-manager \
+            --create-namespace \
+            --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"=${{ needs.terraform.outputs.cert_manager_irsa_role_arn }} \
+            --set installCRDs=true \
+            --set securityContext.enabled=true \
+            --set securityContext.fsGroup=1001 \
+            --wait
+      - name: Install butler
+        id: butler-services
         env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
-
-      - name: Create Release
-        uses: actions/create-release@v1
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
-          body: ${{steps.github_release.outputs.changelog}}
-        env:
-          PAT_TOKEN: ${{ secrets.PAT_TOKEN }}
+          RELEASE_VERSION: ${{ needs.version.outputs.version }}
+          USERS_DB_HOST: ${{ needs.terraform.outputs.cert_manager_irsa_role_arn }}
+          USERS_DB_NAME: ${{ secrets.USERS_DB_NAME }}
+          USERS_DB_USER: ${{ secrets.USERS_DB_USER }}
+          USERS_DB_PASSWORD: ${{ secrets.USERS_DB_PASSWORD }}
+          USERS_JWT_SECRET: ${{ secrets.USERS_JWT_SECRET }}
+          HOSTED_ZONE_ID: ${{ secrets.HOSTED_ZONE_ID }}
+          ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
+        run: |
+          helm upgrade butler ../helm/services --install \
+            --set image.tag=$RELEASE_VERSION \
+            --set image.repository=$ECR_REGISTRY \
+            --set certManager.route53.hostedZoneID=$HOSTED_ZONE_ID \
+            --set services.users.postgres.host=$USERS_DB_HOST \
+            --set services.users.postgres.name=$USERS_DB_NAME \
+            --set services.users.postgres.user=$USERS_DB_USER \
+            --set services.users.postgres.password=$USERS_DB_PASSWORD \
+            --set services.users.jwtSecret=$USERS_JWT_SECRET \
+            --wait

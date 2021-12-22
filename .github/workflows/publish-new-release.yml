@@ -42,7 +42,7 @@ jobs:
           elif [ "${{ steps.hotfix.outputs.version }}" != "" ]; then
             echo "::set-output name=version_number::${{ steps.hotfix.outputs.version }}"
           else
-            exit(1);
+            exit(1)
           fi
 
 # TODO: Publsih new release in github
