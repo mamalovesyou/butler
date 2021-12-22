@@ -44,6 +44,13 @@ jobs:
           else
             exit(1)
           fi
+      - name: Push tag
+        id: tag_version
+        uses: mathieudutour/github-tag-action@v6.0
+        with:
+          custom_tag: ${{ steps.version.outputs.version_number }}
+          github_token: ${{ secrets.PAT }}
+
 
 # TODO: Publsih new release in github
 #  release:
