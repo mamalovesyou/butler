@@ -2,6 +2,7 @@ package victorinox
 
 import (
 	"context"
+
 	"github.com/butlerhq/butler/internal/utils"
 	"go.uber.org/zap"
 
@@ -13,8 +14,8 @@ import (
 var (
 	provisionCmd = &cobra.Command{
 		Use:   "provision",
-		Short: "Provision new databases with credentials for all services.",
-		Long:  `Provision new databases with credentials for all services.`,
+		Short: "Provision new postgres with credentials for all services.",
+		Long:  `Provision new postgres with credentials for all services.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			ctx := context.Background()
 			cfgFileName := utils.FileNameWithoutExtension(configFileName)

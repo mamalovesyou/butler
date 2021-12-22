@@ -26,11 +26,6 @@ jobs:
       - name: Bump webapp version
         run: cd webapp && yarn version --new-version ${{ github.event.inputs.version }} --no-git-tag-version
 
-      - name: List file
-        run: |
-          ls .github/workflows
-          echo ${{ github.ref }}
-
       - name: Create pull request
         uses: peter-evans/create-pull-request@v3
         with:

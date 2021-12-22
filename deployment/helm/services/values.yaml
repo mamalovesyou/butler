@@ -10,7 +10,8 @@ provisionStore:
   elasticsearch: false
 
 jaeger:
-  host: "jaeger-agent:6831"
+  enabled: false
+  addr: "jaeger-agent:6831"
   logSpans: true
 
 image:
@@ -19,9 +20,15 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: ""
 
+
 certManager:
   enabled: true
+  provisionIssuer: true
   issuerName: letsencrypt-prod
+  dnsZone: heybutler.io
+  route53:
+    region: "us-east-2"
+    hostedZoneID: "zoneID"
 
 services:
   webapp:
@@ -31,30 +38,13 @@ services:
     jwtSecret: superSecret
     containerPort: 5001
     postgres:
-      external: false
-      host: external.postgres.org
-      port: 5432
-      name: butler_users
-      user: butler-users-svc
+      host: butler-users-db-postgresql
+      name: users_db
+      user: butler
       password: password
   gateway:
     containerPort: 5000
     host: api.heybutler.io
-
-
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
-
-serviceAccount:
-  # Specifies whether a service account should be created
-  create: true
-  # Annotations to add to the service account
-  annotations: {}
-  # The name of the service account to use.
-  # If not set and create is true, a name is generated using the fullname template
-  name: ""
-
 
 resources:
    limits:
