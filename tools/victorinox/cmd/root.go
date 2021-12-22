@@ -26,8 +26,8 @@ var (
 
 	rootCmd = &cobra.Command{
 		Use:   "victorinox",
-		Short: "Victorinox is a collection of tool to help manage infrastructure and databases.",
-		Long:  `Victorinox is a collection of tool to help manage infrastructure and databases.`,
+		Short: "Victorinox is a collection of tool to help manage infrastructure and postgres.",
+		Long:  `Victorinox is a collection of tool to help manage infrastructure and postgres.`,
 		PersistentPreRun: func(cmd *cobra.Command, args []string) {
 			ctx := context.Background()
 			config.ReadConfig(cfgFilePath, cfgKey, &victorinoxCfg)
