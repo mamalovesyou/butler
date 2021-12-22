@@ -1,7 +1,7 @@
 {
   "name": "@butler/dashboard",
   "author": "Matthieu Berger <matthieu@heybutler.io>",
-  "version": "0.0.4",
+  "version": "0.0.3",
   "private": true,
   "repository": {
     "type": "git",
