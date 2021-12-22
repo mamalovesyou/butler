@@ -84,6 +84,7 @@ jobs:
           echo "::set-output name=kubeconfig::$KUBECONFIG"
           echo "::set-output name=users_db_address::$USERS_DB_ADDR"
           echo "::set-output name=cert_manager_irsa_role_arn::$CERT_MANAGER_IRSA_ROLE"
+
   deploy:
     needs: terraform
     name: Deploy
@@ -104,15 +105,18 @@ jobs:
       - name: Install Helm
         run: |
           curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+
       - name: Setup Kube config
         run: |
           mkdir -p /etc/k8s/
           echo ${{ needs.terraform.outputs.kubeconfig }} | base64 -d > $KUBECONFIG
+
       - name: Install ingress-nginx
         id: ingress-nginx
         run: |
           helm upgrade ingress-nginx ingress-nginx/ingress-nginx --install \
             --create-namespace --namespace="ingress-nginx" --wait
+
       - name: Install cert-manager
         id: cert-manager
         run: |
@@ -125,6 +129,7 @@ jobs:
             --set securityContext.enabled=true \
             --set securityContext.fsGroup=1001 \
             --wait
+
       - name: Install butler
         id: butler-services
         env:
@@ -133,7 +138,7 @@ jobs:
           USERS_DB_NAME: ${{ secrets.USERS_DB_NAME }}
           USERS_DB_USER: ${{ secrets.USERS_DB_USER }}
           USERS_DB_PASSWORD: ${{ secrets.USERS_DB_PASSWORD }}
-          USERS_JWT_SECRET: ${{ secrets.USERS_JWT_SECRET }}
+          USERS_JWT_SECRET: ${{ secrets.$USERS_JWT_SECRET }}
           HOSTED_ZONE_ID: ${{ secrets.HOSTED_ZONE_ID }}
           ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
         run: |

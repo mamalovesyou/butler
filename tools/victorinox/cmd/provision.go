@@ -7,8 +7,8 @@ import (
 var (
 	provisionCmd = &cobra.Command{
 		Use:   "provision",
-		Short: "Provision postgres databases all services.",
-		Long:  `Provision postgres databases with credentials for all services.`,
+		Short: "Provision postgres postgres all services.",
+		Long:  `Provision postgres postgres with credentials for all services.`,
 
 		Run: func(cmd *cobra.Command, args []string) {
 			//ctx := context.Background()
@@ -24,7 +24,7 @@ var (
 			//	DBToProvision: []*postgres.PostgresConfig{cfg.UsersPostgres},
 			//}
 			//if err := registry.ProvisionAll(ctx); err != nil {
-			//	logger.Fatalf(ctx, "Failed to provision protgres databases: %v", err)
+			//	logger.Fatalf(ctx, "Failed to provision protgres postgres: %v", err)
 			//}
 		},
 	}
