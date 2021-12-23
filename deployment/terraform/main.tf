@@ -29,7 +29,7 @@ module "eks_cluster" {
 module "users_db" {
   source = "./modules/postgres"
 
-  count           = lookup(local.create_cluster, terraform.workspace)
+  count = lookup(local.create_cluster, terraform.workspace)
 
   prefix           = var.prefix
   vpc_id           = module.network[0].vpc_id
