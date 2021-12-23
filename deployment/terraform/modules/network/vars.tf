@@ -3,7 +3,7 @@ variable "prefix" {
   description = "Prefix the vpc name"
 }
 
-variable "eks_cluster_name" {
+variable "cluster_name" {
   type = string
   description = "The eks cluster name"
 }

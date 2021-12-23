@@ -36,6 +36,7 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_REGION: ${{ secrets.AWS_REGION }}
       TF_VAR_users_db_password: ${{ secrets.USERS_DB_PASSWORD }}
+      TF_WORKSPACE: prod
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -54,6 +55,11 @@ jobs:
         id: init
         working-directory: ./deployment/terraform
         run: terraform init
+
+      - name: Terraform workspace
+        id: workspace
+        working-directory: ./deployment/terraform
+        run: terraform workspace select prod
 
       - name: Terraform validate
         id: validate
@@ -86,7 +92,7 @@ jobs:
     name: Deploy
     runs-on: ubuntu-latest
     env:
-      KUBECONFIG: "/etc/k8s/config"
+      KUBECONFIG: "/etc/eks/config"
     steps:
       - name: Checkout
         uses: actions/checkout@v2

@@ -4,7 +4,7 @@ variable "region" {
 }
 
 variable "prefix" {
-  default     = "bulter"
+  default     = "butler"
   description = "Prefix used to name aws entities"
 }
 

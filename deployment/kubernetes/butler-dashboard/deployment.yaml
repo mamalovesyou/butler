@@ -31,7 +31,7 @@ spec:
     app: butler-dashboard
   type: ClusterIP
 ---
-apiVersion: networking.k8s.io/v1
+apiVersion: networking.eks.io/v1
 kind: Ingress
 metadata:
   name: butler-dashboard

@@ -1,16 +1,6 @@
-locals {
-  cluster_name    = "${var.prefix}-eks-${terraform.workspace}"
-}
-
-provider "kubernetes" {
-  host                   = data.aws_eks_cluster.cluster.endpoint
-  cluster_ca_certificate = base64decode(data.aws_eks_cluster.cluster.certificate_authority.0.data)
-  token                  = data.aws_eks_cluster_auth.cluster.token
-}
-
 module "eks" {
   source          = "terraform-aws-modules/eks/aws"
-  cluster_name    = local.cluster_name
+  cluster_name    = var.cluster_name
   cluster_version = "1.21"
   subnets         = var.private_subnets
 
@@ -32,7 +22,7 @@ module "eks" {
     }
   ]
 
-  manage_aws_auth = true
+  manage_aws_auth = false
   enable_irsa     = true
 }
 
