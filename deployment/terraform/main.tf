@@ -3,7 +3,7 @@ locals {
 }
 
 module "network" {
-  source = "./modules/network"
+  source       = "./modules/network"
   prefix       = var.prefix
   cluster_name = local.cluster_name
 }
