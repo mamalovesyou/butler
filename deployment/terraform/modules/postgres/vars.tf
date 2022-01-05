@@ -20,7 +20,7 @@ variable "db_password" {
 
 variable "instance_type" {
   type = string
-  default = "db.t2.micro"
+  default = "db.t3.micro"
   description = "DB instance type"
 }
 

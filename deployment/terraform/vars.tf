@@ -4,7 +4,7 @@ variable "region" {
 }
 
 variable "prefix" {
-  default     = "bulter"
+  default     = "butler"
   description = "Prefix used to name aws entities"
 }
 
@@ -19,6 +19,6 @@ variable "users_db_user" {
 }
 
 variable "users_db_password" {
-  type = string
+  type        = string
   description = "Users service database password"
 }
