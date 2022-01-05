@@ -127,8 +127,8 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           DOCKER_IMAGE_TAG: ${{ needs.version.outputs.version }}
           DOCKER_PUSH: true
-          APP_VERSION: ${{ needs.version.outputs.version }}
-          APP_BASE_URL:  ${{ secrets.GATEWAY_PUBLIC_URL }}
+          WEBAPP_BUILD_TARGET: prod
+          WEBAPP_API_PUBLIC_URL:  ${{ secrets.API_GTW_PUBLIC_URL }}
+          WEBAPP_PUBLIC_URL:  ${{ secrets.WEBAPP_PUBLIC_URL }}
         run: |
-          DOCKER_REGISTRY="$ECR_REGISTRY/butlerhq" \
-          make docker-webapp
+          DOCKER_REGISTRY="$ECR_REGISTRY/butlerhq" make docker-webapp
