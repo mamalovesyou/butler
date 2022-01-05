@@ -19,10 +19,12 @@ RUN yarn install
 # Build image
 FROM base AS build
 
-ENV BUILD_TARGET prod
-ENV APP_VERSION 0.0.1
-ENV API_BASE_URL https://api.heybutler.io
-ENV APP_BASE_URL https://app.heybutler.io
+ARG BUILD_TARGET
+ARG APP_VERSION
+ARG API_BASE_URL
+ARG APP_BASE_URL
+
+RUN echo $BUILD_TARGET $APP_VERSION $API_BASE_URL $APP_BASE_URL
 
 COPY . .
 RUN yarn build
