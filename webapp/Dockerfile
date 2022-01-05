@@ -21,8 +21,8 @@ FROM base AS build
 
 ENV BUILD_TARGET prod
 ENV APP_VERSION 0.0.1
-ENV API_BASE_URL api.heybutler.local
-ENV APP_BASE_URL app.heybutler.local
+ENV API_BASE_URL https://api.heybutler.io
+ENV APP_BASE_URL https://app.heybutler.io
 
 COPY . .
 RUN yarn build
