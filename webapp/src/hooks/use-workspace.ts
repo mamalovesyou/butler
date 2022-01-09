@@ -16,7 +16,7 @@ export const useCurrentWorkspace = (): {
       organization: organizationId ? organizations[organizationId] : null,
       workspace:
         workspaceId && organizationId
-          ? ArrayToObject(organizations[organizationId].workspaces, "ID")[
+          ? ArrayToObject(organizations[organizationId].workspaces)[
               workspaceId
             ]
           : null,

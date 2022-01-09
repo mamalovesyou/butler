@@ -2,12 +2,10 @@ import * as ActionTypes from './WorkspaceActions.types';
 import {
   GoogleRpcStatus,
   V1CreateOrganizationRequest,
-  V1CreateWorkspaceRequest,
   V1OrganizationListResponse,
   V1OrganizationResponse,
   V1AuthenticatedUser,
-  V1SignInRequest,
-  V1WorkspaceResponse
+  V1WorkspaceResponse, V1InviteWorkspaceMemberRequest, V1CreateWorkspaceRequest
 } from '../../api';
 
 export const createOrganizationRequest = (
@@ -86,7 +84,7 @@ export const createWorkspaceFailure = (
 });
 
 export const addWorkspaceMembersRequest = (
-  payload: V1SignInRequest
+  payload: V1InviteWorkspaceMemberRequest
 ): ActionTypes.WorkspaceActionType => ({
   type: ActionTypes.ADD_WORKSPACE_MEMBER_REQUEST,
   payload

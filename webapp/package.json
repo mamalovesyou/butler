@@ -22,7 +22,7 @@
     "lint": "tsc --noEmit && eslint src/**/*.ts{,x}",
     "lint:fix": "yarn lint --fix",
     "lint:quiet": "yarn lint --quiet",
-    "gen:api": "swagger-typescript-api --axios --clean-output -p ../api/openapi/apiV1.swagger.json -o ./src/api/gen -n index.ts"
+    "gen:api": "swagger-typescript-api --axios --clean-output -p config/openapi/api.swagger.json -o ./src/api/gen -n index.ts"
   },
   "eslintConfig": {
     "extends": "react-app"

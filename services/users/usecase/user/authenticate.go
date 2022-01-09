@@ -2,12 +2,13 @@ package user
 
 import (
 	"context"
+
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/services/users/models"
 	"go.uber.org/zap"
 )
 
-// auth create access and refresh tokens for a given user
+// users create access and refresh tokens for a given user
 func (uc *UserUsecase) authenticate(ctx context.Context, user *models.User) (*models.AuthenticatedUser, error) {
 	// Create token pair
 	sub := user.ID.String()

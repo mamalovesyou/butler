@@ -19,7 +19,7 @@ services:
       - dev_net
 
   postgres:
-    image: postgres:13.3
+    image: public.ecr.aws/c1s5x5y2/butlerhq/postgres:12-alpine
     ports:
       - 5432:5432
     volumes:
@@ -27,7 +27,7 @@ services:
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=password
-      - POSTGRES_DB=postgres
+      - POSTGRES_MULTIPLE_DATABASES=user_db,connector_db
     networks:
       - dev_net
 
@@ -53,49 +53,62 @@ services:
       - dev_net
 
   victorinox:
+    working_dir: /butler
     build:
       context: ../..
       target: victorinox
     volumes:
-      - ../../config:/config
+      - ../../:/butler
     depends_on:
       - postgres
     command: >
-      /butler-victorinox migrate up --dir /config
+      /butler-victorinox migrate up --config config/tools/victorinox_config.yaml
     networks:
       - dev_net
-#  auth:
-#    build:
-#      context: ../..
-#      dockerfile: build/auth/Dockerfile.dev
-#    ports:
-#      - 3001:3001
-#    volumes:
-#      - ../..:/go/src/butler:delegated
-#    networks:
-#      - dev_net
-#
-#  workspace:
-#    build:
-#      context: ../..
-#      dockerfile: build/workspace/Dockerfile.dev
-#    ports:
-#      - 3002:3002
-#    volumes:
-#      - ../..:/go/src/butler:delegated
-#    networks:
-#      - dev_net
-#
-#  gateway:
-#    build:
-#      context: ../..
-#      dockerfile: build/gateway/Dockerfile.dev
-#    ports:
-#      - 8080:8080
-#    volumes:
-#      - ../..:/go/src/butler:delegated
-#    networks:
-#      - dev_net
+
+  users:
+    image: cosmtrek/air
+    working_dir: /butler
+    ports:
+      - 3001:3001
+    volumes:
+      - ../..:/butler
+    entrypoint: ["air", "-c", "config/services/users/air.toml"]
+    depends_on:
+      - postgres
+    networks:
+      - dev_net
+
+  gateway:
+    image: cosmtrek/air
+    working_dir: /butler
+    ports:
+      - 8080:8080
+    volumes:
+      - ../..:/butler
+    entrypoint: ["air", "-c", "config/services/gateway/air.toml"]
+    depends_on:
+      - postgres
+    networks:
+      - dev_net
+
+  webapp:
+    build:
+      context: ../../webapp
+      target: dev
+    ports:
+      - 3000:3000
+    volumes:
+      - ../../webapp:/app
+    environment:
+      - BUILD_TARGET=local
+      - APP_VERSION=local
+      - API_BASE_URL=http://localhost:8080
+      - APP_BASE_URL=http://localhost:3000
+    depends_on:
+      - gateway
+    networks:
+      - dev_net
 
 volumes:
   postgres:

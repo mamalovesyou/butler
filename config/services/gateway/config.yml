@@ -1,0 +1,13 @@
+environment: dev
+port: 8080
+usersServiceAddr: "users:3001"
+dashboardOriginUrl: "*"
+logger:
+  disableCaller: true
+  disableStacktrace: false
+  encoding: json
+  level: debug
+jaeger:
+  host: jaeger:6831
+  logSpans: false
+  serviceName: Gateway_REST

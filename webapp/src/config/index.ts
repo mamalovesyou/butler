@@ -1,18 +1,21 @@
-import { AxiosInstance } from "axios";
+import {AxiosInstance} from "axios";
+import {addCommonHeader} from "../api";
 
 enum PlatformEnv {
-  PROD = "prod",
-  DEV = "dev",
+    PROD = "prod",
+    DEV = "dev",
 }
 
-const { BUILD_TARGET } = process.env;
-const { APP_VERSION } = process.env;
-const { API_BASE_URL } = process.env;
-const { APP_BASE_URL } = process.env;
+const {BUILD_TARGET} = process.env;
+const {APP_VERSION} = process.env;
+const {API_BASE_URL} = process.env;
+const {APP_BASE_URL} = process.env;
+
+console.log("env", BUILD_TARGET, APP_VERSION, API_BASE_URL, APP_BASE_URL)
 
 export const updateAxiosInstance = (instance: AxiosInstance): void => {
-  instance.defaults.baseURL = API_BASE_URL;
-  instance.defaults.headers["App-Version"] = APP_VERSION;
+    instance.defaults.baseURL = API_BASE_URL;
+    // addCommonHeader("App-Version", APP_VERSION);
 };
 
 export const isProductionPlatformEnv = (): boolean =>

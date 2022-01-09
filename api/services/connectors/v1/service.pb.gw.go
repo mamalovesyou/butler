@@ -308,7 +308,7 @@ func RegisterConnectorsServiceHandlerFromEndpoint(ctx context.Context, mux *runt
 
 // RegisterConnectorsServiceHandler registers the http handlers for service ConnectorsService to "mux".
 // The handlers forward requests to the grpc endpoint over "conn".
-func RegisterConnectorsServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn grpc.ClientConnInterface) error {
+func RegisterConnectorsServiceHandler(ctx context.Context, mux *runtime.ServeMux, conn *grpc.ClientConn) error {
 	return RegisterConnectorsServiceHandlerClient(ctx, mux, NewConnectorsServiceClient(conn))
 }
 

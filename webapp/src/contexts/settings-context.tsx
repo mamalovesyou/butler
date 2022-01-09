@@ -40,6 +40,7 @@ export const restoreSettings = (): Settings | null => {
           : "light",
       };
     }
+    console.log(settings)
   } catch (err) {
     console.error(err);
     // If stored data is not a strigified JSON this will fail,

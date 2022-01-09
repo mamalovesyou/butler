@@ -20,7 +20,7 @@ export function* onCreateOrganizationRequest() {
     function* ({ payload }: ActionTypes.ICreateOrganizationRequest) {
       try {
         const response: AxiosResponse<V1OrganizationResponse> =
-          yield Api.v1.workspaceServiceCreateOrganization(payload);
+          yield Api.v1.usersServiceCreateOrganization(payload);
         yield put(Actions.createOrganizationSuccess(response.data));
 
         // Next step if this is onboarding page
@@ -29,6 +29,7 @@ export function* onCreateOrganizationRequest() {
           yield put(setOnboardingStep(OnboardingStep.CREATE_WORKSPACE));
         }
       } catch (error) {
+        console.log(error)
         const rpcError: GoogleRpcStatus = error.response.data;
         yield put(Actions.createOrganizationFailure(rpcError));
       }
@@ -40,7 +41,7 @@ export function* onListWorkspacesRequest() {
   yield takeEvery(ActionTypes.LIST_ORGANIZATIONS_REQUEST, function* () {
     try {
       const response: AxiosResponse<V1OrganizationListResponse> =
-        yield Api.v1.workspaceServiceListOrganizations();
+        yield Api.v1.usersServiceListOrganizations();
       yield put(Actions.listOrganizationsSuccess(response.data));
     } catch (error) {
       const rpcError: GoogleRpcStatus = error.response.data;
@@ -55,7 +56,7 @@ export function* onCreateWorkspaceRequest() {
     function* ({ payload }: ActionTypes.ICreateWorkspaceRequest) {
       try {
         const response: AxiosResponse<V1WorkspaceResponse> =
-          yield Api.v1.workspaceServiceCreateWorkspace(payload);
+          yield Api.v1.usersServiceCreateWorkspace(payload);
         yield put(Actions.createWorkspaceSuccess(response.data));
 
         // Next step if this is onboarding page
@@ -77,7 +78,7 @@ export function* onAddWorkspaceMembersRequest() {
     function* ({ payload }: ActionTypes.IAddWorkspaceMembersRequest) {
       try {
         const response: AxiosResponse<V1AuthenticatedUser> =
-          yield Api.v1.authServiceSignIn(payload);
+          yield Api.v1.usersServiceInviteWorkspaceMember(payload);
         yield put(Actions.addWorkspaceMembersSuccess(response.data));
       } catch (error) {
         const rpcError: GoogleRpcStatus = error.response.data;

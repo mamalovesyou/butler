@@ -1,6 +1,6 @@
 syntax = "proto3";
 option go_package = "github.com/butlerhq/butler/api/services/users/v1;users";
-package users;
+package v1;
 
 import "services/users/v1/messages.proto";
 

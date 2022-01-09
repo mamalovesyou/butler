@@ -16,8 +16,8 @@ data:
   LOGGER_ENCODING: "json"
   LOGGER_DISABLE_CALLER: "true"
   LOGGER_DISABLE_STACKTRACE: "false"
-  POSTGRES_HOST: {{ default "" .Values.services.users.postgres.host | quote }}
-  POSTGRES_PORT: {{ default "5432" .Values.services.users.postgres.port | quote }}
-  POSTGRES_NAME: {{ default "butler_users" .Values.services.users.postgres.name | quote }}
-  POSTGRES_USER: {{ default "postgres" .Values.services.users.postgres.user | quote }}
-  POSTGRES_PASSWORD: {{ default "password" .Values.services.users.postgres.password | quote }}
+  SERVICES_USERS_POSTGRES_HOST: {{ default "" .Values.services.users.postgres.host | quote }}
+  SERVICES_USERS_POSTGRES_PORT: {{ default "5432" .Values.services.users.postgres.port | quote }}
+  SERVICES_USERS_POSTGRES_NAME: {{ default "butler_users" .Values.services.users.postgres.name | quote }}
+  SERVICES_USERS_POSTGRES_USER: {{ default "postgres" .Values.services.users.postgres.user | quote }}
+  SERVICES_USERS_POSTGRES_PASSWORD: {{ default "password" .Values.services.users.postgres.password | quote }}

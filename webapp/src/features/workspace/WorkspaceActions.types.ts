@@ -1,15 +1,11 @@
 import {
   GoogleRpcStatus,
   V1CreateOrganizationRequest,
-  V1CreateWorkspaceRequest,
-  V1Organization,
   V1OrganizationListResponse,
   V1OrganizationResponse,
   V1AuthenticatedUser,
-  V1SignInRequest,
-  V1WorkspaceResponse
+  V1WorkspaceResponse, V1InviteWorkspaceMemberRequest, V1CreateWorkspaceRequest,
 } from '../../api';
-import { SET_ONBOARDING_STEP } from '../onboarding';
 
 export const LIST_ORGANIZATIONS_REQUEST = 'LIST_ORGANIZATIONS_REQUEST';
 export const LIST_ORGANIZATIONS_SUCCESS = 'LIST_ORGANIZATIONS_SUCCESS';
@@ -98,7 +94,7 @@ export interface ICreateWorkspaceFailure {
 // AddWorkspaceMembers
 export interface IAddWorkspaceMembersRequest {
   type: typeof ADD_WORKSPACE_MEMBER_REQUEST;
-  payload: V1SignInRequest;
+  payload: V1InviteWorkspaceMemberRequest;
 }
 
 export interface IAddWorkspaceMembersSuccess {

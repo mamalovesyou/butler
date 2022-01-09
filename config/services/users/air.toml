@@ -8,16 +8,19 @@ tmp_dir = "/tmp"
 
 [build]
 # Just plain old shell command. You could use `make` as well.
-cmd = "time go build -i -o /tmp/workspace/main github.com/butlerhq/butler/cmd/workspace"
+cmd = "go build -o /tmp/main github.com/butlerhq/butler/cmd/users"
 # Binary file yields from `cmd`.
-bin = "/tmp/workspace/main"
+bin = "/tmp/main"
 # Customize binary.
-full_bin = "/tmp/workspace/main start --dir ./config/services"
+full_bin = "/tmp/main start --config ./config/services/users/config.yml"
 # Watch these filename extensions.
-include_ext = ["go", "tpl", "tmpl", "html"]
+include_ext = ["go", "tpl", "tmpl", "yaml", "yml"]
+
+# Ignore these filename extensions or directories.
+exclude_dir = []
 
 # Watch these directories if you specified.
-include_dir = ["internal"]
+include_dir = ["api", "internal", "services/users", "cmd/users", "config/services/users"]
 
 # Exclude files.
 exclude_file = []
@@ -26,7 +29,7 @@ exclude_file = []
 exclude_unchanged = true
 
 # This log file places in your tmp_dir.
-log = "workspace_air.log"
+log = "users_air.log"
 # It's not necessary to trigger build each time file changes if it's too frequent.
 delay = 1000 # ms
 # Stop running old binary when build errors occur.

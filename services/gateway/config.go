@@ -9,7 +9,7 @@ var DefaultGatewayConfig = ServiceConfig{
 	Port:               "5001",
 	Logger:             logger.DefaultLoggerConfig,
 	Jaeger:             logger.DefaultJaegerConfig,
-	UsersServiceAddr:   "butler-users-svc:5001",
+	UsersServiceAddr:   "users:3001",
 	DashboardOriginUrl: "app.heybutler.local",
 }
 

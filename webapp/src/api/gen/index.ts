@@ -47,17 +47,44 @@ export interface V1CreateOrganizationRequest {
 }
 
 export interface V1CreateWorkspaceRequest {
-  organizationID?: string;
+  organizationId?: string;
+  workspace?: V1CreateWorkspaceRequestWorkspaceInfo;
+}
+
+export interface V1CreateWorkspaceRequestWorkspaceInfo {
   name?: string;
   description?: string;
 }
 
-export interface V1IsValidAccessTokenResponse {
-  userID?: string;
+export interface V1Invitation {
+  id?: string;
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  role?: string;
+
+  /** @format date-time */
+  expiresAt?: string;
+
+  /** @format date-time */
+  createdAt?: string;
 }
 
-export interface V1ListUsersResponse {
-  users?: V1User[];
+export interface V1InviteInfos {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  role?: string;
+}
+
+export interface V1InviteOrganizationMemberRequest {
+  invitation?: V1InviteInfos;
+  organizationId?: string;
+}
+
+export interface V1InviteWorkspaceMemberRequest {
+  invitation?: V1InviteInfos;
+  workspaceId?: string;
 }
 
 export interface V1OAuthAuthorizationRequestConnectorCode {
@@ -66,11 +93,12 @@ export interface V1OAuthAuthorizationRequestConnectorCode {
 }
 
 export interface V1Organization {
-  ID?: string;
+  id?: string;
   name?: string;
-  ownerID?: string;
+  ownerId?: string;
   workspaces?: V1Workspace[];
   members?: V1UserMember[];
+  invitations?: V1Invitation[];
 
   /** @format date-time */
   createdAt?: string;
@@ -87,52 +115,20 @@ export interface V1OrganizationResponse {
   organization?: V1Organization;
 }
 
-/**
- * The request message containing the refresh token.
- */
 export interface V1RefreshRequest {
   refreshToken?: string;
 }
 
-/**
- * The request message containing the email and password.
- */
 export interface V1SignInRequest {
-  /**
-   * option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-   *    json_schema: {
-   *      title: "SignIn"
-   *      description: "Intentionaly complicated message type to cover many features of Protobuf."
-   *      required: ["email", "password"]
-   *    }
-   *    example: "{\"email\": \"john@heybutler.io\", \"password\": \"AStr0ngP@ssWord!\" }"
-   *  };
-   */
   email?: string;
   password?: string;
 }
 
-/**
- * The request message containing the access token.
- */
 export interface V1SignOutRequest {
   accessToken?: string;
 }
 
-/**
- * The request message containing the name, email and password.
- */
 export interface V1SignUpRequest {
-  /**
-   * option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_schema) = {
-   *    json_schema: {
-   *      title: "SignUp"
-   *      description: "Welcome to BeyButler! We are glad you want to join us :)"
-   *      required: ["name", "email", "password"]
-   *    }
-   *    example: "{\"companyName\": \"Hey Butler Inc.\", \"firstName\": \"john\", \"lastName \": \"john\", \"email\": \"john@gobaboon.co\", \"password\": \"AStr0ngP@ssWord!\" }"
-   *  };
-   */
   lastName?: string;
   firstName?: string;
   email?: string;
@@ -141,8 +137,20 @@ export interface V1SignUpRequest {
   companyRole?: string;
 }
 
+export interface V1SignUpWithInvitationRequest {
+  invitationId?: string;
+  infos?: V1SignUpWithInvitationRequestSignupInfo;
+}
+
+export interface V1SignUpWithInvitationRequestSignupInfo {
+  organizationId?: string;
+  workspaceId?: string;
+  token?: string;
+  password?: string;
+}
+
 export interface V1User {
-  ID?: string;
+  id?: string;
   email?: string;
   firstName?: string;
   lastName?: string;
@@ -155,18 +163,25 @@ export interface V1User {
 }
 
 export interface V1UserMember {
-  userID?: string;
+  userId?: string;
   firstName?: string;
   lastName?: string;
   role?: string;
+
+  /** @format date-time */
+  updatedAt?: string;
+
+  /** @format date-time */
+  createdAt?: string;
 }
 
 export interface V1Workspace {
-  ID?: string;
+  id?: string;
   name?: string;
   description?: string;
-  organizationID?: string;
+  organizationId?: string;
   members?: V1UserMember[];
+  invitations?: V1Invitation[];
 
   /** @format date-time */
   createdAt?: string;
@@ -320,7 +335,7 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title services/proto/user-service.proto
+ * @title services/connectors/v1/responses.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
@@ -328,92 +343,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags AuthService
-     * @name AuthServiceRefreshToken
-     * @request POST:/v1/user/refresh
-     * @secure
-     */
-    authServiceRefreshToken: (body: V1RefreshRequest, params: RequestParams = {}) =>
-      this.request<V1AuthenticatedUser, GoogleRpcStatus>({
-        path: `/v1/auth/refresh`,
-        method: "POST",
-        body: body,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags AuthService
-     * @name AuthServiceSignIn
-     * @request POST:/v1/user/signin
-     * @secure
-     */
-    authServiceSignIn: (body: V1SignInRequest, params: RequestParams = {}) =>
-      this.request<V1AuthenticatedUser, GoogleRpcStatus>({
-        path: `/v1/auth/signin`,
-        method: "POST",
-        body: body,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags AuthService
-     * @name AuthServiceSignOut
-     * @request POST:/v1/user/signout
-     * @secure
-     */
-    authServiceSignOut: (body: V1SignOutRequest, params: RequestParams = {}) =>
-      this.request<any, GoogleRpcStatus>({
-        path: `/v1/auth/signout`,
-        method: "POST",
-        body: body,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags AuthService
-     * @name AuthServiceSignUp
-     * @request POST:/v1/user/signup
-     * @secure
-     */
-    authServiceSignUp: (body: V1SignUpRequest, params: RequestParams = {}) =>
-      this.request<V1AuthenticatedUser, GoogleRpcStatus>({
-        path: `/v1/auth/signup`,
-        method: "POST",
-        body: body,
-        secure: true,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags WorkspaceService
-     * @name WorkspaceServiceListOrganizations
+     * @tags UsersService
+     * @name UsersServiceListOrganizations
+     * @summary Organization
      * @request GET:/v1/organizations
-     * @secure
      */
-    workspaceServiceListOrganizations: (params: RequestParams = {}) =>
+    usersServiceListOrganizations: (params: RequestParams = {}) =>
       this.request<V1OrganizationListResponse, GoogleRpcStatus>({
         path: `/v1/organizations`,
         method: "GET",
-        secure: true,
         format: "json",
         ...params,
       }),
@@ -421,17 +359,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags WorkspaceService
-     * @name WorkspaceServiceCreateOrganization
+     * @tags UsersService
+     * @name UsersServiceCreateOrganization
      * @request POST:/v1/organizations
-     * @secure
      */
-    workspaceServiceCreateOrganization: (body: V1CreateOrganizationRequest, params: RequestParams = {}) =>
+    usersServiceCreateOrganization: (body: V1CreateOrganizationRequest, params: RequestParams = {}) =>
       this.request<V1OrganizationResponse, GoogleRpcStatus>({
         path: `/v1/organizations`,
         method: "POST",
         body: body,
-        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -440,17 +376,136 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags WorkspaceService
-     * @name WorkspaceServiceCreateWorkspace
-     * @request POST:/v1/workspaces
-     * @secure
+     * @tags UsersService
+     * @name UsersServiceInviteOrganizationMember
+     * @request POST:/v1/organizations/members/invite
      */
-    workspaceServiceCreateWorkspace: (body: V1CreateWorkspaceRequest, params: RequestParams = {}) =>
-      this.request<V1WorkspaceResponse, GoogleRpcStatus>({
-        path: `/v1/workspaces`,
+    usersServiceInviteOrganizationMember: (body: V1InviteOrganizationMemberRequest, params: RequestParams = {}) =>
+      this.request<V1Invitation, GoogleRpcStatus>({
+        path: `/v1/organizations/members/invite`,
         method: "POST",
         body: body,
-        secure: true,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags UsersService
+     * @name UsersServiceCreateWorkspace
+     * @summary Workspace
+     * @request POST:/v1/organizations/workspaces
+     */
+    usersServiceCreateWorkspace: (body: V1CreateWorkspaceRequest, params: RequestParams = {}) =>
+      this.request<V1WorkspaceResponse, GoogleRpcStatus>({
+        path: `/v1/organizations/workspaces`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags UsersService
+     * @name UsersServiceRefreshToken
+     * @request POST:/v1/user/refresh
+     */
+    usersServiceRefreshToken: (body: V1RefreshRequest, params: RequestParams = {}) =>
+      this.request<V1AuthenticatedUser, GoogleRpcStatus>({
+        path: `/v1/user/refresh`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags UsersService
+     * @name UsersServiceSignIn
+     * @summary Authentication
+     * @request POST:/v1/user/signin
+     */
+    usersServiceSignIn: (body: V1SignInRequest, params: RequestParams = {}) =>
+      this.request<V1AuthenticatedUser, GoogleRpcStatus>({
+        path: `/v1/user/signin`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags UsersService
+     * @name UsersServiceSignOut
+     * @request POST:/v1/user/signout
+     */
+    usersServiceSignOut: (body: V1SignOutRequest, params: RequestParams = {}) =>
+      this.request<any, GoogleRpcStatus>({
+        path: `/v1/user/signout`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags UsersService
+     * @name UsersServiceSignUp
+     * @request POST:/v1/user/signup
+     */
+    usersServiceSignUp: (body: V1SignUpRequest, params: RequestParams = {}) =>
+      this.request<V1AuthenticatedUser, GoogleRpcStatus>({
+        path: `/v1/user/signup`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags UsersService
+     * @name UsersServiceSignUpWithInvite
+     * @request POST:/v1/user/signup/invites
+     */
+    usersServiceSignUpWithInvite: (body: V1SignUpWithInvitationRequest, params: RequestParams = {}) =>
+      this.request<V1AuthenticatedUser, GoogleRpcStatus>({
+        path: `/v1/user/signup/invites`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags UsersService
+     * @name UsersServiceInviteWorkspaceMember
+     * @request POST:/v1/workspaces/members/invite
+     */
+    usersServiceInviteWorkspaceMember: (body: V1InviteWorkspaceMemberRequest, params: RequestParams = {}) =>
+      this.request<V1Invitation, GoogleRpcStatus>({
+        path: `/v1/workspaces/members/invite`,
+        method: "POST",
+        body: body,
         type: ContentType.Json,
         format: "json",
         ...params,
@@ -462,13 +517,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags ConnectorsService
      * @name ConnectorsServiceListCatalogConnectors
      * @request GET:/v1/{workspaceId}/catalogs
-     * @secure
      */
     connectorsServiceListCatalogConnectors: (workspaceId: string, params: RequestParams = {}) =>
       this.request<V1CatalogConnectorList, GoogleRpcStatus>({
         path: `/v1/${workspaceId}/catalogs`,
         method: "GET",
-        secure: true,
         format: "json",
         ...params,
       }),
@@ -479,13 +532,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags ConnectorsService
      * @name ConnectorsServiceListWorkspaceConnectors
      * @request GET:/v1/{workspaceId}/connectors
-     * @secure
      */
     connectorsServiceListWorkspaceConnectors: (workspaceId: string, params: RequestParams = {}) =>
       this.request<V1WorkspaceConnectorList, GoogleRpcStatus>({
         path: `/v1/${workspaceId}/connectors`,
         method: "GET",
-        secure: true,
         format: "json",
         ...params,
       }),
@@ -496,7 +547,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * @tags ConnectorsService
      * @name ConnectorsServiceGetOauthConnectorAuthorization
      * @request POST:/v1/{workspaceId}/connectors/oauth
-     * @secure
      */
     connectorsServiceGetOauthConnectorAuthorization: (
       workspaceId: string,
@@ -507,7 +557,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
         path: `/v1/${workspaceId}/connectors/oauth`,
         method: "POST",
         body: body,
-        secure: true,
         type: ContentType.Json,
         format: "json",
         ...params,

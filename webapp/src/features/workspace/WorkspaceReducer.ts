@@ -31,31 +31,31 @@ const authReducer = (
     case ActionType.LIST_ORGANIZATIONS_SUCCESS:
       return {
         ...state,
-        organizationId: action.payload.organizations[0]?.ID || null,
-        workspaceId: action.payload.organizations[0]?.workspaces[0]?.ID || null,
-        organizations: ArrayToObject(action.payload.organizations, 'ID')
+        organizationId: action.payload.organizations[0]?.id || null,
+        workspaceId: action.payload.organizations[0]?.workspaces[0]?.id || null,
+        organizations: ArrayToObject(action.payload.organizations, 'id')
       };
 
     case ActionType.CREATE_ORGANIZATION_SUCCESS:
       return {
         ...state,
-        organizationId: state.organizationId ?? action.payload.organization.ID,
+        organizationId: state.organizationId ?? action.payload.organization.id,
         organizations: {
           ...state.organizations,
-          [action.payload.organization.ID]: action.payload.organization
+          [action.payload.organization.id]: action.payload.organization
         }
       };
 
     case ActionType.CREATE_WORKSPACE_SUCCESS:
       return {
         ...state,
-        workspaceId: state.workspaceId ?? action.payload.workspace.ID,
+        workspaceId: state.workspaceId ?? action.payload.workspace.id,
         organizations: {
           ...state.organizations,
-          [action.payload.workspace.organizationID]: {
-            ...state.organizations[action.payload.workspace.organizationID],
+          [action.payload.workspace.organizationId]: {
+            ...state.organizations[action.payload.workspace.organizationId],
             workspaces: [
-              ...state.organizations[action.payload.workspace.organizationID]
+              ...state.organizations[action.payload.workspace.organizationId]
                 .workspaces,
               action.payload.workspace
             ]

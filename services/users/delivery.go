@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+
 	"github.com/butlerhq/butler/api/services/users/v1"
 	butlerctx "github.com/butlerhq/butler/internal/context"
 	"github.com/butlerhq/butler/internal/errors"
@@ -17,7 +18,7 @@ type UseCase interface {
 	RegisterUseCaseEndpoints(server *grpc.Server)
 }
 
-// SignIn auth a user with an email/passsword combination
+// SignIn users a user with an email/passsword combination
 func (svc *UsersService) SignIn(ctx context.Context, req *users.SignInRequest) (*users.AuthenticatedUser, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "users.SignIn")
 	defer span.Finish()

@@ -24,7 +24,7 @@ export function* onLoginRequest() {
     function* ({ payload }: ActionTypes.ILoginRequest) {
       try {
         const response: AxiosResponse<V1AuthenticatedUser> =
-          yield Api.v1.authServiceSignIn(payload);
+          yield Api.v1.usersServiceSignIn(payload);
         yield put(Actions.loginSuccess(response.data));
         yield call(addAuthorization, response.data.accessToken);
 
@@ -49,7 +49,7 @@ export function* onRefreshTokenRequest() {
     function* ({ payload }: ActionTypes.IRefreshRequest) {
       try {
         const response: AxiosResponse<V1AuthenticatedUser> =
-          yield Api.v1.authServiceRefreshToken(payload);
+          yield Api.v1.usersServiceRefreshToken(payload);
         yield put(Actions.refreshSuccess(response.data));
         yield call(addAuthorization, response.data.accessToken);
 
@@ -81,7 +81,7 @@ export function* onSignUpRequest() {
     function* ({ payload }: ActionTypes.ISignupRequest) {
       try {
         const response: AxiosResponse<V1AuthenticatedUser> =
-          yield Api.v1.authServiceSignUp(payload);
+          yield Api.v1.usersServiceSignUp(payload);
         yield put(Actions.signupSuccess(response.data));
         yield call(addAuthorization, response.data.accessToken);
         yield put(push(ONBOARDING_ROOT_PATH));

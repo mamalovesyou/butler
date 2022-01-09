@@ -44,7 +44,7 @@ services:
       password: password
   gateway:
     containerPort: 5000
-    host: api.heybutler.io
+    host: openapi.heybutler.io
 
 resources:
    limits:

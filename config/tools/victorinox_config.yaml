@@ -1,0 +1,23 @@
+environment: local
+
+logger:
+  disableCaller: true
+  disableStacktrace: false
+  encoding: json
+  level: debug
+
+# Config for Services Postgres
+postgres: &postgres
+  host: postgres
+  port: 5432
+  name: postgres
+  user: postgres
+
+services:
+  users:
+    <<: *postgres
+    name: user_db
+
+  connectors:
+    <<: *postgres
+    name: connector_db

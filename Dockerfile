@@ -1,11 +1,14 @@
-FROM golang:1.17-alpine as builder
+FROM golang:1.17-alpine as dependencies
 
 # Install Alpine Dependencies
 RUN apk add --update --no-cache make ca-certificates git
 
 WORKDIR /butler
-#COPY go.mod go.sum ./
-#RUN go mod download
+
+COPY go.* ./
+RUN go mod download
+
+FROM dependencies as builder
 
 COPY . .
 RUN make vendor
@@ -14,7 +17,7 @@ RUN make services
 
 # butler-victorinox
 FROM scratch as victorinox
-COPY --from=builder /butler/bin/butler-victorinox /bin/butler-victorinox
+COPY --from=builder /butler/bin/butler-victorinox /butler-victorinox
 
 # butler-users service
 FROM scratch as service-users
