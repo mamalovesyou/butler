@@ -2,7 +2,6 @@ package octopus
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/butlerhq/butler/internal/logger"
 	"go.uber.org/zap"
@@ -23,18 +22,12 @@ func (svc *OctopusService) GetCatalogConnectors(ctx context.Context, req *emptyp
 	defer span.Finish()
 
 	catalog, err := svc.CatalogUsecase.GetCatalog(ctx)
-	fmt.Println("Got catalog in delivrey: ")
 	if err != nil {
 		return &octopus.CatalogConnectorList{}, err
 	}
 
-	fmt.Println("Got catalog in delivrey: ")
-	fmt.Printf("Catalog len: %d", len(catalog))
-
 	result := make([]*octopus.CatalogConnector, len(catalog))
 	for i, connector := range catalog {
-		fmt.Println("Iterating catalog: ")
-		fmt.Printf("Connector: %v", connector)
 		result[i] = connector.ToPb()
 	}
 

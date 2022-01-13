@@ -23,7 +23,8 @@ func NewGoogleConnector(cfg OAuthConnectorConfig) *GoogleConnector {
 			ClientID:     cfg.ClientID,
 			ClientSecret: cfg.ClientSecret,
 			Scopes: []string{
-				"https://www.googleapis.com/user/adwords",
+				"https://www.googleapis.com/auth/user.organization.read",
+				"https://www.googleapis.com/auth/adwords",
 			},
 			Endpoint:    google.Endpoint,
 			RedirectURL: cfg.RedirectURL,

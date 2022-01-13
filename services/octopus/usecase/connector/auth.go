@@ -3,6 +3,7 @@ package connector
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/services/octopus/models"
@@ -14,6 +15,9 @@ import (
 func (uc *ConnectorUsecase) ConnectWithCode(ctx context.Context, workspaceID, provider, code string) (*models.WorkspaceConnector, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "connector_ucase.ConnectWithCode")
 	defer span.Finish()
+
+	fmt.Println("connectWithCode", workspaceID, provider, code)
+	fmt.Println(uc.CatalogRepo)
 
 	token, err := uc.CatalogRepo.ExchangeOAuthCode(ctx, provider, code)
 	if err != nil {

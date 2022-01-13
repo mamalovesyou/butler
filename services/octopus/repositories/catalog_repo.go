@@ -46,8 +46,11 @@ func (repo *CatalogRepo) ListAvailableConnectors() []models.CatalogConnector {
 }
 
 func (repo *CatalogRepo) ExchangeOAuthCode(ctx context.Context, provider, code string) (*oauth2.Token, error) {
+	fmt.Println("About to echange code", provider, code)
 	repo.mu.Lock()
+	fmt.Println("About to echange code", provider, code)
 	connector, ok := repo.connectorsMap[provider]
+	fmt.Printf("%v", connector)
 	if !ok {
 		return nil, errors.New(fmt.Sprintf("Unknown connector: %s"))
 	}

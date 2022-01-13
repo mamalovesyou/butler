@@ -20,7 +20,7 @@ type OctopusService struct {
 func NewOctopusService(cfg *ServiceConfig, db *gorm.DB) *OctopusService {
 	return &OctopusService{
 		CatalogUsecase:   catalog.NewCatalogUsecase(&cfg.Connectors),
-		ConnectorUsecase: connector.NewConnectorUsecase(db),
+		ConnectorUsecase: connector.NewConnectorUsecase(&cfg.Connectors, db),
 	}
 }
 
