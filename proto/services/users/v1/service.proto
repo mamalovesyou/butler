@@ -71,6 +71,13 @@ service UsersService {
     };
   }
 
+  rpc CompleteOnboarding(CompleteOnboardingRequest) returns (OrganizationResponse) {
+    option (google.api.http) = {
+      post: "/v1/organizations/onboarding"
+      body: "*"
+    };
+  }
+
   rpc InviteOrganizationMember(InviteOrganizationMemberRequest) returns (Invitation) {
     option (google.api.http) = {
       post: "/v1/organizations/members/invite"

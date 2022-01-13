@@ -45,6 +45,10 @@ export interface V1CatalogConnectorList {
   connectors?: V1CatalogConnector[];
 }
 
+export interface V1CompleteOnboardingRequest {
+  organizationId?: string;
+}
+
 export interface V1ConnectWithCodeRequest {
   workspaceId?: string;
   provider?: string;
@@ -101,6 +105,7 @@ export interface V1Organization {
   id?: string;
   name?: string;
   ownerId?: string;
+  onboarded?: boolean;
   workspaces?: V1Workspace[];
   members?: V1UserMember[];
   invitations?: V1Invitation[];
@@ -441,6 +446,23 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     usersServiceInviteOrganizationMember: (body: V1InviteOrganizationMemberRequest, params: RequestParams = {}) =>
       this.request<V1Invitation, GoogleRpcStatus>({
         path: `/v1/organizations/members/invite`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags UsersService
+     * @name UsersServiceCompleteOnboarding
+     * @request POST:/v1/organizations/onboarding
+     */
+    usersServiceCompleteOnboarding: (body: V1CompleteOnboardingRequest, params: RequestParams = {}) =>
+      this.request<V1OrganizationResponse, GoogleRpcStatus>({
+        path: `/v1/organizations/onboarding`,
         method: "POST",
         body: body,
         type: ContentType.Json,

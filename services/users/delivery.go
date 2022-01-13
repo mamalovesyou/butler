@@ -80,6 +80,20 @@ func (svc *UsersService) CreateWorkspace(ctx context.Context, req *users.CreateW
 	}, nil
 }
 
+func (svc *UsersService) CompleteOnboarding(ctx context.Context, req *users.CompleteOnboardingRequest) (*users.OrganizationResponse, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "users.CompleteOnboarding")
+	defer span.Finish()
+
+	org, err := svc.WorkspaceUsecase.CompleteOnboarding(ctx, req.OrganizationId)
+	if err != nil {
+		return &users.OrganizationResponse{}, err
+	}
+
+	return &users.OrganizationResponse{
+		Organization: org.ToPb(),
+	}, nil
+}
+
 func (svc *UsersService) ListOrganizations(ctx context.Context, req *emptypb.Empty) (*users.OrganizationListResponse, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "users.ListOrganizations")
 	defer span.Finish()

@@ -62,8 +62,8 @@ services:
     depends_on:
       - postgres
     command: >
-      /butler-victorinox migrate up --service users --config config/tools/victorinox_config.yaml \
-      && /butler-victorinox migrate up --service octopus --config config/tools/victorinox_config.yaml
+      /butler-victorinox migrate up --service users --config config/tools/victorinox_config.yaml &&
+      /butler-victorinox migrate up --service octopus --config config/tools/victorinox_config.yaml
     networks:
       - dev_net
 

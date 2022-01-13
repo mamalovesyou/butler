@@ -70,3 +70,7 @@ message InviteWorkspaceMemberRequest {
   InviteInfos invitation = 1;
   string workspace_id = 2;
 }
+
+message CompleteOnboardingRequest {
+  string organization_id = 1;
+}

@@ -28,6 +28,7 @@ type UsersServiceClient interface {
 	// Organization
 	ListOrganizations(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*OrganizationListResponse, error)
 	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*OrganizationResponse, error)
+	CompleteOnboarding(ctx context.Context, in *CompleteOnboardingRequest, opts ...grpc.CallOption) (*OrganizationResponse, error)
 	InviteOrganizationMember(ctx context.Context, in *InviteOrganizationMemberRequest, opts ...grpc.CallOption) (*Invitation, error)
 	// Workspace
 	CreateWorkspace(ctx context.Context, in *CreateWorkspaceRequest, opts ...grpc.CallOption) (*WorkspaceResponse, error)
@@ -105,6 +106,15 @@ func (c *usersServiceClient) CreateOrganization(ctx context.Context, in *CreateO
 	return out, nil
 }
 
+func (c *usersServiceClient) CompleteOnboarding(ctx context.Context, in *CompleteOnboardingRequest, opts ...grpc.CallOption) (*OrganizationResponse, error) {
+	out := new(OrganizationResponse)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/CompleteOnboarding", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *usersServiceClient) InviteOrganizationMember(ctx context.Context, in *InviteOrganizationMemberRequest, opts ...grpc.CallOption) (*Invitation, error) {
 	out := new(Invitation)
 	err := c.cc.Invoke(ctx, "/v1.UsersService/InviteOrganizationMember", in, out, opts...)
@@ -145,6 +155,7 @@ type UsersServiceServer interface {
 	// Organization
 	ListOrganizations(context.Context, *emptypb.Empty) (*OrganizationListResponse, error)
 	CreateOrganization(context.Context, *CreateOrganizationRequest) (*OrganizationResponse, error)
+	CompleteOnboarding(context.Context, *CompleteOnboardingRequest) (*OrganizationResponse, error)
 	InviteOrganizationMember(context.Context, *InviteOrganizationMemberRequest) (*Invitation, error)
 	// Workspace
 	CreateWorkspace(context.Context, *CreateWorkspaceRequest) (*WorkspaceResponse, error)
@@ -176,6 +187,9 @@ func (UnimplementedUsersServiceServer) ListOrganizations(context.Context, *empty
 }
 func (UnimplementedUsersServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*OrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganization not implemented")
+}
+func (UnimplementedUsersServiceServer) CompleteOnboarding(context.Context, *CompleteOnboardingRequest) (*OrganizationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CompleteOnboarding not implemented")
 }
 func (UnimplementedUsersServiceServer) InviteOrganizationMember(context.Context, *InviteOrganizationMemberRequest) (*Invitation, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InviteOrganizationMember not implemented")
@@ -325,6 +339,24 @@ func _UsersService_CreateOrganization_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UsersService_CompleteOnboarding_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CompleteOnboardingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServiceServer).CompleteOnboarding(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v1.UsersService/CompleteOnboarding",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServiceServer).CompleteOnboarding(ctx, req.(*CompleteOnboardingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UsersService_InviteOrganizationMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(InviteOrganizationMemberRequest)
 	if err := dec(in); err != nil {
@@ -413,6 +445,10 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateOrganization",
 			Handler:    _UsersService_CreateOrganization_Handler,
+		},
+		{
+			MethodName: "CompleteOnboarding",
+			Handler:    _UsersService_CompleteOnboarding_Handler,
 		},
 		{
 			MethodName: "InviteOrganizationMember",

@@ -190,6 +190,38 @@
         ]
       }
     },
+    "/v1/organizations/onboarding": {
+      "post": {
+        "operationId": "UsersService_CompleteOnboarding",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.OrganizationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.CompleteOnboardingRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      }
+    },
     "/v1/organizations/workspaces": {
       "post": {
         "summary": "Workspace",
@@ -499,6 +531,14 @@
         }
       }
     },
+    "v1.CompleteOnboardingRequest": {
+      "type": "object",
+      "properties": {
+        "organizationId": {
+          "type": "string"
+        }
+      }
+    },
     "v1.ConnectWithCodeRequest": {
       "type": "object",
       "properties": {
@@ -624,6 +664,9 @@
         },
         "ownerId": {
           "type": "string"
+        },
+        "onboarded": {
+          "type": "boolean"
         },
         "workspaces": {
           "type": "array",
