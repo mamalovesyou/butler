@@ -2,10 +2,11 @@ package models
 
 import (
 	"database/sql/driver"
-	"github.com/butlerhq/butler/api/services/connectors/v1"
+	"time"
+
+	"github.com/butlerhq/butler/api/services/octopus/v1"
 	"github.com/google/uuid"
 	"google.golang.org/protobuf/types/known/timestamppb"
-	"time"
 )
 
 type AuthScheme string
@@ -24,22 +25,26 @@ func (as AuthScheme) Value() (driver.Value, error) {
 	return string(as), nil
 }
 
-type Connector struct {
+func (as AuthScheme) String() string {
+	return string(as)
+}
+
+type WorkspaceConnector struct {
 	BaseModel
 	WorkspaceID uuid.UUID
-	AuthScheme  AuthScheme `sql:"AuthSchemeEnum"`
+	AuthScheme  AuthScheme `sql:"auth_scheme_enum"`
 	Provider    string
 	ExpiresIn   time.Time
 	Secret      *ConnectorSecret `gorm:"foreignKey:ConnectorID"`
 }
 
-func (c *Connector) TableName() string {
-	return "connectors"
+func (c *WorkspaceConnector) TableName() string {
+	return "workspace_connectors"
 }
 
 // ToPb return the workspace.UserMembers of a OrganizationMember
-func (c *Connector) ToPb() *connectors.WorkspaceConnector {
-	pb := &connectors.WorkspaceConnector{
+func (c *WorkspaceConnector) ToPb() *octopus.WorkspaceConnector {
+	pb := &octopus.WorkspaceConnector{
 		Id:          c.ID.String(),
 		WorkspaceId: c.WorkspaceID.String(),
 		Name:        c.Provider,

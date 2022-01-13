@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/butlerhq/butler/services/octopus"
+
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/internal/postgres"
 	"github.com/butlerhq/butler/services/users"
@@ -15,7 +17,8 @@ import (
 )
 
 var (
-	UsersMigrationName = "users"
+	UsersMigrationName   = "users"
+	OctopusMigrationName = "octopus"
 
 	AllowedCommands = []string{
 		"up", "up-by-one", "up-to", "down", "down-to", "redo", "reset", "status", "version", "fix",
@@ -32,8 +35,10 @@ func NewGooseMigrations(config *VictorioxConfig) *GooseMigrations {
 
 	// Adding user service migration
 	migrationMap[UsersMigrationName] = users.EmbedMigrations
+	migrationMap[OctopusMigrationName] = octopus.EmbedMigrations
 	servicesDbConfigMap := make(map[string]postgres.PostgresConfig)
 	servicesDbConfigMap[UsersMigrationName] = config.Services.Users
+	servicesDbConfigMap[OctopusMigrationName] = config.Services.Octopus
 
 	return &GooseMigrations{
 		servicesPostgresConfigMap: servicesDbConfigMap,

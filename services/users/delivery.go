@@ -10,13 +10,8 @@ import (
 	"github.com/google/uuid"
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
-
-type UseCase interface {
-	RegisterUseCaseEndpoints(server *grpc.Server)
-}
 
 // SignIn users a user with an email/passsword combination
 func (svc *UsersService) SignIn(ctx context.Context, req *users.SignInRequest) (*users.AuthenticatedUser, error) {
