@@ -1,24 +1,23 @@
 syntax = "proto3";
-option go_package = "github.com/butlerhq/butler/api/services/connectors/v1;connectors";
+option go_package = "github.com/butlerhq/butler/api/services/octopus/v1;octopus";
 package v1;
 
 import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
 
 message CatalogConnector {
-  string id = 1;
   enum AuthType {
     OAUTH2 = 0;
     API_KEY = 1;
   }
-  string name = 2;
-  string iconUrl = 3;
-  string authType = 4;
-  string authUrl = 5;
+  string name = 1;
+  string iconSvg = 2;
+  AuthType authType = 3;
+  string authUrl = 4;
 }
 
 message CatalogConnectorList {
-  repeated CatalogConnector connectors = 2;
+  repeated CatalogConnector connectors = 1;
 }
 
 message WorkspaceConnectorList {
