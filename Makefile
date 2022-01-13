@@ -189,7 +189,7 @@ dev.migrate: ## Provision databases
 
 dev.services: ## Start services with docker in dev environment
 	@echo "Starting dev env..."
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans users gateway webapp
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans users octopus gateway webapp
 
 
 dev.monitor: ## Start monitor dev evironment with docker

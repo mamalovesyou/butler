@@ -30,15 +30,25 @@ export interface V1AuthenticatedUser {
 }
 
 export interface V1CatalogConnector {
-  id?: string;
   name?: string;
-  iconUrl?: string;
-  authType?: string;
+  iconSvg?: string;
+  authType?: V1CatalogConnectorAuthType;
   authUrl?: string;
+}
+
+export enum V1CatalogConnectorAuthType {
+  OAUTH2 = "OAUTH2",
+  API_KEY = "API_KEY",
 }
 
 export interface V1CatalogConnectorList {
   connectors?: V1CatalogConnector[];
+}
+
+export interface V1ConnectWithCodeRequest {
+  workspaceId?: string;
+  provider?: string;
+  code?: string;
 }
 
 export interface V1CreateOrganizationRequest {
@@ -85,11 +95,6 @@ export interface V1InviteOrganizationMemberRequest {
 export interface V1InviteWorkspaceMemberRequest {
   invitation?: V1InviteInfos;
   workspaceId?: string;
-}
-
-export interface V1OAuthAuthorizationRequestConnectorCode {
-  name?: string;
-  code?: string;
 }
 
 export interface V1Organization {
@@ -150,7 +155,7 @@ export interface V1SignUpWithInvitationRequestSignupInfo {
 }
 
 export interface V1User {
-  id?: string;
+  ID?: string;
   email?: string;
   firstName?: string;
   lastName?: string;
@@ -208,6 +213,10 @@ export interface V1WorkspaceConnector {
 
 export interface V1WorkspaceConnectorList {
   connectors?: V1WorkspaceConnector[];
+}
+
+export interface V1WorkspaceConnectorsRequest {
+  workspaceId?: string;
 }
 
 export interface V1WorkspaceResponse {
@@ -335,11 +344,60 @@ export class HttpClient<SecurityDataType = unknown> {
 }
 
 /**
- * @title services/connectors/v1/responses.proto
+ * @title google/api/http.proto
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
   v1 = {
+    /**
+     * No description
+     *
+     * @tags OctopusService
+     * @name OctopusServiceListWorkspaceConnectors
+     * @request POST:/v1/connector
+     */
+    octopusServiceListWorkspaceConnectors: (body: V1WorkspaceConnectorsRequest, params: RequestParams = {}) =>
+      this.request<V1WorkspaceConnectorList, GoogleRpcStatus>({
+        path: `/v1/connector`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags OctopusService
+     * @name OctopusServiceGetCatalogConnectors
+     * @request GET:/v1/connector/catalog
+     */
+    octopusServiceGetCatalogConnectors: (params: RequestParams = {}) =>
+      this.request<V1CatalogConnectorList, GoogleRpcStatus>({
+        path: `/v1/connector/catalog`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags OctopusService
+     * @name OctopusServiceConnectWithCode
+     * @request POST:/v1/connector/connect/oauth
+     */
+    octopusServiceConnectWithCode: (body: V1ConnectWithCodeRequest, params: RequestParams = {}) =>
+      this.request<V1WorkspaceConnector, GoogleRpcStatus>({
+        path: `/v1/connector/connect/oauth`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
     /**
      * No description
      *
@@ -504,57 +562,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     usersServiceInviteWorkspaceMember: (body: V1InviteWorkspaceMemberRequest, params: RequestParams = {}) =>
       this.request<V1Invitation, GoogleRpcStatus>({
         path: `/v1/workspaces/members/invite`,
-        method: "POST",
-        body: body,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags ConnectorsService
-     * @name ConnectorsServiceListCatalogConnectors
-     * @request GET:/v1/{workspaceId}/catalogs
-     */
-    connectorsServiceListCatalogConnectors: (workspaceId: string, params: RequestParams = {}) =>
-      this.request<V1CatalogConnectorList, GoogleRpcStatus>({
-        path: `/v1/${workspaceId}/catalogs`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags ConnectorsService
-     * @name ConnectorsServiceListWorkspaceConnectors
-     * @request GET:/v1/{workspaceId}/connectors
-     */
-    connectorsServiceListWorkspaceConnectors: (workspaceId: string, params: RequestParams = {}) =>
-      this.request<V1WorkspaceConnectorList, GoogleRpcStatus>({
-        path: `/v1/${workspaceId}/connectors`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags ConnectorsService
-     * @name ConnectorsServiceGetOauthConnectorAuthorization
-     * @request POST:/v1/{workspaceId}/connectors/oauth
-     */
-    connectorsServiceGetOauthConnectorAuthorization: (
-      workspaceId: string,
-      body: V1OAuthAuthorizationRequestConnectorCode,
-      params: RequestParams = {},
-    ) =>
-      this.request<V1WorkspaceConnector, GoogleRpcStatus>({
-        path: `/v1/${workspaceId}/connectors/oauth`,
         method: "POST",
         body: body,
         type: ContentType.Json,

@@ -62,18 +62,34 @@ services:
     depends_on:
       - postgres
     command: >
-      /butler-victorinox migrate up --config config/tools/victorinox_config.yaml
+      /butler-victorinox migrate up --service users --config config/tools/victorinox_config.yaml \
+      && /butler-victorinox migrate up --service octopus --config config/tools/victorinox_config.yaml
     networks:
       - dev_net
 
   users:
     image: cosmtrek/air
     working_dir: /butler
-    ports:
-      - 3001:3001
     volumes:
       - ../..:/butler
-    entrypoint: ["air", "-c", "config/services/users/air.toml"]
+      - ../../config/services/users:/config
+    entrypoint: [ "air", "-c", "/config/air.toml" ]
+    ports:
+      - 3001:3001
+    depends_on:
+      - postgres
+    networks:
+      - dev_net
+
+  octopus:
+    image: cosmtrek/air
+    working_dir: /butler
+    ports:
+      - 3002:3002
+    volumes:
+      - ../..:/butler
+      - ../../config/services/octopus:/config
+    entrypoint: [ "air", "-c", "/config/air.toml" ]
     depends_on:
       - postgres
     networks:
@@ -82,11 +98,12 @@ services:
   gateway:
     image: cosmtrek/air
     working_dir: /butler
-    ports:
-      - 8080:8080
     volumes:
       - ../..:/butler
-    entrypoint: ["air", "-c", "config/services/gateway/air.toml"]
+      - ../../config/services/gateway:/config
+    entrypoint: [ "air", "-c", "/config/air.toml" ]
+    ports:
+      - 8080:8080
     depends_on:
       - postgres
     networks:

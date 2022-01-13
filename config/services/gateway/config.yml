@@ -1,6 +1,7 @@
 environment: dev
 port: 8080
 usersServiceAddr: "users:3001"
+ocotpusServiceAddr: "octopus:3002"
 dashboardOriginUrl: "*"
 logger:
   disableCaller: true
