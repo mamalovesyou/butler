@@ -1,9 +1,9 @@
 import {
   GoogleRpcStatus,
   V1CatalogConnectorList,
-  V1OAuthAuthorizationRequestConnectorCode,
+  V1ConnectWithCodeRequest,
   V1WorkspaceConnector,
-  V1WorkspaceConnectorList
+  V1WorkspaceConnectorList, V1WorkspaceConnectorsRequest
 } from '../../api';
 import * as ActionTypes from './ConnectorsActions.types';
 
@@ -27,8 +27,9 @@ export const listCatalogConnectorsFailure = (
 });
 
 export const listWorkspaceConnectorsRequest =
-  (): ActionTypes.ConnectorsActionType => ({
-    type: ActionTypes.LIST_WORKSPACE_CONNECTORS_REQUEST
+  (payload: V1WorkspaceConnectorsRequest): ActionTypes.ConnectorsActionType => ({
+    type: ActionTypes.LIST_WORKSPACE_CONNECTORS_REQUEST,
+    payload
   });
 
 export const listWorkspaceConnectorsSuccess = (
@@ -46,7 +47,7 @@ export const listWorkspaceConnectorsFailure = (
 });
 
 export const connectOAuthConnectorRequest = (
-  payload: V1OAuthAuthorizationRequestConnectorCode
+  payload: V1ConnectWithCodeRequest
 ): ActionTypes.ConnectorsActionType => ({
   type: ActionTypes.CONNECT_OAUTH_CONNECTOR_REQUEST,
   payload

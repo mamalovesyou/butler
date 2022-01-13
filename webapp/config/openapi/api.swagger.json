@@ -1,15 +1,15 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "services/connectors/v1/responses.proto",
+    "title": "google/api/http.proto",
     "version": "version not set"
   },
   "tags": [
     {
-      "name": "ConnectorsService"
+      "name": "UsersService"
     },
     {
-      "name": "UsersService"
+      "name": "OctopusService"
     }
   ],
   "consumes": [
@@ -19,6 +19,92 @@
     "application/json"
   ],
   "paths": {
+    "/v1/connector": {
+      "post": {
+        "operationId": "OctopusService_ListWorkspaceConnectors",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.WorkspaceConnectorList"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.WorkspaceConnectorsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OctopusService"
+        ]
+      }
+    },
+    "/v1/connector/catalog": {
+      "get": {
+        "operationId": "OctopusService_GetCatalogConnectors",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.CatalogConnectorList"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "tags": [
+          "OctopusService"
+        ]
+      }
+    },
+    "/v1/connector/connect/oauth": {
+      "post": {
+        "operationId": "OctopusService_ConnectWithCode",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.WorkspaceConnector"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.ConnectWithCodeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OctopusService"
+        ]
+      }
+    },
     "/v1/organizations": {
       "get": {
         "summary": "Organization",
@@ -332,104 +418,6 @@
           "UsersService"
         ]
       }
-    },
-    "/v1/{workspaceId}/catalogs": {
-      "get": {
-        "operationId": "ConnectorsService_ListCatalogConnectors",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1.CatalogConnectorList"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/google.rpc.Status"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "workspaceId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "ConnectorsService"
-        ]
-      }
-    },
-    "/v1/{workspaceId}/connectors": {
-      "get": {
-        "operationId": "ConnectorsService_ListWorkspaceConnectors",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1.WorkspaceConnectorList"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/google.rpc.Status"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "workspaceId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "tags": [
-          "ConnectorsService"
-        ]
-      }
-    },
-    "/v1/{workspaceId}/connectors/oauth": {
-      "post": {
-        "operationId": "ConnectorsService_GetOauthConnectorAuthorization",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1.WorkspaceConnector"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/google.rpc.Status"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "workspaceId",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1.OAuthAuthorizationRequest.ConnectorCode"
-            }
-          }
-        ],
-        "tags": [
-          "ConnectorsService"
-        ]
-      }
     }
   },
   "definitions": {
@@ -478,22 +466,27 @@
     "v1.CatalogConnector": {
       "type": "object",
       "properties": {
-        "id": {
-          "type": "string"
-        },
         "name": {
           "type": "string"
         },
-        "iconUrl": {
+        "iconSvg": {
           "type": "string"
         },
         "authType": {
-          "type": "string"
+          "$ref": "#/definitions/v1.CatalogConnector.AuthType"
         },
         "authUrl": {
           "type": "string"
         }
       }
+    },
+    "v1.CatalogConnector.AuthType": {
+      "type": "string",
+      "enum": [
+        "OAUTH2",
+        "API_KEY"
+      ],
+      "default": "OAUTH2"
     },
     "v1.CatalogConnectorList": {
       "type": "object",
@@ -503,6 +496,20 @@
           "items": {
             "$ref": "#/definitions/v1.CatalogConnector"
           }
+        }
+      }
+    },
+    "v1.ConnectWithCodeRequest": {
+      "type": "object",
+      "properties": {
+        "workspaceId": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
         }
       }
     },
@@ -602,17 +609,6 @@
           "$ref": "#/definitions/v1.InviteInfos"
         },
         "workspaceId": {
-          "type": "string"
-        }
-      }
-    },
-    "v1.OAuthAuthorizationRequest.ConnectorCode": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "code": {
           "type": "string"
         }
       }
@@ -878,6 +874,14 @@
           "items": {
             "$ref": "#/definitions/v1.WorkspaceConnector"
           }
+        }
+      }
+    },
+    "v1.WorkspaceConnectorsRequest": {
+      "type": "object",
+      "properties": {
+        "workspaceId": {
+          "type": "string"
         }
       }
     },

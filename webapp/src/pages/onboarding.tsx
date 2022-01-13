@@ -50,7 +50,7 @@ const Onboarding: React.FC = () => {
   useEffect(() => {
     if (organizationId) {
       if (workspaceId) {
-        dispatch(listWorkspaceConnectorsRequest());
+        dispatch(listWorkspaceConnectorsRequest({ workspaceId }));
         dispatch(listCatalogConnectorsRequest());
         dispatch(setOnboardingStep(OnboardingStep.CONNECT_DATA_SOURCE));
       } else {

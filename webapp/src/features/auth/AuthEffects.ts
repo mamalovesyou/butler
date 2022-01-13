@@ -106,6 +106,7 @@ export const authEffects = [
   fork(onLoginRequest),
   fork(onSignUpRequest),
   fork(onRefreshTokenRequest),
+  fork(onRefreshTokenFailure),
   fork(onLogout)
 ];
 
