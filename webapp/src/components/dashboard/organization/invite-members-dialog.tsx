@@ -9,32 +9,31 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    FormHelperText, IconButton, List, ListItem, ListItemIcon, ListItemText,
+    IconButton, List, ListItem, ListItemIcon, ListItemText,
     TextField
 } from '@mui/material';
 import SendIcon from '@mui/icons-material/Send';
 import AddIcon from '@mui/icons-material/Add';
 import CloseIcon from '@mui/icons-material/Close';
-import {useWorkspace} from "../../../hooks/use-workspace";
-import {useDispatch} from "react-redux";
 import {LoadingButton} from "@mui/lab";
 import {Api, GoogleRpcStatus} from "../../../api";
 
 interface BaseProps {
-    mode: "organization" | "workspace"
-}
-
-interface IOrganizationModeProps extends BaseProps {
+    mode: "organization" | "workspace";
     organizationId: string;
 }
 
+interface IOrganizationModeProps extends BaseProps {
+    mode: "organization";
+}
+
 interface IWorkspaceModeProps extends BaseProps {
+    mode: "workspace";
     workspaceId: string;
 }
 
-export const InviteMembersDialog: FC<IOrganizationModeProps | IWorkspaceModeProps> = (props) => {
+export const InviteMembersDialog = (props: IOrganizationModeProps | IWorkspaceModeProps) => {
 
-    const {mode} = props;
     const [open, setOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const [emails, setEmails] = useState([]);
@@ -55,13 +54,12 @@ export const InviteMembersDialog: FC<IOrganizationModeProps | IWorkspaceModeProp
     const sendInvites = async (): Promise<void> => {
         try {
             setLoading(true);
-            if (mode === "organization") {
-                const {organizationId} = props as IOrganizationModeProps;
-                await Api.v1.usersServiceBulkInviteOrganizationMember({organizationId, emails});
-            } else {
-                const {workspaceId} = props as IWorkspaceModeProps;
-                await Api.v1.usersServiceBulkInviteWorkspaceMember({workspaceId, emails});
+            let payload: any = { organizationId: props.organizationId, emails };
+            if (props.mode === "workspace") {
+                payload.workspaceId = props.workspaceId;
             }
+            await Api.v1.usersServiceSendBatchInvitations(payload);
+            setEmails([]);
             setLoading(false);
             setOpen(false);
         } catch (err) {

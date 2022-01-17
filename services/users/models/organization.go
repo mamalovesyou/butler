@@ -8,11 +8,12 @@ import (
 
 type Organization struct {
 	BaseModel
-	Name        string
-	OwnerID     uuid.UUID
-	Onboarded   bool
-	Workspaces  []Workspace          `gorm:"foreignKey:OrganizationID"`
-	UserMembers []OrganizationMember `gorm:"foreignKey:OrganizationID"`
+	Name               string
+	OwnerID            uuid.UUID
+	Onboarded          bool
+	Workspaces         []Workspace          `gorm:"foreignKey:OrganizationID"`
+	UserMembers        []OrganizationMember `gorm:"foreignKey:OrganizationID"`
+	PendingInvitations []Invitation         `gorm:"foreignKey:OrganizationID"`
 }
 
 func (u *Organization) TableName() string {
@@ -41,6 +42,12 @@ func (o *Organization) ToPb() *users.Organization {
 		workspaces[i] = w.ToPb()
 	}
 	pb.Workspaces = workspaces
+
+	invitations := make([]*users.Invitation, len(o.PendingInvitations))
+	for i, invite := range o.PendingInvitations {
+		invitations[i] = invite.ToPb()
+	}
+	pb.Invitations = invitations
 
 	return pb
 }

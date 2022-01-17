@@ -3,6 +3,8 @@ package repositories
 import (
 	"time"
 
+	"gorm.io/gorm/clause"
+
 	"github.com/google/uuid"
 
 	"github.com/butlerhq/butler/services/users/models"
@@ -18,34 +20,58 @@ func NewInvitationRepo(db *gorm.DB) *InvitationRepo {
 	return &InvitationRepo{db: db}
 }
 
-func (repo *InvitationRepo) WithTransaction(f func(repo *InvitationRepo) error) error {
-	return repo.db.Transaction(func(tx *gorm.DB) error {
-		return f(NewInvitationRepo(tx))
-	})
+func (repo *InvitationRepo) DB() *gorm.DB {
+	return repo.db
 }
 
-// CreateOrganizationInvitations and save it in database
-func (repo *InvitationRepo) CreateOrganizationInvitations(organizationID string, emails []string, expiresAt time.Time) ([]models.OrganizationInvitation, error) {
+func (repo *InvitationRepo) WithTransaction(db *gorm.DB) *InvitationRepo {
+	return NewInvitationRepo(db)
+}
+
+// GetInvitation retrieves an invitation by ID and token
+func (repo *InvitationRepo) GetInvitation(invitationID, token string) (models.Invitation, error) {
+	invitation := models.Invitation{Token: token, BaseModel: models.BaseModel{ID: uuid.MustParse(invitationID)}}
+	if err := repo.db.Preload(clause.Associations).First(&invitation).Error; err != nil {
+		return models.Invitation{}, err
+	}
+	return invitation, nil
+}
+
+// CreateOrganizationInvitations will create an invitation for a given organization for each emails
+func (repo *InvitationRepo) CreateOrganizationInvitations(organizationID string, emails []string, expiresAt time.Time) ([]models.Invitation, error) {
 	orgaUUID := uuid.MustParse(organizationID)
-	invites := make([]models.OrganizationInvitation, len(emails))
+	invites := make([]models.Invitation, len(emails))
 	for i, email := range emails {
-		invites[i] = models.OrganizationInvitation{OrganizationID: orgaUUID, Email: email, ExpiresAt: expiresAt}
+		invites[i] = models.Invitation{OrganizationID: orgaUUID, Email: email, ExpiresAt: expiresAt}
 	}
 	if err := repo.db.Create(&invites).Error; err != nil {
-		return []models.OrganizationInvitation{}, err
+		return []models.Invitation{}, err
 	}
 	return invites, nil
 }
 
-// CreateWorkspaceInvitations and save it in database
-func (repo *InvitationRepo) CreateWorkspaceInvitations(workspaceID string, emails []string, expiresAt time.Time) ([]models.WorkspaceInvitation, error) {
-	workspaceUUID := uuid.MustParse(workspaceID)
-	invites := make([]models.WorkspaceInvitation, len(emails))
+// CreateWorkspaceInvitations will create an invitation for a given organization for each emails
+func (repo *InvitationRepo) CreateWorkspaceInvitations(organizationID string, workspaceID string, emails []string, expiresAt time.Time) ([]models.Invitation, error) {
+	invites := make([]models.Invitation, len(emails))
 	for i, email := range emails {
-		invites[i] = models.WorkspaceInvitation{WorkspaceID: workspaceUUID, Email: email, ExpiresAt: expiresAt}
+		invites[i] = models.Invitation{
+			OrganizationID: uuid.MustParse(organizationID),
+			WorkspaceID:    uuid.MustParse(workspaceID),
+			Email:          email,
+			ExpiresAt:      expiresAt,
+		}
 	}
 	if err := repo.db.Create(&invites).Error; err != nil {
-		return []models.WorkspaceInvitation{}, err
+		return []models.Invitation{}, err
 	}
 	return invites, nil
+}
+
+// DeleteInvitation will soft delete an invitation
+func (repo *InvitationRepo) DeleteInvitation(invitationID string) error {
+	invitation := models.Invitation{BaseModel: models.BaseModel{ID: uuid.MustParse(invitationID)}}
+	if err := repo.db.Delete(&invitation).Error; err != nil {
+		return err
+	}
+	return nil
 }

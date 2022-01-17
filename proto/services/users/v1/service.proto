@@ -16,7 +16,7 @@ service UsersService {
   // Authentication
   rpc SignIn(SignInRequest) returns (AuthenticatedUser) {
     option (google.api.http) = {
-      post: "/v1/user/signin"
+      post: "/v1/users/signin"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -26,7 +26,7 @@ service UsersService {
 
   rpc SignUp(SignUpRequest) returns (AuthenticatedUser) {
     option (google.api.http) = {
-      post: "/v1/user/signup"
+      post: "/v1/users/signup"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -36,7 +36,7 @@ service UsersService {
 
   rpc SignUpWithInvite(SignUpWithInvitationRequest) returns (AuthenticatedUser) {
     option (google.api.http) = {
-      post: "/v1/user/signup/invites"
+      post: "/v1/users/signup/invites"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -46,13 +46,13 @@ service UsersService {
 
   rpc SignOut(SignOutRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/v1/user/signout"
+      post: "/v1/users/signout"
       body: "*"
     };
   }
   rpc RefreshToken(RefreshRequest) returns (AuthenticatedUser) {
     option (google.api.http) = {
-      post: "/v1/user/refresh"
+      post: "/v1/users/refresh"
       body: "*"
     };
   }
@@ -85,13 +85,6 @@ service UsersService {
     };
   }
 
-  rpc BulkInviteOrganizationMember(BulkInviteOrganizationMemberRequest) returns (InvitationListResponse) {
-    option (google.api.http) = {
-      post: "/v1/organizations/team/invites"
-      body: "*"
-    };
-  }
-
   // Workspace
   rpc CreateWorkspace(CreateWorkspaceRequest) returns (WorkspaceResponse) {
     option (google.api.http) = {
@@ -107,9 +100,16 @@ service UsersService {
     };
   }
 
-  rpc BulkInviteWorkspaceMember(BulkInviteWorkspaceMemberRequest) returns (InvitationListResponse) {
+  rpc SendBatchInvitations(BatchInviteMemberRequest) returns (InvitationListResponse) {
     option (google.api.http) = {
-      post: "/v1/workspaces/team/invites"
+      post: "/v1/invitations/send"
+      body: "*"
+    };
+  }
+
+  rpc GetInvitation(GetInvitationRequest) returns (Invitation) {
+    option (google.api.http) = {
+      post: "/v1/invitations",
       body: "*"
     };
   }

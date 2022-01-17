@@ -105,6 +105,70 @@
         ]
       }
     },
+    "/v1/invitations": {
+      "post": {
+        "operationId": "UsersService_GetInvitation",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.Invitation"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.GetInvitationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      }
+    },
+    "/v1/invitations/send": {
+      "post": {
+        "operationId": "UsersService_SendBatchInvitations",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.InvitationListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.BatchInviteMemberRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      }
+    },
     "/v1/organizations": {
       "get": {
         "summary": "Organization",
@@ -222,39 +286,7 @@
         ]
       }
     },
-    "/v1/organizations/team/invites": {
-      "post": {
-        "operationId": "UsersService_BulkInviteOrganizationMember",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1.InvitationListResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/google.rpc.Status"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1.BulkInviteOrganizationMemberRequest"
-            }
-          }
-        ],
-        "tags": [
-          "UsersService"
-        ]
-      }
-    },
-    "/v1/user/refresh": {
+    "/v1/users/refresh": {
       "post": {
         "operationId": "UsersService_RefreshToken",
         "responses": {
@@ -286,7 +318,7 @@
         ]
       }
     },
-    "/v1/user/signin": {
+    "/v1/users/signin": {
       "post": {
         "summary": "Authentication",
         "operationId": "UsersService_SignIn",
@@ -320,7 +352,7 @@
         "security": []
       }
     },
-    "/v1/user/signout": {
+    "/v1/users/signout": {
       "post": {
         "operationId": "UsersService_SignOut",
         "responses": {
@@ -352,7 +384,7 @@
         ]
       }
     },
-    "/v1/user/signup": {
+    "/v1/users/signup": {
       "post": {
         "operationId": "UsersService_SignUp",
         "responses": {
@@ -385,7 +417,7 @@
         "security": []
       }
     },
-    "/v1/user/signup/invites": {
+    "/v1/users/signup/invites": {
       "post": {
         "operationId": "UsersService_SignUpWithInvite",
         "responses": {
@@ -482,38 +514,6 @@
           "UsersService"
         ]
       }
-    },
-    "/v1/workspaces/team/invites": {
-      "post": {
-        "operationId": "UsersService_BulkInviteWorkspaceMember",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1.InvitationListResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/google.rpc.Status"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1.BulkInviteWorkspaceMemberRequest"
-            }
-          }
-        ],
-        "tags": [
-          "UsersService"
-        ]
-      }
     }
   },
   "definitions": {
@@ -559,7 +559,7 @@
       },
       "description": "The response message containing the User."
     },
-    "v1.BulkInviteOrganizationMemberRequest": {
+    "v1.BatchInviteMemberRequest": {
       "type": "object",
       "properties": {
         "emails": {
@@ -570,17 +570,6 @@
         },
         "organizationId": {
           "type": "string"
-        }
-      }
-    },
-    "v1.BulkInviteWorkspaceMemberRequest": {
-      "type": "object",
-      "properties": {
-        "emails": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         },
         "workspaceId": {
           "type": "string"
@@ -678,6 +667,17 @@
         }
       }
     },
+    "v1.GetInvitationRequest": {
+      "type": "object",
+      "properties": {
+        "invitationId": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        }
+      }
+    },
     "v1.GetOrganizationRequest": {
       "type": "object",
       "properties": {
@@ -703,11 +703,13 @@
         "email": {
           "type": "string"
         },
-        "expiresAt": {
-          "type": "string",
-          "format": "date-time"
+        "organization": {
+          "$ref": "#/definitions/v1.Organization"
         },
-        "createdAt": {
+        "workspace": {
+          "$ref": "#/definitions/v1.Workspace"
+        },
+        "expiresAt": {
           "type": "string",
           "format": "date-time"
         }
@@ -839,27 +841,19 @@
     "v1.SignUpWithInvitationRequest": {
       "type": "object",
       "properties": {
-        "invitationId": {
+        "lastName": {
           "type": "string"
         },
-        "infos": {
-          "$ref": "#/definitions/v1.SignUpWithInvitationRequest.SignupInfo"
-        }
-      }
-    },
-    "v1.SignUpWithInvitationRequest.SignupInfo": {
-      "type": "object",
-      "properties": {
-        "organizationId": {
-          "type": "string"
-        },
-        "workspaceId": {
-          "type": "string"
-        },
-        "token": {
+        "firstName": {
           "type": "string"
         },
         "password": {
+          "type": "string"
+        },
+        "invitationId": {
+          "type": "string"
+        },
+        "token": {
           "type": "string"
         }
       }

@@ -16,6 +16,10 @@ func NewOrganizationRepo(db *gorm.DB) *OrganizationRepo {
 	return &OrganizationRepo{db: db}
 }
 
+func (repo *OrganizationRepo) DB() *gorm.DB {
+	return repo.db
+}
+
 func (repo *OrganizationRepo) WithTransaction(db *gorm.DB) *OrganizationRepo {
 	return NewOrganizationRepo(db)
 }
@@ -80,14 +84,17 @@ func (repo *OrganizationRepo) ListByUserID(userID string) ([]models.Organization
 	return result, nil
 }
 
-// AddOrganizationMember add a OrganizationMember to an Organization
-func (repo *OrganizationRepo) AddOrganizationMember(organizationID string, member *models.OrganizationMember) (*models.Workspace, error) {
-	wk := &models.Workspace{}
-	tx := repo.db.Model(wk).Preload(clause.Associations).Where("id = ?", uuid.MustParse(organizationID)).Take(wk)
-	if err := tx.Association("UserMembers").Append(member); err != nil {
-		return &models.Workspace{}, err
+// AddOrganizationMember add a OrganizationMember to a Workspace
+func (repo *OrganizationRepo) AddOrganizationMember(organizationID uuid.UUID, userID uuid.UUID) (*models.OrganizationMember, error) {
+	userMember := models.OrganizationMember{
+		OrganizationID: organizationID,
+		UserID:         userID,
+		Role:           "member",
 	}
-	return wk, nil
+	if err := repo.db.Create(&userMember).Error; err != nil {
+		return &models.OrganizationMember{}, err
+	}
+	return &userMember, nil
 }
 
 // GetOrganizationMember for a given organizationID, userID pair

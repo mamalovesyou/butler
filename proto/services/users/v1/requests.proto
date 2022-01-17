@@ -18,17 +18,13 @@ message SignUpRequest {
   string companyRole = 6 [(validate.rules).string.min_len = 2];
 }
 
+
 message SignUpWithInvitationRequest {
-  string invitationId = 1;
-  message SignupInfo {
-    oneof binding{
-      string organizationId = 2;
-      string workspaceId = 3;
-    }
-    string token = 4;
-    string password = 5;
-  }
-  SignupInfo infos = 2;
+  string lastName = 1 [(validate.rules).string.min_len = 2];
+  string firstName = 2 [(validate.rules).string.min_len = 2];
+  string password = 3;
+  string invitationId = 4;
+  string token = 5;
 }
 
 message SignOutRequest {
@@ -62,15 +58,15 @@ message GetWorkspaceRequest {
   string workspace_id = 1;
 }
 
-
-message BulkInviteOrganizationMemberRequest {
-  repeated string emails = 1;
-  string organization_id = 2;
+message GetInvitationRequest {
+  string invitation_id = 1;
+  string token = 2;
 }
 
-message BulkInviteWorkspaceMemberRequest {
+message BatchInviteMemberRequest {
   repeated string emails = 1;
-  string workspace_id = 2;
+  string organization_id = 2;
+  string workspace_id = 3;
 }
 
 message CompleteOnboardingRequest {

@@ -18,13 +18,14 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import {DotsHorizontal as DotsHorizontalIcon} from '../../../icons/dots-horizontal';
-import {UserCircle as UserCircleIcon} from '../../../icons/user-circle';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {Scrollbar} from '../../scrollbar';
 import {SeverityPill} from '../../severity-pill';
 import {V1Invitation, V1UserMember} from "../../../api";
 import {InviteMembersDialog} from "./invite-members-dialog";
 import {useWorkspace} from "../../../hooks/use-workspace";
 import {UserAvatar} from "../../user-avatar";
+import * as moment from 'moment'
 
 interface ITeamMembersProps {
     members: V1UserMember[];
@@ -50,6 +51,11 @@ export const TeamMembersTabs: FC<IOrganizationTeamMembersProps | IWorkspaceTeamM
         setValue(newValue);
     };
 
+    const parseDate = (isoDate: string): string => {
+        const d = new Date(isoDate)
+        return d.toString()
+    }
+
     return <Card>
         <CardContent sx={{p: 2}}>
             <Box
@@ -64,7 +70,7 @@ export const TeamMembersTabs: FC<IOrganizationTeamMembersProps | IWorkspaceTeamM
                     <Typography variant="h6">Team members</Typography>
                 </div>
                 {mode === "organization" ? <InviteMembersDialog mode={mode} organizationId={organizationId}/> :
-                    <InviteMembersDialog mode={mode} workspaceId={props.workspaceId}/>}
+                    <InviteMembersDialog organizationId={organizationId} mode={mode} workspaceId={props.workspaceId}/>}
             </Box>
         </CardContent>
         <Scrollbar>
@@ -76,7 +82,7 @@ export const TeamMembersTabs: FC<IOrganizationTeamMembersProps | IWorkspaceTeamM
                             <Tab label="Pending invitations" value="2"/>
                         </TabList>
                     </Box>
-                    <TabPanel value="1" sx={{px: 0, py: 1}}>
+                    <TabPanel value="1" sx={{px: 0, py: 0}}>
                         <Table sx={{minWidth: 400}}>
                             <TableHead>
                                 <TableRow>
@@ -120,11 +126,12 @@ export const TeamMembersTabs: FC<IOrganizationTeamMembersProps | IWorkspaceTeamM
                             </TableBody>
                         </Table>
                     </TabPanel>
-                    <TabPanel value="2" sx={{px: 0, py: 1}}>
+                    <TabPanel value="2" sx={{px: 0, py: 0}}>
                         {invitations.length > 0 ? <Table sx={{minWidth: 400}}>
                                 <TableHead>
                                     <TableRow>
                                         <TableCell>Invitations</TableCell>
+                                        <TableCell>Expiration</TableCell>
                                         <TableCell/>
                                     </TableRow>
                                 </TableHead>
@@ -134,7 +141,7 @@ export const TeamMembersTabs: FC<IOrganizationTeamMembersProps | IWorkspaceTeamM
                                                 <Box
                                                     sx={{
                                                         alignItems: 'center',
-                                                        display: 'flex'
+                                                        display: 'flex',
                                                     }}
                                                 >
                                                     <Typography variant="subtitle2">
@@ -142,12 +149,29 @@ export const TeamMembersTabs: FC<IOrganizationTeamMembersProps | IWorkspaceTeamM
                                                     </Typography>
                                                 </Box>
                                             </TableCell>
+                                            <TableCell>
+                                                <Box
+                                                    sx={{
+                                                        alignItems: 'center',
+                                                        display: 'flex',
+                                                    }}
+                                                >
+                                                    <Typography variant="subtitle2">
+                                                        {parseDate(invite.expiresAt)}
+                                                    </Typography>
+                                                </Box>
+                                        </TableCell>
+                                        <TableCell>
+                                            <IconButton aria-label="delete" size="large">
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </TableCell>
                                         </TableRow>
                                     )}
 
                                 </TableBody>
                             </Table> :
-                            <Box sx={{p: 1}}>
+                            <Box sx={{ display: "flex", alignItems:"center", justifyContent: "center", p: 3}}>
                                 <Typography variant="subtitle2">No pending invitations</Typography>
                             </Box>
                         }
