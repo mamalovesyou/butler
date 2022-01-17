@@ -128,6 +128,38 @@
         ]
       },
       "post": {
+        "operationId": "UsersService_GetOrganization",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.OrganizationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.GetOrganizationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      }
+    },
+    "/v1/organizations/create": {
+      "post": {
         "operationId": "UsersService_CreateOrganization",
         "responses": {
           "200": {
@@ -150,38 +182,6 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1.CreateOrganizationRequest"
-            }
-          }
-        ],
-        "tags": [
-          "UsersService"
-        ]
-      }
-    },
-    "/v1/organizations/members/invite": {
-      "post": {
-        "operationId": "UsersService_InviteOrganizationMember",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1.Invitation"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/google.rpc.Status"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1.InviteOrganizationMemberRequest"
             }
           }
         ],
@@ -222,15 +222,14 @@
         ]
       }
     },
-    "/v1/organizations/workspaces": {
+    "/v1/organizations/team/invites": {
       "post": {
-        "summary": "Workspace",
-        "operationId": "UsersService_CreateWorkspace",
+        "operationId": "UsersService_BulkInviteOrganizationMember",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1.WorkspaceResponse"
+              "$ref": "#/definitions/v1.InvitationListResponse"
             }
           },
           "default": {
@@ -246,7 +245,7 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1.CreateWorkspaceRequest"
+              "$ref": "#/definitions/v1.BulkInviteOrganizationMemberRequest"
             }
           }
         ],
@@ -419,14 +418,14 @@
         "security": []
       }
     },
-    "/v1/workspaces/members/invite": {
+    "/v1/workspaces": {
       "post": {
-        "operationId": "UsersService_InviteWorkspaceMember",
+        "operationId": "UsersService_GetWorkspace",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1.Invitation"
+              "$ref": "#/definitions/v1.WorkspaceResponse"
             }
           },
           "default": {
@@ -442,7 +441,72 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1.InviteWorkspaceMemberRequest"
+              "$ref": "#/definitions/v1.GetWorkspaceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      }
+    },
+    "/v1/workspaces/create": {
+      "post": {
+        "summary": "Workspace",
+        "operationId": "UsersService_CreateWorkspace",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.WorkspaceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.CreateWorkspaceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      }
+    },
+    "/v1/workspaces/team/invites": {
+      "post": {
+        "operationId": "UsersService_BulkInviteWorkspaceMember",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.InvitationListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.BulkInviteWorkspaceMemberRequest"
             }
           }
         ],
@@ -494,6 +558,34 @@
         }
       },
       "description": "The response message containing the User."
+    },
+    "v1.BulkInviteOrganizationMemberRequest": {
+      "type": "object",
+      "properties": {
+        "emails": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "organizationId": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.BulkInviteWorkspaceMemberRequest": {
+      "type": "object",
+      "properties": {
+        "emails": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "workspaceId": {
+          "type": "string"
+        }
+      }
     },
     "v1.CatalogConnector": {
       "type": "object",
@@ -586,22 +678,29 @@
         }
       }
     },
+    "v1.GetOrganizationRequest": {
+      "type": "object",
+      "properties": {
+        "organizationId": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.GetWorkspaceRequest": {
+      "type": "object",
+      "properties": {
+        "workspaceId": {
+          "type": "string"
+        }
+      }
+    },
     "v1.Invitation": {
       "type": "object",
       "properties": {
         "id": {
           "type": "string"
         },
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        },
         "email": {
-          "type": "string"
-        },
-        "role": {
           "type": "string"
         },
         "expiresAt": {
@@ -614,42 +713,14 @@
         }
       }
     },
-    "v1.InviteInfos": {
+    "v1.InvitationListResponse": {
       "type": "object",
       "properties": {
-        "firstName": {
-          "type": "string"
-        },
-        "lastName": {
-          "type": "string"
-        },
-        "email": {
-          "type": "string"
-        },
-        "role": {
-          "type": "string"
-        }
-      }
-    },
-    "v1.InviteOrganizationMemberRequest": {
-      "type": "object",
-      "properties": {
-        "invitation": {
-          "$ref": "#/definitions/v1.InviteInfos"
-        },
-        "organizationId": {
-          "type": "string"
-        }
-      }
-    },
-    "v1.InviteWorkspaceMemberRequest": {
-      "type": "object",
-      "properties": {
-        "invitation": {
-          "$ref": "#/definitions/v1.InviteInfos"
-        },
-        "workspaceId": {
-          "type": "string"
+        "invitations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.Invitation"
+          }
         }
       }
     },

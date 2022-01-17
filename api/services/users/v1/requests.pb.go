@@ -367,6 +367,53 @@ func (x *CreateOrganizationRequest) GetUserRole() string {
 	return ""
 }
 
+type GetOrganizationRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OrganizationId string `protobuf:"bytes,1,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
+}
+
+func (x *GetOrganizationRequest) Reset() {
+	*x = GetOrganizationRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_users_v1_requests_proto_msgTypes[6]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetOrganizationRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetOrganizationRequest) ProtoMessage() {}
+
+func (x *GetOrganizationRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_users_v1_requests_proto_msgTypes[6]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetOrganizationRequest.ProtoReflect.Descriptor instead.
+func (*GetOrganizationRequest) Descriptor() ([]byte, []int) {
+	return file_services_users_v1_requests_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetOrganizationRequest) GetOrganizationId() string {
+	if x != nil {
+		return x.OrganizationId
+	}
+	return ""
+}
+
 type CreateWorkspaceRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
@@ -379,7 +426,7 @@ type CreateWorkspaceRequest struct {
 func (x *CreateWorkspaceRequest) Reset() {
 	*x = CreateWorkspaceRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_users_v1_requests_proto_msgTypes[6]
+		mi := &file_services_users_v1_requests_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -392,7 +439,7 @@ func (x *CreateWorkspaceRequest) String() string {
 func (*CreateWorkspaceRequest) ProtoMessage() {}
 
 func (x *CreateWorkspaceRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_services_users_v1_requests_proto_msgTypes[6]
+	mi := &file_services_users_v1_requests_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -405,7 +452,7 @@ func (x *CreateWorkspaceRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateWorkspaceRequest.ProtoReflect.Descriptor instead.
 func (*CreateWorkspaceRequest) Descriptor() ([]byte, []int) {
-	return file_services_users_v1_requests_proto_rawDescGZIP(), []int{6}
+	return file_services_users_v1_requests_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *CreateWorkspaceRequest) GetOrganizationId() string {
@@ -422,88 +469,16 @@ func (x *CreateWorkspaceRequest) GetWorkspace() *CreateWorkspaceRequest_Workspac
 	return nil
 }
 
-type InviteInfos struct {
+type GetWorkspaceRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	FirstName string `protobuf:"bytes,1,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
-	LastName  string `protobuf:"bytes,2,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
-	Email     string `protobuf:"bytes,3,opt,name=email,proto3" json:"email,omitempty"`
-	Role      string `protobuf:"bytes,4,opt,name=role,proto3" json:"role,omitempty"`
+	WorkspaceId string `protobuf:"bytes,1,opt,name=workspace_id,json=workspaceId,proto3" json:"workspace_id,omitempty"`
 }
 
-func (x *InviteInfos) Reset() {
-	*x = InviteInfos{}
-	if protoimpl.UnsafeEnabled {
-		mi := &file_services_users_v1_requests_proto_msgTypes[7]
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		ms.StoreMessageInfo(mi)
-	}
-}
-
-func (x *InviteInfos) String() string {
-	return protoimpl.X.MessageStringOf(x)
-}
-
-func (*InviteInfos) ProtoMessage() {}
-
-func (x *InviteInfos) ProtoReflect() protoreflect.Message {
-	mi := &file_services_users_v1_requests_proto_msgTypes[7]
-	if protoimpl.UnsafeEnabled && x != nil {
-		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
-		if ms.LoadMessageInfo() == nil {
-			ms.StoreMessageInfo(mi)
-		}
-		return ms
-	}
-	return mi.MessageOf(x)
-}
-
-// Deprecated: Use InviteInfos.ProtoReflect.Descriptor instead.
-func (*InviteInfos) Descriptor() ([]byte, []int) {
-	return file_services_users_v1_requests_proto_rawDescGZIP(), []int{7}
-}
-
-func (x *InviteInfos) GetFirstName() string {
-	if x != nil {
-		return x.FirstName
-	}
-	return ""
-}
-
-func (x *InviteInfos) GetLastName() string {
-	if x != nil {
-		return x.LastName
-	}
-	return ""
-}
-
-func (x *InviteInfos) GetEmail() string {
-	if x != nil {
-		return x.Email
-	}
-	return ""
-}
-
-func (x *InviteInfos) GetRole() string {
-	if x != nil {
-		return x.Role
-	}
-	return ""
-}
-
-type InviteOrganizationMemberRequest struct {
-	state         protoimpl.MessageState
-	sizeCache     protoimpl.SizeCache
-	unknownFields protoimpl.UnknownFields
-
-	Invitation     *InviteInfos `protobuf:"bytes,1,opt,name=invitation,proto3" json:"invitation,omitempty"`
-	OrganizationId string       `protobuf:"bytes,2,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
-}
-
-func (x *InviteOrganizationMemberRequest) Reset() {
-	*x = InviteOrganizationMemberRequest{}
+func (x *GetWorkspaceRequest) Reset() {
+	*x = GetWorkspaceRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_services_users_v1_requests_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -511,13 +486,13 @@ func (x *InviteOrganizationMemberRequest) Reset() {
 	}
 }
 
-func (x *InviteOrganizationMemberRequest) String() string {
+func (x *GetWorkspaceRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*InviteOrganizationMemberRequest) ProtoMessage() {}
+func (*GetWorkspaceRequest) ProtoMessage() {}
 
-func (x *InviteOrganizationMemberRequest) ProtoReflect() protoreflect.Message {
+func (x *GetWorkspaceRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_services_users_v1_requests_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -529,36 +504,29 @@ func (x *InviteOrganizationMemberRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use InviteOrganizationMemberRequest.ProtoReflect.Descriptor instead.
-func (*InviteOrganizationMemberRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetWorkspaceRequest.ProtoReflect.Descriptor instead.
+func (*GetWorkspaceRequest) Descriptor() ([]byte, []int) {
 	return file_services_users_v1_requests_proto_rawDescGZIP(), []int{8}
 }
 
-func (x *InviteOrganizationMemberRequest) GetInvitation() *InviteInfos {
+func (x *GetWorkspaceRequest) GetWorkspaceId() string {
 	if x != nil {
-		return x.Invitation
-	}
-	return nil
-}
-
-func (x *InviteOrganizationMemberRequest) GetOrganizationId() string {
-	if x != nil {
-		return x.OrganizationId
+		return x.WorkspaceId
 	}
 	return ""
 }
 
-type InviteWorkspaceMemberRequest struct {
+type BulkInviteOrganizationMemberRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Invitation  *InviteInfos `protobuf:"bytes,1,opt,name=invitation,proto3" json:"invitation,omitempty"`
-	WorkspaceId string       `protobuf:"bytes,2,opt,name=workspace_id,json=workspaceId,proto3" json:"workspace_id,omitempty"`
+	Emails         []string `protobuf:"bytes,1,rep,name=emails,proto3" json:"emails,omitempty"`
+	OrganizationId string   `protobuf:"bytes,2,opt,name=organization_id,json=organizationId,proto3" json:"organization_id,omitempty"`
 }
 
-func (x *InviteWorkspaceMemberRequest) Reset() {
-	*x = InviteWorkspaceMemberRequest{}
+func (x *BulkInviteOrganizationMemberRequest) Reset() {
+	*x = BulkInviteOrganizationMemberRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_services_users_v1_requests_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -566,13 +534,13 @@ func (x *InviteWorkspaceMemberRequest) Reset() {
 	}
 }
 
-func (x *InviteWorkspaceMemberRequest) String() string {
+func (x *BulkInviteOrganizationMemberRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*InviteWorkspaceMemberRequest) ProtoMessage() {}
+func (*BulkInviteOrganizationMemberRequest) ProtoMessage() {}
 
-func (x *InviteWorkspaceMemberRequest) ProtoReflect() protoreflect.Message {
+func (x *BulkInviteOrganizationMemberRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_services_users_v1_requests_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -584,19 +552,74 @@ func (x *InviteWorkspaceMemberRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use InviteWorkspaceMemberRequest.ProtoReflect.Descriptor instead.
-func (*InviteWorkspaceMemberRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use BulkInviteOrganizationMemberRequest.ProtoReflect.Descriptor instead.
+func (*BulkInviteOrganizationMemberRequest) Descriptor() ([]byte, []int) {
 	return file_services_users_v1_requests_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *InviteWorkspaceMemberRequest) GetInvitation() *InviteInfos {
+func (x *BulkInviteOrganizationMemberRequest) GetEmails() []string {
 	if x != nil {
-		return x.Invitation
+		return x.Emails
 	}
 	return nil
 }
 
-func (x *InviteWorkspaceMemberRequest) GetWorkspaceId() string {
+func (x *BulkInviteOrganizationMemberRequest) GetOrganizationId() string {
+	if x != nil {
+		return x.OrganizationId
+	}
+	return ""
+}
+
+type BulkInviteWorkspaceMemberRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Emails      []string `protobuf:"bytes,1,rep,name=emails,proto3" json:"emails,omitempty"`
+	WorkspaceId string   `protobuf:"bytes,2,opt,name=workspace_id,json=workspaceId,proto3" json:"workspace_id,omitempty"`
+}
+
+func (x *BulkInviteWorkspaceMemberRequest) Reset() {
+	*x = BulkInviteWorkspaceMemberRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_users_v1_requests_proto_msgTypes[10]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *BulkInviteWorkspaceMemberRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*BulkInviteWorkspaceMemberRequest) ProtoMessage() {}
+
+func (x *BulkInviteWorkspaceMemberRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_users_v1_requests_proto_msgTypes[10]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use BulkInviteWorkspaceMemberRequest.ProtoReflect.Descriptor instead.
+func (*BulkInviteWorkspaceMemberRequest) Descriptor() ([]byte, []int) {
+	return file_services_users_v1_requests_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *BulkInviteWorkspaceMemberRequest) GetEmails() []string {
+	if x != nil {
+		return x.Emails
+	}
+	return nil
+}
+
+func (x *BulkInviteWorkspaceMemberRequest) GetWorkspaceId() string {
 	if x != nil {
 		return x.WorkspaceId
 	}
@@ -614,7 +637,7 @@ type CompleteOnboardingRequest struct {
 func (x *CompleteOnboardingRequest) Reset() {
 	*x = CompleteOnboardingRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_users_v1_requests_proto_msgTypes[10]
+		mi := &file_services_users_v1_requests_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -627,7 +650,7 @@ func (x *CompleteOnboardingRequest) String() string {
 func (*CompleteOnboardingRequest) ProtoMessage() {}
 
 func (x *CompleteOnboardingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_services_users_v1_requests_proto_msgTypes[10]
+	mi := &file_services_users_v1_requests_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -640,7 +663,7 @@ func (x *CompleteOnboardingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CompleteOnboardingRequest.ProtoReflect.Descriptor instead.
 func (*CompleteOnboardingRequest) Descriptor() ([]byte, []int) {
-	return file_services_users_v1_requests_proto_rawDescGZIP(), []int{10}
+	return file_services_users_v1_requests_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *CompleteOnboardingRequest) GetOrganizationId() string {
@@ -666,7 +689,7 @@ type SignUpWithInvitationRequest_SignupInfo struct {
 func (x *SignUpWithInvitationRequest_SignupInfo) Reset() {
 	*x = SignUpWithInvitationRequest_SignupInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_users_v1_requests_proto_msgTypes[11]
+		mi := &file_services_users_v1_requests_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -679,7 +702,7 @@ func (x *SignUpWithInvitationRequest_SignupInfo) String() string {
 func (*SignUpWithInvitationRequest_SignupInfo) ProtoMessage() {}
 
 func (x *SignUpWithInvitationRequest_SignupInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_services_users_v1_requests_proto_msgTypes[11]
+	mi := &file_services_users_v1_requests_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -760,7 +783,7 @@ type CreateWorkspaceRequest_WorkspaceInfo struct {
 func (x *CreateWorkspaceRequest_WorkspaceInfo) Reset() {
 	*x = CreateWorkspaceRequest_WorkspaceInfo{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_services_users_v1_requests_proto_msgTypes[12]
+		mi := &file_services_users_v1_requests_proto_msgTypes[13]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -773,7 +796,7 @@ func (x *CreateWorkspaceRequest_WorkspaceInfo) String() string {
 func (*CreateWorkspaceRequest_WorkspaceInfo) ProtoMessage() {}
 
 func (x *CreateWorkspaceRequest_WorkspaceInfo) ProtoReflect() protoreflect.Message {
-	mi := &file_services_users_v1_requests_proto_msgTypes[12]
+	mi := &file_services_users_v1_requests_proto_msgTypes[13]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -786,7 +809,7 @@ func (x *CreateWorkspaceRequest_WorkspaceInfo) ProtoReflect() protoreflect.Messa
 
 // Deprecated: Use CreateWorkspaceRequest_WorkspaceInfo.ProtoReflect.Descriptor instead.
 func (*CreateWorkspaceRequest_WorkspaceInfo) Descriptor() ([]byte, []int) {
-	return file_services_users_v1_requests_proto_rawDescGZIP(), []int{6, 0}
+	return file_services_users_v1_requests_proto_rawDescGZIP(), []int{7, 0}
 }
 
 func (x *CreateWorkspaceRequest_WorkspaceInfo) GetName() string {
@@ -861,51 +884,49 @@ var file_services_users_v1_requests_proto_rawDesc = []byte{
 	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x1a, 0x0a, 0x08, 0x75,
 	0x73, 0x65, 0x72, 0x52, 0x6f, 0x6c, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x75,
-	0x73, 0x65, 0x72, 0x52, 0x6f, 0x6c, 0x65, 0x22, 0xd0, 0x01, 0x0a, 0x16, 0x43, 0x72, 0x65, 0x61,
-	0x74, 0x65, 0x57, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x27, 0x0a, 0x0f, 0x6f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69,
-	0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x6f, 0x72, 0x67,
-	0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x46, 0x0a, 0x09, 0x77,
-	0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x28,
-	0x2e, 0x76, 0x31, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x57, 0x6f, 0x72, 0x6b, 0x73, 0x70,
-	0x61, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x57, 0x6f, 0x72, 0x6b, 0x73,
-	0x70, 0x61, 0x63, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x09, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x70,
-	0x61, 0x63, 0x65, 0x1a, 0x45, 0x0a, 0x0d, 0x57, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65,
-	0x49, 0x6e, 0x66, 0x6f, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64, 0x65, 0x73, 0x63,
-	0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x64,
-	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x73, 0x0a, 0x0b, 0x49, 0x6e,
-	0x76, 0x69, 0x74, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x73, 0x12, 0x1d, 0x0a, 0x0a, 0x66, 0x69, 0x72,
-	0x73, 0x74, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x66,
-	0x69, 0x72, 0x73, 0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x1b, 0x0a, 0x09, 0x6c, 0x61, 0x73, 0x74,
-	0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x6c, 0x61, 0x73,
-	0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x14, 0x0a, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x18, 0x03,
-	0x20, 0x01, 0x28, 0x09, 0x52, 0x05, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x12, 0x12, 0x0a, 0x04, 0x72,
-	0x6f, 0x6c, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x72, 0x6f, 0x6c, 0x65, 0x22,
-	0x7b, 0x0a, 0x1f, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x4f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a,
-	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x4d, 0x65, 0x6d, 0x62, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65,
-	0x73, 0x74, 0x12, 0x2f, 0x0a, 0x0a, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0f, 0x2e, 0x76, 0x31, 0x2e, 0x49, 0x6e, 0x76, 0x69,
-	0x74, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x73, 0x52, 0x0a, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x12, 0x27, 0x0a, 0x0f, 0x6f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74,
-	0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x6f, 0x72,
-	0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x22, 0x72, 0x0a, 0x1c,
-	0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x57, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x4d,
-	0x65, 0x6d, 0x62, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x2f, 0x0a, 0x0a,
-	0x69, 0x6e, 0x76, 0x69, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
-	0x32, 0x0f, 0x2e, 0x76, 0x31, 0x2e, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x49, 0x6e, 0x66, 0x6f,
-	0x73, 0x52, 0x0a, 0x69, 0x6e, 0x76, 0x69, 0x74, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x12, 0x21, 0x0a,
-	0x0c, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20,
-	0x01, 0x28, 0x09, 0x52, 0x0b, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x49, 0x64,
-	0x22, 0x44, 0x0a, 0x19, 0x43, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x4f, 0x6e, 0x62, 0x6f,
-	0x61, 0x72, 0x64, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x27, 0x0a,
-	0x0f, 0x6f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x6f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61,
-	0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x42, 0x38, 0x5a, 0x36, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62,
-	0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x62, 0x75, 0x74, 0x6c, 0x65, 0x72, 0x68, 0x71, 0x2f, 0x62, 0x75,
-	0x74, 0x6c, 0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65,
-	0x73, 0x2f, 0x75, 0x73, 0x65, 0x72, 0x73, 0x2f, 0x76, 0x31, 0x3b, 0x75, 0x73, 0x65, 0x72, 0x73,
-	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x73, 0x65, 0x72, 0x52, 0x6f, 0x6c, 0x65, 0x22, 0x41, 0x0a, 0x16, 0x47, 0x65, 0x74, 0x4f, 0x72,
+	0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x27, 0x0a, 0x0f, 0x6f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x6f, 0x72, 0x67, 0x61,
+	0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x22, 0xd0, 0x01, 0x0a, 0x16, 0x43,
+	0x72, 0x65, 0x61, 0x74, 0x65, 0x57, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x52, 0x65,
+	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x27, 0x0a, 0x0f, 0x6f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a,
+	0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0e,
+	0x6f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x12, 0x46,
+	0x0a, 0x09, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x0b, 0x32, 0x28, 0x2e, 0x76, 0x31, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x57, 0x6f, 0x72,
+	0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x2e, 0x57, 0x6f,
+	0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x52, 0x09, 0x77, 0x6f, 0x72,
+	0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x1a, 0x45, 0x0a, 0x0d, 0x57, 0x6f, 0x72, 0x6b, 0x73, 0x70,
+	0x61, 0x63, 0x65, 0x49, 0x6e, 0x66, 0x6f, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18,
+	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x20, 0x0a, 0x0b, 0x64,
+	0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09,
+	0x52, 0x0b, 0x64, 0x65, 0x73, 0x63, 0x72, 0x69, 0x70, 0x74, 0x69, 0x6f, 0x6e, 0x22, 0x38, 0x0a,
+	0x13, 0x47, 0x65, 0x74, 0x57, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x12, 0x21, 0x0a, 0x0c, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63,
+	0x65, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x77, 0x6f, 0x72, 0x6b,
+	0x73, 0x70, 0x61, 0x63, 0x65, 0x49, 0x64, 0x22, 0x66, 0x0a, 0x23, 0x42, 0x75, 0x6c, 0x6b, 0x49,
+	0x6e, 0x76, 0x69, 0x74, 0x65, 0x4f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f,
+	0x6e, 0x4d, 0x65, 0x6d, 0x62, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x16,
+	0x0a, 0x06, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x09, 0x52, 0x06,
+	0x65, 0x6d, 0x61, 0x69, 0x6c, 0x73, 0x12, 0x27, 0x0a, 0x0f, 0x6f, 0x72, 0x67, 0x61, 0x6e, 0x69,
+	0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0e, 0x6f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x22,
+	0x5d, 0x0a, 0x20, 0x42, 0x75, 0x6c, 0x6b, 0x49, 0x6e, 0x76, 0x69, 0x74, 0x65, 0x57, 0x6f, 0x72,
+	0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x4d, 0x65, 0x6d, 0x62, 0x65, 0x72, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x16, 0x0a, 0x06, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x73, 0x18, 0x01, 0x20,
+	0x03, 0x28, 0x09, 0x52, 0x06, 0x65, 0x6d, 0x61, 0x69, 0x6c, 0x73, 0x12, 0x21, 0x0a, 0x0c, 0x77,
+	0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x5f, 0x69, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0b, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x49, 0x64, 0x22, 0x44,
+	0x0a, 0x19, 0x43, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x65, 0x4f, 0x6e, 0x62, 0x6f, 0x61, 0x72,
+	0x64, 0x69, 0x6e, 0x67, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x27, 0x0a, 0x0f, 0x6f,
+	0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x09, 0x52, 0x0e, 0x6f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69,
+	0x6f, 0x6e, 0x49, 0x64, 0x42, 0x38, 0x5a, 0x36, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63,
+	0x6f, 0x6d, 0x2f, 0x62, 0x75, 0x74, 0x6c, 0x65, 0x72, 0x68, 0x71, 0x2f, 0x62, 0x75, 0x74, 0x6c,
+	0x65, 0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2f,
+	0x75, 0x73, 0x65, 0x72, 0x73, 0x2f, 0x76, 0x31, 0x3b, 0x75, 0x73, 0x65, 0x72, 0x73, 0x62, 0x06,
+	0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -920,7 +941,7 @@ func file_services_users_v1_requests_proto_rawDescGZIP() []byte {
 	return file_services_users_v1_requests_proto_rawDescData
 }
 
-var file_services_users_v1_requests_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_services_users_v1_requests_proto_msgTypes = make([]protoimpl.MessageInfo, 14)
 var file_services_users_v1_requests_proto_goTypes = []interface{}{
 	(*SignInRequest)(nil),                          // 0: v1.SignInRequest
 	(*SignUpRequest)(nil),                          // 1: v1.SignUpRequest
@@ -928,24 +949,23 @@ var file_services_users_v1_requests_proto_goTypes = []interface{}{
 	(*SignOutRequest)(nil),                         // 3: v1.SignOutRequest
 	(*RefreshRequest)(nil),                         // 4: v1.RefreshRequest
 	(*CreateOrganizationRequest)(nil),              // 5: v1.CreateOrganizationRequest
-	(*CreateWorkspaceRequest)(nil),                 // 6: v1.CreateWorkspaceRequest
-	(*InviteInfos)(nil),                            // 7: v1.InviteInfos
-	(*InviteOrganizationMemberRequest)(nil),        // 8: v1.InviteOrganizationMemberRequest
-	(*InviteWorkspaceMemberRequest)(nil),           // 9: v1.InviteWorkspaceMemberRequest
-	(*CompleteOnboardingRequest)(nil),              // 10: v1.CompleteOnboardingRequest
-	(*SignUpWithInvitationRequest_SignupInfo)(nil), // 11: v1.SignUpWithInvitationRequest.SignupInfo
-	(*CreateWorkspaceRequest_WorkspaceInfo)(nil),   // 12: v1.CreateWorkspaceRequest.WorkspaceInfo
+	(*GetOrganizationRequest)(nil),                 // 6: v1.GetOrganizationRequest
+	(*CreateWorkspaceRequest)(nil),                 // 7: v1.CreateWorkspaceRequest
+	(*GetWorkspaceRequest)(nil),                    // 8: v1.GetWorkspaceRequest
+	(*BulkInviteOrganizationMemberRequest)(nil),    // 9: v1.BulkInviteOrganizationMemberRequest
+	(*BulkInviteWorkspaceMemberRequest)(nil),       // 10: v1.BulkInviteWorkspaceMemberRequest
+	(*CompleteOnboardingRequest)(nil),              // 11: v1.CompleteOnboardingRequest
+	(*SignUpWithInvitationRequest_SignupInfo)(nil), // 12: v1.SignUpWithInvitationRequest.SignupInfo
+	(*CreateWorkspaceRequest_WorkspaceInfo)(nil),   // 13: v1.CreateWorkspaceRequest.WorkspaceInfo
 }
 var file_services_users_v1_requests_proto_depIdxs = []int32{
-	11, // 0: v1.SignUpWithInvitationRequest.infos:type_name -> v1.SignUpWithInvitationRequest.SignupInfo
-	12, // 1: v1.CreateWorkspaceRequest.workspace:type_name -> v1.CreateWorkspaceRequest.WorkspaceInfo
-	7,  // 2: v1.InviteOrganizationMemberRequest.invitation:type_name -> v1.InviteInfos
-	7,  // 3: v1.InviteWorkspaceMemberRequest.invitation:type_name -> v1.InviteInfos
-	4,  // [4:4] is the sub-list for method output_type
-	4,  // [4:4] is the sub-list for method input_type
-	4,  // [4:4] is the sub-list for extension type_name
-	4,  // [4:4] is the sub-list for extension extendee
-	0,  // [0:4] is the sub-list for field type_name
+	12, // 0: v1.SignUpWithInvitationRequest.infos:type_name -> v1.SignUpWithInvitationRequest.SignupInfo
+	13, // 1: v1.CreateWorkspaceRequest.workspace:type_name -> v1.CreateWorkspaceRequest.WorkspaceInfo
+	2,  // [2:2] is the sub-list for method output_type
+	2,  // [2:2] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_services_users_v1_requests_proto_init() }
@@ -1027,7 +1047,7 @@ func file_services_users_v1_requests_proto_init() {
 			}
 		}
 		file_services_users_v1_requests_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateWorkspaceRequest); i {
+			switch v := v.(*GetOrganizationRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1039,7 +1059,7 @@ func file_services_users_v1_requests_proto_init() {
 			}
 		}
 		file_services_users_v1_requests_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*InviteInfos); i {
+			switch v := v.(*CreateWorkspaceRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1051,7 +1071,7 @@ func file_services_users_v1_requests_proto_init() {
 			}
 		}
 		file_services_users_v1_requests_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*InviteOrganizationMemberRequest); i {
+			switch v := v.(*GetWorkspaceRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1063,7 +1083,7 @@ func file_services_users_v1_requests_proto_init() {
 			}
 		}
 		file_services_users_v1_requests_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*InviteWorkspaceMemberRequest); i {
+			switch v := v.(*BulkInviteOrganizationMemberRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1075,7 +1095,7 @@ func file_services_users_v1_requests_proto_init() {
 			}
 		}
 		file_services_users_v1_requests_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CompleteOnboardingRequest); i {
+			switch v := v.(*BulkInviteWorkspaceMemberRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1087,7 +1107,7 @@ func file_services_users_v1_requests_proto_init() {
 			}
 		}
 		file_services_users_v1_requests_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*SignUpWithInvitationRequest_SignupInfo); i {
+			switch v := v.(*CompleteOnboardingRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -1099,6 +1119,18 @@ func file_services_users_v1_requests_proto_init() {
 			}
 		}
 		file_services_users_v1_requests_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SignUpWithInvitationRequest_SignupInfo); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_users_v1_requests_proto_msgTypes[13].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CreateWorkspaceRequest_WorkspaceInfo); i {
 			case 0:
 				return &v.state
@@ -1111,7 +1143,7 @@ func file_services_users_v1_requests_proto_init() {
 			}
 		}
 	}
-	file_services_users_v1_requests_proto_msgTypes[11].OneofWrappers = []interface{}{
+	file_services_users_v1_requests_proto_msgTypes[12].OneofWrappers = []interface{}{
 		(*SignUpWithInvitationRequest_SignupInfo_OrganizationId)(nil),
 		(*SignUpWithInvitationRequest_SignupInfo_WorkspaceId)(nil),
 	}
@@ -1121,7 +1153,7 @@ func file_services_users_v1_requests_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_services_users_v1_requests_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   14,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

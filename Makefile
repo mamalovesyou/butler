@@ -60,6 +60,8 @@ PROTO_OUT := api
 PROTO_CMD := protoc $(PROTO_IMPORTS)
 
 ##### Proto #####
+proto-all: proto open-api
+
 .PHONY: proto
 proto:
 	@mkdir -p $(PROTO_OUT)
@@ -71,6 +73,7 @@ proto:
 			$${PROTO_FILE} && echo "✅ $${PROTO_FILE}" || (echo "❌ $${PROTO_FILE}"; exit 1); \
 	done
 
+.PHONY: open-api
 open-api:
 	@mkdir -p $(OPEN_API_OUT)
 	@echo $(PROTO_FILES)
@@ -189,7 +192,7 @@ dev.migrate: ## Provision databases
 
 dev.services: ## Start services with docker in dev environment
 	@echo "Starting dev env..."
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans users octopus gateway webapp
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans users octopus gateway
 
 
 dev.monitor: ## Start monitor dev evironment with docker

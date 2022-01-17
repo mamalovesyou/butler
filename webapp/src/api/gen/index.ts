@@ -29,6 +29,16 @@ export interface V1AuthenticatedUser {
   refreshToken?: string;
 }
 
+export interface V1BulkInviteOrganizationMemberRequest {
+  emails?: string[];
+  organizationId?: string;
+}
+
+export interface V1BulkInviteWorkspaceMemberRequest {
+  emails?: string[];
+  workspaceId?: string;
+}
+
 export interface V1CatalogConnector {
   name?: string;
   iconSvg?: string;
@@ -70,12 +80,17 @@ export interface V1CreateWorkspaceRequestWorkspaceInfo {
   description?: string;
 }
 
+export interface V1GetOrganizationRequest {
+  organizationId?: string;
+}
+
+export interface V1GetWorkspaceRequest {
+  workspaceId?: string;
+}
+
 export interface V1Invitation {
   id?: string;
-  firstName?: string;
-  lastName?: string;
   email?: string;
-  role?: string;
 
   /** @format date-time */
   expiresAt?: string;
@@ -84,21 +99,8 @@ export interface V1Invitation {
   createdAt?: string;
 }
 
-export interface V1InviteInfos {
-  firstName?: string;
-  lastName?: string;
-  email?: string;
-  role?: string;
-}
-
-export interface V1InviteOrganizationMemberRequest {
-  invitation?: V1InviteInfos;
-  organizationId?: string;
-}
-
-export interface V1InviteWorkspaceMemberRequest {
-  invitation?: V1InviteInfos;
-  workspaceId?: string;
+export interface V1InvitationListResponse {
+  invitations?: V1Invitation[];
 }
 
 export interface V1Organization {
@@ -423,10 +425,10 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags UsersService
-     * @name UsersServiceCreateOrganization
+     * @name UsersServiceGetOrganization
      * @request POST:/v1/organizations
      */
-    usersServiceCreateOrganization: (body: V1CreateOrganizationRequest, params: RequestParams = {}) =>
+    usersServiceGetOrganization: (body: V1GetOrganizationRequest, params: RequestParams = {}) =>
       this.request<V1OrganizationResponse, GoogleRpcStatus>({
         path: `/v1/organizations`,
         method: "POST",
@@ -440,12 +442,12 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags UsersService
-     * @name UsersServiceInviteOrganizationMember
-     * @request POST:/v1/organizations/members/invite
+     * @name UsersServiceCreateOrganization
+     * @request POST:/v1/organizations/create
      */
-    usersServiceInviteOrganizationMember: (body: V1InviteOrganizationMemberRequest, params: RequestParams = {}) =>
-      this.request<V1Invitation, GoogleRpcStatus>({
-        path: `/v1/organizations/members/invite`,
+    usersServiceCreateOrganization: (body: V1CreateOrganizationRequest, params: RequestParams = {}) =>
+      this.request<V1OrganizationResponse, GoogleRpcStatus>({
+        path: `/v1/organizations/create`,
         method: "POST",
         body: body,
         type: ContentType.Json,
@@ -474,13 +476,15 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags UsersService
-     * @name UsersServiceCreateWorkspace
-     * @summary Workspace
-     * @request POST:/v1/organizations/workspaces
+     * @name UsersServiceBulkInviteOrganizationMember
+     * @request POST:/v1/organizations/team/invites
      */
-    usersServiceCreateWorkspace: (body: V1CreateWorkspaceRequest, params: RequestParams = {}) =>
-      this.request<V1WorkspaceResponse, GoogleRpcStatus>({
-        path: `/v1/organizations/workspaces`,
+    usersServiceBulkInviteOrganizationMember: (
+      body: V1BulkInviteOrganizationMemberRequest,
+      params: RequestParams = {},
+    ) =>
+      this.request<V1InvitationListResponse, GoogleRpcStatus>({
+        path: `/v1/organizations/team/invites`,
         method: "POST",
         body: body,
         type: ContentType.Json,
@@ -578,12 +582,47 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags UsersService
-     * @name UsersServiceInviteWorkspaceMember
-     * @request POST:/v1/workspaces/members/invite
+     * @name UsersServiceGetWorkspace
+     * @request POST:/v1/workspaces
      */
-    usersServiceInviteWorkspaceMember: (body: V1InviteWorkspaceMemberRequest, params: RequestParams = {}) =>
-      this.request<V1Invitation, GoogleRpcStatus>({
-        path: `/v1/workspaces/members/invite`,
+    usersServiceGetWorkspace: (body: V1GetWorkspaceRequest, params: RequestParams = {}) =>
+      this.request<V1WorkspaceResponse, GoogleRpcStatus>({
+        path: `/v1/workspaces`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags UsersService
+     * @name UsersServiceCreateWorkspace
+     * @summary Workspace
+     * @request POST:/v1/workspaces/create
+     */
+    usersServiceCreateWorkspace: (body: V1CreateWorkspaceRequest, params: RequestParams = {}) =>
+      this.request<V1WorkspaceResponse, GoogleRpcStatus>({
+        path: `/v1/workspaces/create`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags UsersService
+     * @name UsersServiceBulkInviteWorkspaceMember
+     * @request POST:/v1/workspaces/team/invites
+     */
+    usersServiceBulkInviteWorkspaceMember: (body: V1BulkInviteWorkspaceMemberRequest, params: RequestParams = {}) =>
+      this.request<V1InvitationListResponse, GoogleRpcStatus>({
+        path: `/v1/workspaces/team/invites`,
         method: "POST",
         body: body,
         type: ContentType.Json,

@@ -64,9 +64,16 @@ service UsersService {
     };
   }
 
+  rpc GetOrganization(GetOrganizationRequest) returns (OrganizationResponse) {
+    option (google.api.http) = {
+      post: "/v1/organizations",
+      body: "*"
+    };
+  }
+
   rpc CreateOrganization(CreateOrganizationRequest) returns (OrganizationResponse) {
     option (google.api.http) = {
-      post: "/v1/organizations"
+      post: "/v1/organizations/create"
       body: "*"
     };
   }
@@ -78,9 +85,9 @@ service UsersService {
     };
   }
 
-  rpc InviteOrganizationMember(InviteOrganizationMemberRequest) returns (Invitation) {
+  rpc BulkInviteOrganizationMember(BulkInviteOrganizationMemberRequest) returns (InvitationListResponse) {
     option (google.api.http) = {
-      post: "/v1/organizations/members/invite"
+      post: "/v1/organizations/team/invites"
       body: "*"
     };
   }
@@ -88,14 +95,21 @@ service UsersService {
   // Workspace
   rpc CreateWorkspace(CreateWorkspaceRequest) returns (WorkspaceResponse) {
     option (google.api.http) = {
-      post: "/v1/organizations/workspaces"
+      post: "/v1/workspaces/create"
       body: "*"
     };
   }
 
-  rpc InviteWorkspaceMember(InviteWorkspaceMemberRequest) returns (Invitation) {
+  rpc GetWorkspace(GetWorkspaceRequest) returns (WorkspaceResponse) {
     option (google.api.http) = {
-      post: "/v1/workspaces/members/invite"
+      post: "/v1/workspaces",
+      body: "*"
+    };
+  }
+
+  rpc BulkInviteWorkspaceMember(BulkInviteWorkspaceMemberRequest) returns (InvitationListResponse) {
+    option (google.api.http) = {
+      post: "/v1/workspaces/team/invites"
       body: "*"
     };
   }

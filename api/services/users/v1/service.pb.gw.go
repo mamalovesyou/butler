@@ -220,6 +220,40 @@ func local_request_UsersService_ListOrganizations_0(ctx context.Context, marshal
 
 }
 
+func request_UsersService_GetOrganization_0(ctx context.Context, marshaler runtime.Marshaler, client UsersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetOrganizationRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.GetOrganization(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_UsersService_GetOrganization_0(ctx context.Context, marshaler runtime.Marshaler, server UsersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetOrganizationRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.GetOrganization(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
 func request_UsersService_CreateOrganization_0(ctx context.Context, marshaler runtime.Marshaler, client UsersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
 	var protoReq CreateOrganizationRequest
 	var metadata runtime.ServerMetadata
@@ -288,8 +322,8 @@ func local_request_UsersService_CompleteOnboarding_0(ctx context.Context, marsha
 
 }
 
-func request_UsersService_InviteOrganizationMember_0(ctx context.Context, marshaler runtime.Marshaler, client UsersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq InviteOrganizationMemberRequest
+func request_UsersService_BulkInviteOrganizationMember_0(ctx context.Context, marshaler runtime.Marshaler, client UsersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq BulkInviteOrganizationMemberRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -300,13 +334,13 @@ func request_UsersService_InviteOrganizationMember_0(ctx context.Context, marsha
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.InviteOrganizationMember(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.BulkInviteOrganizationMember(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_UsersService_InviteOrganizationMember_0(ctx context.Context, marshaler runtime.Marshaler, server UsersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq InviteOrganizationMemberRequest
+func local_request_UsersService_BulkInviteOrganizationMember_0(ctx context.Context, marshaler runtime.Marshaler, server UsersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq BulkInviteOrganizationMemberRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -317,7 +351,7 @@ func local_request_UsersService_InviteOrganizationMember_0(ctx context.Context, 
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.InviteOrganizationMember(ctx, &protoReq)
+	msg, err := server.BulkInviteOrganizationMember(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -356,8 +390,8 @@ func local_request_UsersService_CreateWorkspace_0(ctx context.Context, marshaler
 
 }
 
-func request_UsersService_InviteWorkspaceMember_0(ctx context.Context, marshaler runtime.Marshaler, client UsersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq InviteWorkspaceMemberRequest
+func request_UsersService_GetWorkspace_0(ctx context.Context, marshaler runtime.Marshaler, client UsersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetWorkspaceRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -368,13 +402,13 @@ func request_UsersService_InviteWorkspaceMember_0(ctx context.Context, marshaler
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := client.InviteWorkspaceMember(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	msg, err := client.GetWorkspace(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
 	return msg, metadata, err
 
 }
 
-func local_request_UsersService_InviteWorkspaceMember_0(ctx context.Context, marshaler runtime.Marshaler, server UsersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
-	var protoReq InviteWorkspaceMemberRequest
+func local_request_UsersService_GetWorkspace_0(ctx context.Context, marshaler runtime.Marshaler, server UsersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq GetWorkspaceRequest
 	var metadata runtime.ServerMetadata
 
 	newReader, berr := utilities.IOReaderFactory(req.Body)
@@ -385,7 +419,41 @@ func local_request_UsersService_InviteWorkspaceMember_0(ctx context.Context, mar
 		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
 	}
 
-	msg, err := server.InviteWorkspaceMember(ctx, &protoReq)
+	msg, err := server.GetWorkspace(ctx, &protoReq)
+	return msg, metadata, err
+
+}
+
+func request_UsersService_BulkInviteWorkspaceMember_0(ctx context.Context, marshaler runtime.Marshaler, client UsersServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq BulkInviteWorkspaceMemberRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := client.BulkInviteWorkspaceMember(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+
+}
+
+func local_request_UsersService_BulkInviteWorkspaceMember_0(ctx context.Context, marshaler runtime.Marshaler, server UsersServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var protoReq BulkInviteWorkspaceMemberRequest
+	var metadata runtime.ServerMetadata
+
+	newReader, berr := utilities.IOReaderFactory(req.Body)
+	if berr != nil {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", berr)
+	}
+	if err := marshaler.NewDecoder(newReader()).Decode(&protoReq); err != nil && err != io.EOF {
+		return nil, metadata, status.Errorf(codes.InvalidArgument, "%v", err)
+	}
+
+	msg, err := server.BulkInviteWorkspaceMember(ctx, &protoReq)
 	return msg, metadata, err
 
 }
@@ -534,13 +602,36 @@ func RegisterUsersServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 
 	})
 
+	mux.Handle("POST", pattern_UsersService_GetOrganization_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.UsersService/GetOrganization", runtime.WithHTTPPathPattern("/v1/organizations"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_UsersService_GetOrganization_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_UsersService_GetOrganization_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_UsersService_CreateOrganization_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.UsersService/CreateOrganization", runtime.WithHTTPPathPattern("/v1/organizations"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.UsersService/CreateOrganization", runtime.WithHTTPPathPattern("/v1/organizations/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -580,18 +671,18 @@ func RegisterUsersServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 
 	})
 
-	mux.Handle("POST", pattern_UsersService_InviteOrganizationMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UsersService_BulkInviteOrganizationMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.UsersService/InviteOrganizationMember", runtime.WithHTTPPathPattern("/v1/organizations/members/invite"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.UsersService/BulkInviteOrganizationMember", runtime.WithHTTPPathPattern("/v1/organizations/team/invites"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UsersService_InviteOrganizationMember_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_UsersService_BulkInviteOrganizationMember_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -599,7 +690,7 @@ func RegisterUsersServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_UsersService_InviteOrganizationMember_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UsersService_BulkInviteOrganizationMember_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -609,7 +700,7 @@ func RegisterUsersServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.UsersService/CreateWorkspace", runtime.WithHTTPPathPattern("/v1/organizations/workspaces"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.UsersService/CreateWorkspaceDialog", runtime.WithHTTPPathPattern("/v1/workspaces/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -626,18 +717,18 @@ func RegisterUsersServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 
 	})
 
-	mux.Handle("POST", pattern_UsersService_InviteWorkspaceMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UsersService_GetWorkspace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.UsersService/InviteWorkspaceMember", runtime.WithHTTPPathPattern("/v1/workspaces/members/invite"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.UsersService/GetWorkspace", runtime.WithHTTPPathPattern("/v1/workspaces"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := local_request_UsersService_InviteWorkspaceMember_0(rctx, inboundMarshaler, server, req, pathParams)
+		resp, md, err := local_request_UsersService_GetWorkspace_0(rctx, inboundMarshaler, server, req, pathParams)
 		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
@@ -645,7 +736,30 @@ func RegisterUsersServiceHandlerServer(ctx context.Context, mux *runtime.ServeMu
 			return
 		}
 
-		forward_UsersService_InviteWorkspaceMember_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UsersService_GetWorkspace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_UsersService_BulkInviteWorkspaceMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.UsersService/BulkInviteWorkspaceMember", runtime.WithHTTPPathPattern("/v1/workspaces/team/invites"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_UsersService_BulkInviteWorkspaceMember_0(rctx, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_UsersService_BulkInviteWorkspaceMember_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -810,11 +924,31 @@ func RegisterUsersServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 
 	})
 
+	mux.Handle("POST", pattern_UsersService_GetOrganization_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/v1.UsersService/GetOrganization", runtime.WithHTTPPathPattern("/v1/organizations"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_UsersService_GetOrganization_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_UsersService_GetOrganization_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
 	mux.Handle("POST", pattern_UsersService_CreateOrganization_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/v1.UsersService/CreateOrganization", runtime.WithHTTPPathPattern("/v1/organizations"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/v1.UsersService/CreateOrganization", runtime.WithHTTPPathPattern("/v1/organizations/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -850,23 +984,23 @@ func RegisterUsersServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 
 	})
 
-	mux.Handle("POST", pattern_UsersService_InviteOrganizationMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UsersService_BulkInviteOrganizationMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/v1.UsersService/InviteOrganizationMember", runtime.WithHTTPPathPattern("/v1/organizations/members/invite"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/v1.UsersService/BulkInviteOrganizationMember", runtime.WithHTTPPathPattern("/v1/organizations/team/invites"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_UsersService_InviteOrganizationMember_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_UsersService_BulkInviteOrganizationMember_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_UsersService_InviteOrganizationMember_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UsersService_BulkInviteOrganizationMember_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -874,7 +1008,7 @@ func RegisterUsersServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/v1.UsersService/CreateWorkspace", runtime.WithHTTPPathPattern("/v1/organizations/workspaces"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/v1.UsersService/CreateWorkspaceDialog", runtime.WithHTTPPathPattern("/v1/workspaces/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -890,23 +1024,43 @@ func RegisterUsersServiceHandlerClient(ctx context.Context, mux *runtime.ServeMu
 
 	})
 
-	mux.Handle("POST", pattern_UsersService_InviteWorkspaceMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_UsersService_GetWorkspace_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/v1.UsersService/InviteWorkspaceMember", runtime.WithHTTPPathPattern("/v1/workspaces/members/invite"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/v1.UsersService/GetWorkspace", runtime.WithHTTPPathPattern("/v1/workspaces"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
-		resp, md, err := request_UsersService_InviteWorkspaceMember_0(rctx, inboundMarshaler, client, req, pathParams)
+		resp, md, err := request_UsersService_GetWorkspace_0(rctx, inboundMarshaler, client, req, pathParams)
 		ctx = runtime.NewServerMetadataContext(ctx, md)
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
 		}
 
-		forward_UsersService_InviteWorkspaceMember_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+		forward_UsersService_GetWorkspace_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+
+	})
+
+	mux.Handle("POST", pattern_UsersService_BulkInviteWorkspaceMember_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/v1.UsersService/BulkInviteWorkspaceMember", runtime.WithHTTPPathPattern("/v1/workspaces/team/invites"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_UsersService_BulkInviteWorkspaceMember_0(rctx, inboundMarshaler, client, req, pathParams)
+		ctx = runtime.NewServerMetadataContext(ctx, md)
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+
+		forward_UsersService_BulkInviteWorkspaceMember_0(ctx, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 
 	})
 
@@ -926,15 +1080,19 @@ var (
 
 	pattern_UsersService_ListOrganizations_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "organizations"}, ""))
 
-	pattern_UsersService_CreateOrganization_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "organizations"}, ""))
+	pattern_UsersService_GetOrganization_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "organizations"}, ""))
+
+	pattern_UsersService_CreateOrganization_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "organizations", "create"}, ""))
 
 	pattern_UsersService_CompleteOnboarding_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "organizations", "onboarding"}, ""))
 
-	pattern_UsersService_InviteOrganizationMember_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "organizations", "members", "invite"}, ""))
+	pattern_UsersService_BulkInviteOrganizationMember_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "organizations", "team", "invites"}, ""))
 
-	pattern_UsersService_CreateWorkspace_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "organizations", "workspaces"}, ""))
+	pattern_UsersService_CreateWorkspace_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "workspaces", "create"}, ""))
 
-	pattern_UsersService_InviteWorkspaceMember_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "workspaces", "members", "invite"}, ""))
+	pattern_UsersService_GetWorkspace_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "workspaces"}, ""))
+
+	pattern_UsersService_BulkInviteWorkspaceMember_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 2, 3}, []string{"v1", "workspaces", "team", "invites"}, ""))
 )
 
 var (
@@ -950,13 +1108,17 @@ var (
 
 	forward_UsersService_ListOrganizations_0 = runtime.ForwardResponseMessage
 
+	forward_UsersService_GetOrganization_0 = runtime.ForwardResponseMessage
+
 	forward_UsersService_CreateOrganization_0 = runtime.ForwardResponseMessage
 
 	forward_UsersService_CompleteOnboarding_0 = runtime.ForwardResponseMessage
 
-	forward_UsersService_InviteOrganizationMember_0 = runtime.ForwardResponseMessage
+	forward_UsersService_BulkInviteOrganizationMember_0 = runtime.ForwardResponseMessage
 
 	forward_UsersService_CreateWorkspace_0 = runtime.ForwardResponseMessage
 
-	forward_UsersService_InviteWorkspaceMember_0 = runtime.ForwardResponseMessage
+	forward_UsersService_GetWorkspace_0 = runtime.ForwardResponseMessage
+
+	forward_UsersService_BulkInviteWorkspaceMember_0 = runtime.ForwardResponseMessage
 )

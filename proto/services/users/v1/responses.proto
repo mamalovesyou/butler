@@ -22,3 +22,7 @@ message OrganizationResponse {
 message WorkspaceResponse {
   Workspace workspace = 1;
 }
+
+message InvitationListResponse {
+  repeated Invitation invitations = 1;
+}

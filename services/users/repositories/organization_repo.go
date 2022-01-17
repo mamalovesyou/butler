@@ -40,7 +40,7 @@ func (repo *OrganizationRepo) UpdateOne(organizationID string, updates models.Or
 // FindByID an Organization in database and eager load Worspaces and Members
 func (repo *OrganizationRepo) FindByID(organizationID string) (*models.Organization, error) {
 	org := &models.Organization{}
-	if err := repo.db.Model(org).Preload(clause.Associations).Where("id = ?", uuid.MustParse(organizationID)).Take(org).Error; err != nil {
+	if err := repo.db.Model(org).Preload(clause.Associations).Preload("UserMembers.User").Where("id = ?", uuid.MustParse(organizationID)).Take(org).Error; err != nil {
 		return &models.Organization{}, err
 	}
 	return org, nil
@@ -74,10 +74,9 @@ func (repo *OrganizationRepo) FindByUserID(userID string) (*models.Organization,
 func (repo *OrganizationRepo) ListByUserID(userID string) ([]models.Organization, error) {
 	result := []models.Organization{}
 	// .Where("id IN (SELECT organization_id FROM organization_members WHERE user_id = ?)", userID)
-	if err := repo.db.Preload("Workspaces").Preload("UserMembers", "user_id = ?", userID).Find(&result).Error; err != nil {
+	if err := repo.db.Preload("Workspaces").Find(&result).Error; err != nil {
 		return nil, err
 	}
-
 	return result, nil
 }
 

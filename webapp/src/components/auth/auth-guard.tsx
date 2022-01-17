@@ -23,7 +23,7 @@ export const AuthGuard: FC<AuthGuardProps> = (props) => {
     } else {
       setChecked(true);
     }
-  }, []);
+  }, [isAuthenticated]);
 
   if (!checked) {
     return null;

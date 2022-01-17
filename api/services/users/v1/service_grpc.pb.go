@@ -4,6 +4,7 @@ package users
 
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -27,12 +28,14 @@ type UsersServiceClient interface {
 	RefreshToken(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*AuthenticatedUser, error)
 	// Organization
 	ListOrganizations(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*OrganizationListResponse, error)
+	GetOrganization(ctx context.Context, in *GetOrganizationRequest, opts ...grpc.CallOption) (*OrganizationResponse, error)
 	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*OrganizationResponse, error)
 	CompleteOnboarding(ctx context.Context, in *CompleteOnboardingRequest, opts ...grpc.CallOption) (*OrganizationResponse, error)
-	InviteOrganizationMember(ctx context.Context, in *InviteOrganizationMemberRequest, opts ...grpc.CallOption) (*Invitation, error)
+	BulkInviteOrganizationMember(ctx context.Context, in *BulkInviteOrganizationMemberRequest, opts ...grpc.CallOption) (*InvitationListResponse, error)
 	// Workspace
 	CreateWorkspace(ctx context.Context, in *CreateWorkspaceRequest, opts ...grpc.CallOption) (*WorkspaceResponse, error)
-	InviteWorkspaceMember(ctx context.Context, in *InviteWorkspaceMemberRequest, opts ...grpc.CallOption) (*Invitation, error)
+	GetWorkspace(ctx context.Context, in *GetWorkspaceRequest, opts ...grpc.CallOption) (*WorkspaceResponse, error)
+	BulkInviteWorkspaceMember(ctx context.Context, in *BulkInviteWorkspaceMemberRequest, opts ...grpc.CallOption) (*InvitationListResponse, error)
 }
 
 type usersServiceClient struct {
@@ -97,6 +100,15 @@ func (c *usersServiceClient) ListOrganizations(ctx context.Context, in *emptypb.
 	return out, nil
 }
 
+func (c *usersServiceClient) GetOrganization(ctx context.Context, in *GetOrganizationRequest, opts ...grpc.CallOption) (*OrganizationResponse, error) {
+	out := new(OrganizationResponse)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/GetOrganization", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *usersServiceClient) CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*OrganizationResponse, error) {
 	out := new(OrganizationResponse)
 	err := c.cc.Invoke(ctx, "/v1.UsersService/CreateOrganization", in, out, opts...)
@@ -115,9 +127,9 @@ func (c *usersServiceClient) CompleteOnboarding(ctx context.Context, in *Complet
 	return out, nil
 }
 
-func (c *usersServiceClient) InviteOrganizationMember(ctx context.Context, in *InviteOrganizationMemberRequest, opts ...grpc.CallOption) (*Invitation, error) {
-	out := new(Invitation)
-	err := c.cc.Invoke(ctx, "/v1.UsersService/InviteOrganizationMember", in, out, opts...)
+func (c *usersServiceClient) BulkInviteOrganizationMember(ctx context.Context, in *BulkInviteOrganizationMemberRequest, opts ...grpc.CallOption) (*InvitationListResponse, error) {
+	out := new(InvitationListResponse)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/BulkInviteOrganizationMember", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -126,16 +138,25 @@ func (c *usersServiceClient) InviteOrganizationMember(ctx context.Context, in *I
 
 func (c *usersServiceClient) CreateWorkspace(ctx context.Context, in *CreateWorkspaceRequest, opts ...grpc.CallOption) (*WorkspaceResponse, error) {
 	out := new(WorkspaceResponse)
-	err := c.cc.Invoke(ctx, "/v1.UsersService/CreateWorkspace", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/CreateWorkspaceDialog", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *usersServiceClient) InviteWorkspaceMember(ctx context.Context, in *InviteWorkspaceMemberRequest, opts ...grpc.CallOption) (*Invitation, error) {
-	out := new(Invitation)
-	err := c.cc.Invoke(ctx, "/v1.UsersService/InviteWorkspaceMember", in, out, opts...)
+func (c *usersServiceClient) GetWorkspace(ctx context.Context, in *GetWorkspaceRequest, opts ...grpc.CallOption) (*WorkspaceResponse, error) {
+	out := new(WorkspaceResponse)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/GetWorkspace", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *usersServiceClient) BulkInviteWorkspaceMember(ctx context.Context, in *BulkInviteWorkspaceMemberRequest, opts ...grpc.CallOption) (*InvitationListResponse, error) {
+	out := new(InvitationListResponse)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/BulkInviteWorkspaceMember", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -154,12 +175,14 @@ type UsersServiceServer interface {
 	RefreshToken(context.Context, *RefreshRequest) (*AuthenticatedUser, error)
 	// Organization
 	ListOrganizations(context.Context, *emptypb.Empty) (*OrganizationListResponse, error)
+	GetOrganization(context.Context, *GetOrganizationRequest) (*OrganizationResponse, error)
 	CreateOrganization(context.Context, *CreateOrganizationRequest) (*OrganizationResponse, error)
 	CompleteOnboarding(context.Context, *CompleteOnboardingRequest) (*OrganizationResponse, error)
-	InviteOrganizationMember(context.Context, *InviteOrganizationMemberRequest) (*Invitation, error)
+	BulkInviteOrganizationMember(context.Context, *BulkInviteOrganizationMemberRequest) (*InvitationListResponse, error)
 	// Workspace
 	CreateWorkspace(context.Context, *CreateWorkspaceRequest) (*WorkspaceResponse, error)
-	InviteWorkspaceMember(context.Context, *InviteWorkspaceMemberRequest) (*Invitation, error)
+	GetWorkspace(context.Context, *GetWorkspaceRequest) (*WorkspaceResponse, error)
+	BulkInviteWorkspaceMember(context.Context, *BulkInviteWorkspaceMemberRequest) (*InvitationListResponse, error)
 	mustEmbedUnimplementedUsersServiceServer()
 }
 
@@ -185,20 +208,26 @@ func (UnimplementedUsersServiceServer) RefreshToken(context.Context, *RefreshReq
 func (UnimplementedUsersServiceServer) ListOrganizations(context.Context, *emptypb.Empty) (*OrganizationListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListOrganizations not implemented")
 }
+func (UnimplementedUsersServiceServer) GetOrganization(context.Context, *GetOrganizationRequest) (*OrganizationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetOrganization not implemented")
+}
 func (UnimplementedUsersServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*OrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganization not implemented")
 }
 func (UnimplementedUsersServiceServer) CompleteOnboarding(context.Context, *CompleteOnboardingRequest) (*OrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CompleteOnboarding not implemented")
 }
-func (UnimplementedUsersServiceServer) InviteOrganizationMember(context.Context, *InviteOrganizationMemberRequest) (*Invitation, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method InviteOrganizationMember not implemented")
+func (UnimplementedUsersServiceServer) BulkInviteOrganizationMember(context.Context, *BulkInviteOrganizationMemberRequest) (*InvitationListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BulkInviteOrganizationMember not implemented")
 }
 func (UnimplementedUsersServiceServer) CreateWorkspace(context.Context, *CreateWorkspaceRequest) (*WorkspaceResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateWorkspace not implemented")
+	return nil, status.Errorf(codes.Unimplemented, "method CreateWorkspaceDialog not implemented")
 }
-func (UnimplementedUsersServiceServer) InviteWorkspaceMember(context.Context, *InviteWorkspaceMemberRequest) (*Invitation, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method InviteWorkspaceMember not implemented")
+func (UnimplementedUsersServiceServer) GetWorkspace(context.Context, *GetWorkspaceRequest) (*WorkspaceResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetWorkspace not implemented")
+}
+func (UnimplementedUsersServiceServer) BulkInviteWorkspaceMember(context.Context, *BulkInviteWorkspaceMemberRequest) (*InvitationListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BulkInviteWorkspaceMember not implemented")
 }
 func (UnimplementedUsersServiceServer) mustEmbedUnimplementedUsersServiceServer() {}
 
@@ -321,6 +350,24 @@ func _UsersService_ListOrganizations_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UsersService_GetOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetOrganizationRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServiceServer).GetOrganization(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v1.UsersService/GetOrganization",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServiceServer).GetOrganization(ctx, req.(*GetOrganizationRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UsersService_CreateOrganization_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(CreateOrganizationRequest)
 	if err := dec(in); err != nil {
@@ -357,20 +404,20 @@ func _UsersService_CompleteOnboarding_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UsersService_InviteOrganizationMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(InviteOrganizationMemberRequest)
+func _UsersService_BulkInviteOrganizationMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BulkInviteOrganizationMemberRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UsersServiceServer).InviteOrganizationMember(ctx, in)
+		return srv.(UsersServiceServer).BulkInviteOrganizationMember(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v1.UsersService/InviteOrganizationMember",
+		FullMethod: "/v1.UsersService/BulkInviteOrganizationMember",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServiceServer).InviteOrganizationMember(ctx, req.(*InviteOrganizationMemberRequest))
+		return srv.(UsersServiceServer).BulkInviteOrganizationMember(ctx, req.(*BulkInviteOrganizationMemberRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -385,7 +432,7 @@ func _UsersService_CreateWorkspace_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v1.UsersService/CreateWorkspace",
+		FullMethod: "/v1.UsersService/CreateWorkspaceDialog",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UsersServiceServer).CreateWorkspace(ctx, req.(*CreateWorkspaceRequest))
@@ -393,20 +440,38 @@ func _UsersService_CreateWorkspace_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-func _UsersService_InviteWorkspaceMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(InviteWorkspaceMemberRequest)
+func _UsersService_GetWorkspace_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetWorkspaceRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(UsersServiceServer).InviteWorkspaceMember(ctx, in)
+		return srv.(UsersServiceServer).GetWorkspace(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/v1.UsersService/InviteWorkspaceMember",
+		FullMethod: "/v1.UsersService/GetWorkspace",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServiceServer).InviteWorkspaceMember(ctx, req.(*InviteWorkspaceMemberRequest))
+		return srv.(UsersServiceServer).GetWorkspace(ctx, req.(*GetWorkspaceRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _UsersService_BulkInviteWorkspaceMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BulkInviteWorkspaceMemberRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServiceServer).BulkInviteWorkspaceMember(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v1.UsersService/BulkInviteWorkspaceMember",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServiceServer).BulkInviteWorkspaceMember(ctx, req.(*BulkInviteWorkspaceMemberRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -443,6 +508,10 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UsersService_ListOrganizations_Handler,
 		},
 		{
+			MethodName: "GetOrganization",
+			Handler:    _UsersService_GetOrganization_Handler,
+		},
+		{
 			MethodName: "CreateOrganization",
 			Handler:    _UsersService_CreateOrganization_Handler,
 		},
@@ -451,16 +520,20 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _UsersService_CompleteOnboarding_Handler,
 		},
 		{
-			MethodName: "InviteOrganizationMember",
-			Handler:    _UsersService_InviteOrganizationMember_Handler,
+			MethodName: "BulkInviteOrganizationMember",
+			Handler:    _UsersService_BulkInviteOrganizationMember_Handler,
 		},
 		{
-			MethodName: "CreateWorkspace",
+			MethodName: "CreateWorkspaceDialog",
 			Handler:    _UsersService_CreateWorkspace_Handler,
 		},
 		{
-			MethodName: "InviteWorkspaceMember",
-			Handler:    _UsersService_InviteWorkspaceMember_Handler,
+			MethodName: "GetWorkspace",
+			Handler:    _UsersService_GetWorkspace_Handler,
+		},
+		{
+			MethodName: "BulkInviteWorkspaceMember",
+			Handler:    _UsersService_BulkInviteWorkspaceMember_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

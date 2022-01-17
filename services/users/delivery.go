@@ -65,12 +65,40 @@ func (svc *UsersService) CreateOrganization(ctx context.Context, req *users.Crea
 	}, nil
 }
 
+func (svc *UsersService) GetOrganization(ctx context.Context, req *users.GetOrganizationRequest) (*users.OrganizationResponse, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "users.GetOrganization")
+	defer span.Finish()
+
+	org, err := svc.WorkspaceUsecase.GetOrganization(ctx, req.OrganizationId)
+	if err != nil {
+		return &users.OrganizationResponse{}, err
+	}
+
+	return &users.OrganizationResponse{
+		Organization: org.ToPb(),
+	}, nil
+}
+
 func (svc *UsersService) CreateWorkspace(ctx context.Context, req *users.CreateWorkspaceRequest) (*users.WorkspaceResponse, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "users.CreateWorkspace")
+	span, ctx := opentracing.StartSpanFromContext(ctx, "users.CreateWorkspaceDialog")
 	defer span.Finish()
 
 	organizationID := uuid.MustParse(req.OrganizationId)
 	ws, err := svc.WorkspaceUsecase.CreateWorkspace(ctx, organizationID, req.Workspace.Name, req.Workspace.Description)
+	if err != nil {
+		return &users.WorkspaceResponse{}, err
+	}
+
+	return &users.WorkspaceResponse{
+		Workspace: ws.ToPb(),
+	}, nil
+}
+
+func (svc *UsersService) GetWorkspace(ctx context.Context, req *users.GetWorkspaceRequest) (*users.WorkspaceResponse, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "users.CetWorkspace")
+	defer span.Finish()
+
+	ws, err := svc.WorkspaceUsecase.GetWorkspace(ctx, req.WorkspaceId)
 	if err != nil {
 		return &users.WorkspaceResponse{}, err
 	}
@@ -116,5 +144,43 @@ func (svc *UsersService) ListOrganizations(ctx context.Context, req *emptypb.Emp
 
 	return &users.OrganizationListResponse{
 		Organizations: result,
+	}, nil
+}
+
+func (svc *UsersService) BulkInviteOrganizationMember(ctx context.Context, req *users.BulkInviteOrganizationMemberRequest) (*users.InvitationListResponse, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "users.BulkInviteOrganizationMember")
+	defer span.Finish()
+
+	invites, err := svc.WorkspaceUsecase.BulkInviteOrganizationMember(ctx, req.OrganizationId, req.Emails)
+	if err != nil {
+		return &users.InvitationListResponse{}, err
+	}
+
+	result := make([]*users.Invitation, len(invites))
+	for i, invitation := range invites {
+		result[i] = invitation.ToPb()
+	}
+
+	return &users.InvitationListResponse{
+		Invitations: result,
+	}, nil
+}
+
+func (svc *UsersService) BulkInviteWorkspaceMember(ctx context.Context, req *users.BulkInviteWorkspaceMemberRequest) (*users.InvitationListResponse, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "users.BulkInviteOrganizationMember")
+	defer span.Finish()
+
+	invites, err := svc.WorkspaceUsecase.BulkInviteWorkspaceMember(ctx, req.WorkspaceId, req.Emails)
+	if err != nil {
+		return &users.InvitationListResponse{}, err
+	}
+
+	result := make([]*users.Invitation, len(invites))
+	for i, invitation := range invites {
+		result[i] = invitation.ToPb()
+	}
+
+	return &users.InvitationListResponse{
+		Invitations: result,
 	}, nil
 }

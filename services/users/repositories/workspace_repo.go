@@ -33,11 +33,11 @@ func (repo *WorkspaceRepo) CreateOne(orga *models.Workspace) (*models.Workspace,
 
 // FindByID an Workspace in database and eager load Worspaces and Members
 func (repo *WorkspaceRepo) FindByID(workspaceID string) (*models.Workspace, error) {
-	org := &models.Workspace{}
-	if err := repo.db.Model(org).Preload(clause.Associations).Where("id = ?", workspaceID).Take(org).Error; err != nil {
+	ws := &models.Workspace{}
+	if err := repo.db.Model(ws).Preload(clause.Associations).Where("id = ?", workspaceID).Take(ws).Error; err != nil {
 		return &models.Workspace{}, err
 	}
-	return org, nil
+	return ws, nil
 }
 
 // AddWorkspaceMember add a WorkspaceMember to a Workspace

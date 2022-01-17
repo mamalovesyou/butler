@@ -48,6 +48,7 @@ func (o *Organization) ToPb() *users.Organization {
 type OrganizationMember struct {
 	BaseModel
 	UserID         uuid.UUID
+	User           User `gorm:"foreignKey:UserID"`
 	OrganizationID uuid.UUID
 	Role           string
 }
@@ -59,7 +60,9 @@ func (u *OrganizationMember) TableName() string {
 // ToPb return the workspace.UserMember of a OrganizationMember
 func (m *OrganizationMember) ToPb() *users.UserMember {
 	return &users.UserMember{
-		UserId: m.UserID.String(),
-		Role:   m.Role,
+		UserId:    m.UserID.String(),
+		FirstName: m.User.FirstName,
+		LastName:  m.User.LastName,
+		Role:      m.Role,
 	}
 }

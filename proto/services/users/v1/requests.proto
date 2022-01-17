@@ -45,6 +45,10 @@ message CreateOrganizationRequest {
   string userRole = 2;
 }
 
+message GetOrganizationRequest {
+  string organization_id = 1;
+}
+
 message CreateWorkspaceRequest {
   string organization_id = 1;
   message WorkspaceInfo {
@@ -54,20 +58,18 @@ message CreateWorkspaceRequest {
   WorkspaceInfo workspace = 2;
 }
 
-message InviteInfos {
-  string first_name = 1;
-  string last_name = 2;
-  string email = 3;
-  string role = 4;
+message GetWorkspaceRequest {
+  string workspace_id = 1;
 }
 
-message InviteOrganizationMemberRequest {
-  InviteInfos invitation = 1;
+
+message BulkInviteOrganizationMemberRequest {
+  repeated string emails = 1;
   string organization_id = 2;
 }
 
-message InviteWorkspaceMemberRequest {
-  InviteInfos invitation = 1;
+message BulkInviteWorkspaceMemberRequest {
+  repeated string emails = 1;
   string workspace_id = 2;
 }
 

@@ -11,7 +11,7 @@
     "url": "https://github.com/butlerhq/butler/issues"
   },
   "scripts": {
-    "env": "dotenv -e .env.local",
+    "env": "dotenv -e .env",
     "build": "yarn run clean-dist && webpack --config=config/webpack/prod.js",
     "start": "yarn run start-dev",
     "start-dev": "webpack serve --config=config/webpack/dev.js",
@@ -43,6 +43,7 @@
     "@emotion/react": "^11.6.0",
     "@emotion/styled": "^11.6.0",
     "@mui/icons-material": "^5.2.0",
+    "@mui/lab": "^5.0.0-alpha.64",
     "@mui/material": "^5.2.1",
     "@reduxjs/toolkit": "^1.5.1",
     "axios": "^0.24.0",
