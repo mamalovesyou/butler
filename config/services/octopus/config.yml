@@ -15,12 +15,11 @@ postgres:
   user: postgres
   password: password
 connectors:
+  redirectURL: redirectUrl
   google:
     clientID: clientID
     clientSecret: clientSecret
-    redirectURL: redirectUrl
   linkedin:
     clientID: clientID
     clientSecret: clientSecret
-    redirectURL: redirectUrl
 port: 3002

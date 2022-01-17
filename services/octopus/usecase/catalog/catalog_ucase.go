@@ -9,7 +9,7 @@ type CatalogUsecase struct {
 	CatalogRepo *repositories.CatalogRepo
 }
 
-func NewCatalogUsecase(cfg *connectors.ConnectorsConfig) *CatalogUsecase {
+func NewCatalogUsecase(cfg *connectors.Config) *CatalogUsecase {
 	return &CatalogUsecase{
 		CatalogRepo: repositories.NewCatalogRepo(cfg),
 	}

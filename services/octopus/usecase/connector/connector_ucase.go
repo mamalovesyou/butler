@@ -11,7 +11,7 @@ type ConnectorUsecase struct {
 	CatalogRepo   *repositories.CatalogRepo
 }
 
-func NewConnectorUsecase(cfg *connectors.ConnectorsConfig, db *gorm.DB) *ConnectorUsecase {
+func NewConnectorUsecase(cfg *connectors.Config, db *gorm.DB) *ConnectorUsecase {
 	return &ConnectorUsecase{
 		ConnectorRepo: repositories.NewConnectorRepo(db),
 		CatalogRepo:   repositories.NewCatalogRepo(cfg),
