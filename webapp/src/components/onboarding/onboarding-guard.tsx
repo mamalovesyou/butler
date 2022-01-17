@@ -13,15 +13,16 @@ interface OnboardingGuardProps {
 export const OnboardingGuard: FC<OnboardingGuardProps> = (props) => {
   const { children } = props;
   const dispatch = useDispatch();
-  const { organizationId, workspaceId } = useWorkspace();
+  const { organizationId, organizations } = useWorkspace();
 
   useEffect(() => {
-    if (!organizationId || !workspaceId) {
-      dispatch(push(ONBOARDING_ROOT_PATH));
-    } else {
-      dispatch(push(DASHBOARD_ROOT_PATH));
+    if (organizationId) {
+      const currentOrg = organizations[organizationId]
+      if (!currentOrg.onboarded) {
+        dispatch(push(ONBOARDING_ROOT_PATH));
+      }
     }
-  }, [organizationId, workspaceId]);
+  }, [organizationId]);
 
   return <>{children}</>;
 };
@@ -29,3 +30,5 @@ export const OnboardingGuard: FC<OnboardingGuardProps> = (props) => {
 OnboardingGuard.propTypes = {
   children: PropTypes.node
 };
+
+export default OnboardingGuard;

@@ -1,9 +1,9 @@
 import {
   GoogleRpcStatus,
   V1CatalogConnectorList,
-  V1OAuthAuthorizationRequestConnectorCode,
+  V1ConnectWithCodeRequest,
   V1WorkspaceConnector,
-  V1WorkspaceConnectorList
+  V1WorkspaceConnectorList, V1WorkspaceConnectorsRequest
 } from '../../api';
 
 export const LIST_CATALOG_CONNECTORS_REQUEST =
@@ -45,6 +45,7 @@ export interface IListCatalogConnectorsFailure {
 // List Workspace Connectors
 export interface IListWorkspaceConnectorsRequest {
   type: typeof LIST_WORKSPACE_CONNECTORS_REQUEST;
+  payload: V1WorkspaceConnectorsRequest
 }
 
 export interface IListWorkspaceConnectorsSuccess {
@@ -60,7 +61,7 @@ export interface IListWorkspaceConnectorsFailure {
 // List Workspace Connectors
 export interface IConnectOAuthConnectorRequest {
   type: typeof CONNECT_OAUTH_CONNECTOR_REQUEST;
-  payload: V1OAuthAuthorizationRequestConnectorCode;
+  payload: V1ConnectWithCodeRequest;
 }
 
 export interface IConnectOAuthConnectorSuccess {

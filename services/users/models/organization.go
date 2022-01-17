@@ -10,6 +10,7 @@ type Organization struct {
 	BaseModel
 	Name        string
 	OwnerID     uuid.UUID
+	Onboarded   bool
 	Workspaces  []Workspace          `gorm:"foreignKey:OrganizationID"`
 	UserMembers []OrganizationMember `gorm:"foreignKey:OrganizationID"`
 }
@@ -24,6 +25,7 @@ func (o *Organization) ToPb() *users.Organization {
 		Id:        o.ID.String(),
 		OwnerId:   o.OwnerID.String(),
 		Name:      o.Name,
+		Onboarded: o.Onboarded,
 		CreatedAt: timestamppb.New(o.CreatedAt),
 		UpdatedAt: timestamppb.New(o.UpdatedAt),
 	}

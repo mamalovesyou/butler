@@ -1,0 +1,940 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "google/api/http.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "UsersService"
+    },
+    {
+      "name": "OctopusService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/connector": {
+      "post": {
+        "operationId": "OctopusService_ListWorkspaceConnectors",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.WorkspaceConnectorList"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.WorkspaceConnectorsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OctopusService"
+        ]
+      }
+    },
+    "/v1/connector/catalog": {
+      "get": {
+        "operationId": "OctopusService_GetCatalogConnectors",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.CatalogConnectorList"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "tags": [
+          "OctopusService"
+        ]
+      }
+    },
+    "/v1/connector/connect/oauth": {
+      "post": {
+        "operationId": "OctopusService_ConnectWithCode",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.WorkspaceConnector"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.ConnectWithCodeRequest"
+            }
+          }
+        ],
+        "tags": [
+          "OctopusService"
+        ]
+      }
+    },
+    "/v1/organizations": {
+      "get": {
+        "summary": "Organization",
+        "operationId": "UsersService_ListOrganizations",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.OrganizationListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "tags": [
+          "UsersService"
+        ]
+      },
+      "post": {
+        "operationId": "UsersService_CreateOrganization",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.OrganizationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.CreateOrganizationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      }
+    },
+    "/v1/organizations/members/invite": {
+      "post": {
+        "operationId": "UsersService_InviteOrganizationMember",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.Invitation"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.InviteOrganizationMemberRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      }
+    },
+    "/v1/organizations/onboarding": {
+      "post": {
+        "operationId": "UsersService_CompleteOnboarding",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.OrganizationResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.CompleteOnboardingRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      }
+    },
+    "/v1/organizations/workspaces": {
+      "post": {
+        "summary": "Workspace",
+        "operationId": "UsersService_CreateWorkspace",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.WorkspaceResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.CreateWorkspaceRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      }
+    },
+    "/v1/user/refresh": {
+      "post": {
+        "operationId": "UsersService_RefreshToken",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.AuthenticatedUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.RefreshRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      }
+    },
+    "/v1/user/signin": {
+      "post": {
+        "summary": "Authentication",
+        "operationId": "UsersService_SignIn",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.AuthenticatedUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.SignInRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ],
+        "security": []
+      }
+    },
+    "/v1/user/signout": {
+      "post": {
+        "operationId": "UsersService_SignOut",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "properties": {}
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.SignOutRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      }
+    },
+    "/v1/user/signup": {
+      "post": {
+        "operationId": "UsersService_SignUp",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.AuthenticatedUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.SignUpRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ],
+        "security": []
+      }
+    },
+    "/v1/user/signup/invites": {
+      "post": {
+        "operationId": "UsersService_SignUpWithInvite",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.AuthenticatedUser"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.SignUpWithInvitationRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ],
+        "security": []
+      }
+    },
+    "/v1/workspaces/members/invite": {
+      "post": {
+        "operationId": "UsersService_InviteWorkspaceMember",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.Invitation"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.InviteWorkspaceMemberRequest"
+            }
+          }
+        ],
+        "tags": [
+          "UsersService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "google.protobuf.Any": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "google.rpc.Status": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/google.protobuf.Any"
+          }
+        }
+      }
+    },
+    "v1.AuthenticatedUser": {
+      "type": "object",
+      "properties": {
+        "user": {
+          "$ref": "#/definitions/v1.User"
+        },
+        "accessToken": {
+          "type": "string"
+        },
+        "refreshToken": {
+          "type": "string"
+        }
+      },
+      "description": "The response message containing the User."
+    },
+    "v1.CatalogConnector": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "iconSvg": {
+          "type": "string"
+        },
+        "authType": {
+          "$ref": "#/definitions/v1.CatalogConnector.AuthType"
+        },
+        "authUrl": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.CatalogConnector.AuthType": {
+      "type": "string",
+      "enum": [
+        "OAUTH2",
+        "API_KEY"
+      ],
+      "default": "OAUTH2"
+    },
+    "v1.CatalogConnectorList": {
+      "type": "object",
+      "properties": {
+        "connectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.CatalogConnector"
+          }
+        }
+      }
+    },
+    "v1.CompleteOnboardingRequest": {
+      "type": "object",
+      "properties": {
+        "organizationId": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.ConnectWithCodeRequest": {
+      "type": "object",
+      "properties": {
+        "workspaceId": {
+          "type": "string"
+        },
+        "provider": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.CreateOrganizationRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "userRole": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.CreateWorkspaceRequest": {
+      "type": "object",
+      "properties": {
+        "organizationId": {
+          "type": "string"
+        },
+        "workspace": {
+          "$ref": "#/definitions/v1.CreateWorkspaceRequest.WorkspaceInfo"
+        }
+      }
+    },
+    "v1.CreateWorkspaceRequest.WorkspaceInfo": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.Invitation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1.InviteInfos": {
+      "type": "object",
+      "properties": {
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.InviteOrganizationMemberRequest": {
+      "type": "object",
+      "properties": {
+        "invitation": {
+          "$ref": "#/definitions/v1.InviteInfos"
+        },
+        "organizationId": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.InviteWorkspaceMemberRequest": {
+      "type": "object",
+      "properties": {
+        "invitation": {
+          "$ref": "#/definitions/v1.InviteInfos"
+        },
+        "workspaceId": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.Organization": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "ownerId": {
+          "type": "string"
+        },
+        "onboarded": {
+          "type": "boolean"
+        },
+        "workspaces": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.Workspace"
+          }
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.UserMember"
+          }
+        },
+        "invitations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.Invitation"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1.OrganizationListResponse": {
+      "type": "object",
+      "properties": {
+        "organizations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.Organization"
+          }
+        }
+      }
+    },
+    "v1.OrganizationResponse": {
+      "type": "object",
+      "properties": {
+        "organization": {
+          "$ref": "#/definitions/v1.Organization"
+        }
+      }
+    },
+    "v1.RefreshRequest": {
+      "type": "object",
+      "properties": {
+        "refreshToken": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.SignInRequest": {
+      "type": "object",
+      "properties": {
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.SignOutRequest": {
+      "type": "object",
+      "properties": {
+        "accessToken": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.SignUpRequest": {
+      "type": "object",
+      "properties": {
+        "lastName": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "companyName": {
+          "type": "string"
+        },
+        "companyRole": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.SignUpWithInvitationRequest": {
+      "type": "object",
+      "properties": {
+        "invitationId": {
+          "type": "string"
+        },
+        "infos": {
+          "$ref": "#/definitions/v1.SignUpWithInvitationRequest.SignupInfo"
+        }
+      }
+    },
+    "v1.SignUpWithInvitationRequest.SignupInfo": {
+      "type": "object",
+      "properties": {
+        "organizationId": {
+          "type": "string"
+        },
+        "workspaceId": {
+          "type": "string"
+        },
+        "token": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.User": {
+      "type": "object",
+      "properties": {
+        "ID": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1.UserMember": {
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string"
+        },
+        "firstName": {
+          "type": "string"
+        },
+        "lastName": {
+          "type": "string"
+        },
+        "role": {
+          "type": "string"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1.Workspace": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "description": {
+          "type": "string"
+        },
+        "organizationId": {
+          "type": "string"
+        },
+        "members": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.UserMember"
+          }
+        },
+        "invitations": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.Invitation"
+          }
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1.WorkspaceConnector": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "workspaceId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        },
+        "expiresIn": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1.WorkspaceConnectorList": {
+      "type": "object",
+      "properties": {
+        "connectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.WorkspaceConnector"
+          }
+        }
+      }
+    },
+    "v1.WorkspaceConnectorsRequest": {
+      "type": "object",
+      "properties": {
+        "workspaceId": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.WorkspaceResponse": {
+      "type": "object",
+      "properties": {
+        "workspace": {
+          "$ref": "#/definitions/v1.Workspace"
+        }
+      }
+    }
+  }
+}

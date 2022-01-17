@@ -1,0 +1,20 @@
+environment: dev
+logger:
+  disableCaller: true
+  disableStacktrace: false
+  encoding: json
+  level: debug
+jaeger:
+  host: jaeger:6831
+  logSpans: true
+  serviceName: User_GRPC
+postgres:
+  host: postgres
+  port: 5432
+  name: user_db
+  user: postgres
+  password: password
+redis:
+  host: redis
+  port: 6379
+port: 3001

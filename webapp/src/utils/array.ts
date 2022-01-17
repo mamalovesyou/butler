@@ -15,9 +15,10 @@ export const IsObject = (obj: any): boolean =>
  */
 export const ArrayToObject = <T>(
   array: Array<T>,
-  property: string
-): Record<string, T> =>
-  array.reduce((acc, obj) => {
+  property: string = "id"
+): Record<string, T> => {
+  console.log(array, property)
+  return array.reduce((acc, obj) => {
     if (!IsObject(obj)) {
       throw new Error(`Not an object, found: ${typeof obj}`);
     }
@@ -30,4 +31,4 @@ export const ArrayToObject = <T>(
       );
     }
     return { ...acc, [key]: { ...obj } };
-  }, {});
+  }, {});}

@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/butlerhq/butler/services/octopus"
+
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/internal/postgres"
 	"github.com/butlerhq/butler/services/users"
@@ -15,7 +17,8 @@ import (
 )
 
 var (
-	UsersMigrationName = "users"
+	UsersMigrationName   = "users"
+	OctopusMigrationName = "octopus"
 
 	AllowedCommands = []string{
 		"up", "up-by-one", "up-to", "down", "down-to", "redo", "reset", "status", "version", "fix",
@@ -23,16 +26,23 @@ var (
 )
 
 type GooseMigrations struct {
-	dbConfig     postgres.PostgresConfig
-	migrationMap map[string]embed.FS
+	servicesPostgresConfigMap map[string]postgres.PostgresConfig
+	migrationMap              map[string]embed.FS
 }
 
 func NewGooseMigrations(config *VictorioxConfig) *GooseMigrations {
 	migrationMap := make(map[string]embed.FS)
+
+	// Adding user service migration
 	migrationMap[UsersMigrationName] = users.EmbedMigrations
+	migrationMap[OctopusMigrationName] = octopus.EmbedMigrations
+	servicesDbConfigMap := make(map[string]postgres.PostgresConfig)
+	servicesDbConfigMap[UsersMigrationName] = config.Services.Users
+	servicesDbConfigMap[OctopusMigrationName] = config.Services.Octopus
+
 	return &GooseMigrations{
-		dbConfig:     config.Postgres,
-		migrationMap: migrationMap,
+		servicesPostgresConfigMap: servicesDbConfigMap,
+		migrationMap:              migrationMap,
 	}
 }
 
@@ -44,11 +54,15 @@ func IsSupportedGooseCmd(cmd string) bool {
 
 func (m *GooseMigrations) RunGooseMigration(ctx context.Context, name, cmd string, args ...string) error {
 	name = strings.TrimSpace(name)
-	logger.Infof(ctx, "Available migrations %+v", m.migrationMap)
 	logger.Infof(ctx, "Applying migrations %s", name)
 
 	// Initialize DB connection
-	pg := postgres.NewPostgresGorm(&m.dbConfig)
+	postgresCfg, ok := m.servicesPostgresConfigMap[name]
+	if !ok {
+		logger.Fatalf(ctx, "Postgres configuration %s not found", name)
+	}
+
+	pg := postgres.NewPostgresGorm(&postgresCfg)
 	if err := pg.ConnectLoop(5 * time.Second); err != nil {
 		logger.Fatal(ctx, "Cannot connect to postgres.", zap.Error(err))
 	}

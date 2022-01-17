@@ -2,9 +2,10 @@ package workspace
 
 import (
 	"context"
+
+	"github.com/butlerhq/butler/internal/errors"
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/services/users/models"
-	"github.com/butlerhq/butler/services/users/services"
 	"github.com/google/uuid"
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
@@ -24,7 +25,7 @@ func (svc *WorkspaceUsecase) CreateWorkspace(ctx context.Context, organizationID
 
 	if err != nil {
 		logger.Error(ctx, "Unable to create workspace", zap.Error(err))
-		return nil, services.ErrInternal
+		return nil, errors.ErrInternal
 	}
 
 	return ws, nil

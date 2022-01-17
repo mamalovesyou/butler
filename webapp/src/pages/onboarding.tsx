@@ -20,6 +20,8 @@ import { useAuth } from "../hooks/use-auth";
 import { OnboardingStep, setOnboardingStep } from "../features/onboarding";
 import { ConnectDataSourceStep } from "../components/onboarding/connect-data-source-step";
 import { listCatalogConnectorsRequest, listWorkspaceConnectorsRequest } from "../features/connectors";
+import {push} from "redux-first-history";
+import {DASHBOARD_ROOT_PATH, ONBOARDING_ROOT_PATH} from "../routes";
 
 const StepIcon: React.FC<StepIconProps> = (props) => {
   const { active, completed, icon } = props;
@@ -45,12 +47,19 @@ const Onboarding: React.FC = () => {
   const { activeStep } = useOnboarding();
   const { user } = useAuth();
   const dispatch = useDispatch();
-  const { workspaceId, organizationId } = useWorkspace();
+  const { workspaceId, organizationId, organizations } = useWorkspace();
 
   useEffect(() => {
     if (organizationId) {
-      if (workspaceId) {
-        dispatch(listWorkspaceConnectorsRequest());
+      const currentOrga = organizations[organizationId];
+
+      // If onboarding complete, redirect to dashboard
+      if (currentOrga.onboarded) {
+          dispatch(push(DASHBOARD_ROOT_PATH));
+      }
+
+      else if (workspaceId) {
+        dispatch(listWorkspaceConnectorsRequest({ workspaceId }));
         dispatch(listCatalogConnectorsRequest());
         dispatch(setOnboardingStep(OnboardingStep.CONNECT_DATA_SOURCE));
       } else {

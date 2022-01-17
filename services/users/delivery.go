@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+
 	"github.com/butlerhq/butler/api/services/users/v1"
 	butlerctx "github.com/butlerhq/butler/internal/context"
 	"github.com/butlerhq/butler/internal/errors"
@@ -9,15 +10,10 @@ import (
 	"github.com/google/uuid"
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
-	"google.golang.org/grpc"
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-type UseCase interface {
-	RegisterUseCaseEndpoints(server *grpc.Server)
-}
-
-// SignIn auth a user with an email/passsword combination
+// SignIn users a user with an email/passsword combination
 func (svc *UsersService) SignIn(ctx context.Context, req *users.SignInRequest) (*users.AuthenticatedUser, error) {
 	span, ctx := opentracing.StartSpanFromContext(ctx, "users.SignIn")
 	defer span.Finish()
@@ -81,6 +77,20 @@ func (svc *UsersService) CreateWorkspace(ctx context.Context, req *users.CreateW
 
 	return &users.WorkspaceResponse{
 		Workspace: ws.ToPb(),
+	}, nil
+}
+
+func (svc *UsersService) CompleteOnboarding(ctx context.Context, req *users.CompleteOnboardingRequest) (*users.OrganizationResponse, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "users.CompleteOnboarding")
+	defer span.Finish()
+
+	org, err := svc.WorkspaceUsecase.CompleteOnboarding(ctx, req.OrganizationId)
+	if err != nil {
+		return &users.OrganizationResponse{}, err
+	}
+
+	return &users.OrganizationResponse{
+		Organization: org.ToPb(),
 	}, nil
 }
 

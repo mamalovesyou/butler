@@ -28,6 +28,15 @@ func (repo *OrganizationRepo) CreateOne(orga *models.Organization) (*models.Orga
 	return orga, nil
 }
 
+// UpdateOne and save updates it in database
+func (repo *OrganizationRepo) UpdateOne(organizationID string, updates models.Organization) (*models.Organization, error) {
+	orga := &models.Organization{}
+	if err := repo.db.Model(orga).Where("id = ?", organizationID).Updates(updates).Error; err != nil {
+		return &models.Organization{}, err
+	}
+	return orga, nil
+}
+
 // FindByID an Organization in database and eager load Worspaces and Members
 func (repo *OrganizationRepo) FindByID(organizationID string) (*models.Organization, error) {
 	org := &models.Organization{}

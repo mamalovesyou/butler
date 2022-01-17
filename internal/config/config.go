@@ -7,6 +7,8 @@ import (
 	"github.com/spf13/viper"
 )
 
+const flagTagName = "flag"
+
 func LoadYAMLConfig(cfgFilePath string) error {
 	dir := filepath.Dir(cfgFilePath)
 	file := filepath.Base(cfgFilePath)

@@ -47,15 +47,15 @@ DOCKER_COMPOSE_CMD_TEST = $(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-comp
 DOCKER_COMPOSE_CMD_TEST_LOCAL = $(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.local.test.yml
 
 # Open Api
-OPEN_API_OUT=config/openapi
+OPEN_API_OUT=webapp/config/openapi
 OPEN_API_NAME=api
 OPEN_API_FILE=$(OPEN_API_OUT)/$(OPEN_API_NAME).swagger.json
 
 # Protobuf
 PROTO_ROOT := proto
-PROTO_FILES := $(shell find ./proto/services -name "*.proto")
+PROTO_FILES := $(shell find ./proto -name "*.proto")
 PROTO_DIRS := $(sort $(dir $(PROTO_FILES)))
-PROTO_IMPORTS := -I=$(PROTO_ROOT) -I./vendor/github.com/grpc-ecosystem/grpc-gateway/v2 -I./vendor/github.com/envoyproxy -I./third_party
+PROTO_IMPORTS := -I=$(PROTO_ROOT) -I./vendor/github.com/grpc-ecosystem/grpc-gateway/v2 -I./vendor/github.com/envoyproxy
 PROTO_OUT := api
 PROTO_CMD := protoc $(PROTO_IMPORTS)
 
@@ -174,26 +174,29 @@ tidy: ## Clean go.mod dependencies
 
 
 
-# DOCKER ENV
-docker.dev.infra: ## Start dev environment with docker
-	@echo "Starting dev infra..."
-	@$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans postgres
+########################
+###  Docker Compose  ###
+########################
 
-docker.dev.migrate: ## Provision databases
+dev.infra: ## Start dev environment with docker
+	@echo "Starting dev infra..."
+	@$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans postgres redis
+
+dev.migrate: ## Provision databases
 	@echo "Starting victorinox..."
 	@$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans victorinox
 
 
-docker.dev.services: ## Start services with docker in dev environment
+dev.services: ## Start services with docker in dev environment
 	@echo "Starting dev env..."
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --abort-on-container-exit --remove-orphans auth workspace gateway
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans users octopus gateway webapp
 
 
-docker.dev.monitor: ## Start monitor dev evironment with docker
+dev.monitor: ## Start monitor dev evironment with docker
 	@echo "Starting monitoring dev env..."
 	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans pgadmin
 
-docker.dev.clean: ## Clean docker dev evironment
+dev.clean: ## Clean docker dev evironment
 	@echo "Cleaning dev env..."
 	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
 	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml rm -f

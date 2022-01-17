@@ -1,0 +1,16 @@
+syntax = "proto3";
+option go_package = "github.com/butlerhq/butler/api/services/octopus/v1;octopus";
+package v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+message WorkspaceConnectorsRequest {
+  string workspaceId = 1;
+}
+
+message ConnectWithCodeRequest {
+  string workspaceId = 1;
+  string provider = 2;
+  string code = 3;
+}

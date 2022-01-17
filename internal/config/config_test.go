@@ -2,12 +2,13 @@ package config
 
 import (
 	"fmt"
+	"os"
+	"testing"
+
 	"github.com/spf13/afero"
 	"github.com/spf13/viper"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
-	"os"
-	"testing"
 )
 
 type TestConfig struct {
@@ -33,7 +34,7 @@ func setUpTest(t *testing.T) {
 	err := fs.Mkdir("/etc/butler", 0o777)
 	require.NoError(t, err)
 
-	file, err := fs.Create("/etc/butler/config.yaml")
+	file, err := fs.Create("/etc/butler/config.yml")
 	require.NoError(t, err)
 
 	_, err = file.Write(yamlExample)
@@ -44,7 +45,7 @@ func setUpTest(t *testing.T) {
 	v := viper.New()
 	v.SetFs(fs)
 
-	file, err = fs.Open("/etc/butler/config.yaml")
+	file, err = fs.Open("/etc/butler/config.yml")
 	require.NoError(t, err)
 	bytes := []byte{}
 	_, err = file.Read(bytes)
@@ -57,7 +58,7 @@ func TestReadConfig(t *testing.T) {
 		setUpTest(t)
 
 		cfg := &TestConfig{}
-		err := ReadConfig("/etc/butler/config.yaml", "", cfg)
+		err := ReadConfig("/etc/butler/config.yml", "", cfg)
 
 		assert.Equal(t, "butler", cfg.Name)
 		assert.Equal(t, "butler", cfg.Nested.Name)
@@ -71,7 +72,7 @@ func TestReadConfig(t *testing.T) {
 		os.Setenv("NESTED_COMPLEX_NAME", "override")
 
 		cfg := &TestConfig{}
-		err := ReadConfig("/etc/butler/config.yaml", "", cfg)
+		err := ReadConfig("/etc/butler/config.yml", "", cfg)
 
 		assert.Equal(t, "butler", cfg.Name)
 		assert.Equal(t, "butler", cfg.Nested.Name)

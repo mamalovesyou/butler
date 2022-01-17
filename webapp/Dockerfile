@@ -16,6 +16,13 @@ RUN apk --update --no-cache add automake git alpine-sdk nasm autoconf build-base
 COPY package.json .
 RUN yarn install
 
+# Dev image
+FROM base as dev
+
+COPY . .
+ENTRYPOINT ["yarn", "start"]
+
+
 # Build image
 FROM base AS build
 
@@ -40,3 +47,4 @@ COPY --from=build /app/dist .
 COPY --from=build /app/config/nginx/nginx.conf /etc/nginx/conf.d/default.conf
 # Containers run nginx with global directives and daemon off
 ENTRYPOINT ["nginx", "-g", "daemon off;"]
+

@@ -24,4 +24,4 @@ spec:
           envFrom:
             - configMapRef:
                 name: butler-users-db-migration-config
-          command: ["/bin/butler-victorinox", "migrate", "up", "-c /config/config.yaml","-s users"]
+          command: ["/butler-victorinox", "migrate", "up", "-c /config/config.yaml","-s users"]

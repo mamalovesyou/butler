@@ -3,7 +3,6 @@ module github.com/butlerhq/butler
 go 1.17
 
 require (
-	github.com/caarlos0/env/v6 v6.8.0
 	github.com/cosmtrek/air v1.27.8
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/envoyproxy/protoc-gen-validate v0.6.2
@@ -27,7 +26,6 @@ require (
 	go.uber.org/zap v1.19.1
 	golang.org/x/crypto v0.0.0-20211202192323-5770296d904e
 	golang.org/x/oauth2 v0.0.0-20211104180415-d3ed0bb246c8
-	google.golang.org/genproto v0.0.0-20211206220100-3cb06788ce7f
 	google.golang.org/grpc v1.42.0
 	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0
 	google.golang.org/protobuf v1.27.1
@@ -38,6 +36,7 @@ require (
 require (
 	cloud.google.com/go v0.93.3 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
+	github.com/caarlos0/env/v6 v6.8.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
@@ -88,6 +87,7 @@ require (
 	golang.org/x/tools v0.1.5 // indirect
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/appengine v1.6.7 // indirect
+	google.golang.org/genproto v0.0.0-20211206220100-3cb06788ce7f // indirect
 	gopkg.in/ini.v1 v1.63.2 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b // indirect

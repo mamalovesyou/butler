@@ -2,10 +2,11 @@ package workspace
 
 import (
 	"context"
+
 	butlerctx "github.com/butlerhq/butler/internal/context"
+	"github.com/butlerhq/butler/internal/errors"
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/services/users/models"
-	"github.com/butlerhq/butler/services/users/services"
 	"github.com/google/uuid"
 	"github.com/opentracing/opentracing-go"
 	"go.uber.org/zap"
@@ -18,7 +19,7 @@ func (svc *WorkspaceUsecase) CreateOrganization(ctx context.Context, name string
 	// Retrieve userID from context
 	userID, err := butlerctx.GetCtxTagUserID(ctx)
 	if err != nil {
-		return nil, services.ErrMissingIndentity
+		return nil, errors.ErrInvalidGrant
 	}
 
 	// Default user members

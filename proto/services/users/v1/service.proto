@@ -1,6 +1,6 @@
 syntax = "proto3";
 option go_package = "github.com/butlerhq/butler/api/services/users/v1;users";
-package users;
+package v1;
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
@@ -36,8 +36,8 @@ service UsersService {
 
   rpc SignUpWithInvite(SignUpWithInvitationRequest) returns (AuthenticatedUser) {
     option (google.api.http) = {
-      post: "/v1/user/signup/invites/{invitationId}"
-      body: "infos"
+      post: "/v1/user/signup/invites"
+      body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       security: {} // Disable security key
@@ -71,25 +71,32 @@ service UsersService {
     };
   }
 
-  rpc InviteOrganizationMember(IniviteOrganizationMemberRequest) returns (Invitation) {
+  rpc CompleteOnboarding(CompleteOnboardingRequest) returns (OrganizationResponse) {
     option (google.api.http) = {
-      post: "/v1/organizations/{organization_id}/members/invite"
-      body: "invitation"
+      post: "/v1/organizations/onboarding"
+      body: "*"
+    };
+  }
+
+  rpc InviteOrganizationMember(InviteOrganizationMemberRequest) returns (Invitation) {
+    option (google.api.http) = {
+      post: "/v1/organizations/members/invite"
+      body: "*"
     };
   }
 
   // Workspace
   rpc CreateWorkspace(CreateWorkspaceRequest) returns (WorkspaceResponse) {
     option (google.api.http) = {
-      post: "/v1/organizations/{organization_id}/workspaces"
-      body: "workspace"
+      post: "/v1/organizations/workspaces"
+      body: "*"
     };
   }
 
   rpc InviteWorkspaceMember(InviteWorkspaceMemberRequest) returns (Invitation) {
     option (google.api.http) = {
-      post: "/v1/workspaces/{workspace_id}/invites"
-      body: "invitation"
+      post: "/v1/workspaces/members/invite"
+      body: "*"
     };
   }
 }

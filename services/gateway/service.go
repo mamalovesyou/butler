@@ -2,6 +2,8 @@ package gateway
 
 import (
 	"context"
+
+	"github.com/butlerhq/butler/api/services/octopus/v1"
 	"github.com/butlerhq/butler/api/services/users/v1"
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/internal/protocol/grpc/middlewares"
@@ -44,6 +46,13 @@ func (gw *RESTGatewayService) RegisterGRPCServices() error {
 	err := users.RegisterUsersServiceHandlerFromEndpoint(ctx, gw.Mux, gw.Config.UsersServiceAddr, gw.GRPCDialOptions)
 	if err != nil {
 		logger.Fatal(ctx, "Unable to register users service", zap.Error(err))
+		return err
+	}
+
+	// Register octopus service
+	err = octopus.RegisterOctopusServiceHandlerFromEndpoint(ctx, gw.Mux, gw.Config.OcotpusServiceAddr, gw.GRPCDialOptions)
+	if err != nil {
+		logger.Fatal(ctx, "Unable to register octopus service", zap.Error(err))
 		return err
 	}
 

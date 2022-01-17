@@ -28,7 +28,8 @@ type UsersServiceClient interface {
 	// Organization
 	ListOrganizations(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*OrganizationListResponse, error)
 	CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*OrganizationResponse, error)
-	InviteOrganizationMember(ctx context.Context, in *IniviteOrganizationMemberRequest, opts ...grpc.CallOption) (*Invitation, error)
+	CompleteOnboarding(ctx context.Context, in *CompleteOnboardingRequest, opts ...grpc.CallOption) (*OrganizationResponse, error)
+	InviteOrganizationMember(ctx context.Context, in *InviteOrganizationMemberRequest, opts ...grpc.CallOption) (*Invitation, error)
 	// Workspace
 	CreateWorkspace(ctx context.Context, in *CreateWorkspaceRequest, opts ...grpc.CallOption) (*WorkspaceResponse, error)
 	InviteWorkspaceMember(ctx context.Context, in *InviteWorkspaceMemberRequest, opts ...grpc.CallOption) (*Invitation, error)
@@ -44,7 +45,7 @@ func NewUsersServiceClient(cc grpc.ClientConnInterface) UsersServiceClient {
 
 func (c *usersServiceClient) SignIn(ctx context.Context, in *SignInRequest, opts ...grpc.CallOption) (*AuthenticatedUser, error) {
 	out := new(AuthenticatedUser)
-	err := c.cc.Invoke(ctx, "/users.UsersService/SignIn", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/SignIn", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +54,7 @@ func (c *usersServiceClient) SignIn(ctx context.Context, in *SignInRequest, opts
 
 func (c *usersServiceClient) SignUp(ctx context.Context, in *SignUpRequest, opts ...grpc.CallOption) (*AuthenticatedUser, error) {
 	out := new(AuthenticatedUser)
-	err := c.cc.Invoke(ctx, "/users.UsersService/SignUp", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/SignUp", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +63,7 @@ func (c *usersServiceClient) SignUp(ctx context.Context, in *SignUpRequest, opts
 
 func (c *usersServiceClient) SignUpWithInvite(ctx context.Context, in *SignUpWithInvitationRequest, opts ...grpc.CallOption) (*AuthenticatedUser, error) {
 	out := new(AuthenticatedUser)
-	err := c.cc.Invoke(ctx, "/users.UsersService/SignUpWithInvite", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/SignUpWithInvite", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -71,7 +72,7 @@ func (c *usersServiceClient) SignUpWithInvite(ctx context.Context, in *SignUpWit
 
 func (c *usersServiceClient) SignOut(ctx context.Context, in *SignOutRequest, opts ...grpc.CallOption) (*emptypb.Empty, error) {
 	out := new(emptypb.Empty)
-	err := c.cc.Invoke(ctx, "/users.UsersService/SignOut", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/SignOut", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +81,7 @@ func (c *usersServiceClient) SignOut(ctx context.Context, in *SignOutRequest, op
 
 func (c *usersServiceClient) RefreshToken(ctx context.Context, in *RefreshRequest, opts ...grpc.CallOption) (*AuthenticatedUser, error) {
 	out := new(AuthenticatedUser)
-	err := c.cc.Invoke(ctx, "/users.UsersService/RefreshToken", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/RefreshToken", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +90,7 @@ func (c *usersServiceClient) RefreshToken(ctx context.Context, in *RefreshReques
 
 func (c *usersServiceClient) ListOrganizations(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*OrganizationListResponse, error) {
 	out := new(OrganizationListResponse)
-	err := c.cc.Invoke(ctx, "/users.UsersService/ListOrganizations", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/ListOrganizations", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -98,16 +99,25 @@ func (c *usersServiceClient) ListOrganizations(ctx context.Context, in *emptypb.
 
 func (c *usersServiceClient) CreateOrganization(ctx context.Context, in *CreateOrganizationRequest, opts ...grpc.CallOption) (*OrganizationResponse, error) {
 	out := new(OrganizationResponse)
-	err := c.cc.Invoke(ctx, "/users.UsersService/CreateOrganization", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/CreateOrganization", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *usersServiceClient) InviteOrganizationMember(ctx context.Context, in *IniviteOrganizationMemberRequest, opts ...grpc.CallOption) (*Invitation, error) {
+func (c *usersServiceClient) CompleteOnboarding(ctx context.Context, in *CompleteOnboardingRequest, opts ...grpc.CallOption) (*OrganizationResponse, error) {
+	out := new(OrganizationResponse)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/CompleteOnboarding", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *usersServiceClient) InviteOrganizationMember(ctx context.Context, in *InviteOrganizationMemberRequest, opts ...grpc.CallOption) (*Invitation, error) {
 	out := new(Invitation)
-	err := c.cc.Invoke(ctx, "/users.UsersService/InviteOrganizationMember", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/InviteOrganizationMember", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +126,7 @@ func (c *usersServiceClient) InviteOrganizationMember(ctx context.Context, in *I
 
 func (c *usersServiceClient) CreateWorkspace(ctx context.Context, in *CreateWorkspaceRequest, opts ...grpc.CallOption) (*WorkspaceResponse, error) {
 	out := new(WorkspaceResponse)
-	err := c.cc.Invoke(ctx, "/users.UsersService/CreateWorkspace", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/CreateWorkspace", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -125,7 +135,7 @@ func (c *usersServiceClient) CreateWorkspace(ctx context.Context, in *CreateWork
 
 func (c *usersServiceClient) InviteWorkspaceMember(ctx context.Context, in *InviteWorkspaceMemberRequest, opts ...grpc.CallOption) (*Invitation, error) {
 	out := new(Invitation)
-	err := c.cc.Invoke(ctx, "/users.UsersService/InviteWorkspaceMember", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/v1.UsersService/InviteWorkspaceMember", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -145,7 +155,8 @@ type UsersServiceServer interface {
 	// Organization
 	ListOrganizations(context.Context, *emptypb.Empty) (*OrganizationListResponse, error)
 	CreateOrganization(context.Context, *CreateOrganizationRequest) (*OrganizationResponse, error)
-	InviteOrganizationMember(context.Context, *IniviteOrganizationMemberRequest) (*Invitation, error)
+	CompleteOnboarding(context.Context, *CompleteOnboardingRequest) (*OrganizationResponse, error)
+	InviteOrganizationMember(context.Context, *InviteOrganizationMemberRequest) (*Invitation, error)
 	// Workspace
 	CreateWorkspace(context.Context, *CreateWorkspaceRequest) (*WorkspaceResponse, error)
 	InviteWorkspaceMember(context.Context, *InviteWorkspaceMemberRequest) (*Invitation, error)
@@ -177,7 +188,10 @@ func (UnimplementedUsersServiceServer) ListOrganizations(context.Context, *empty
 func (UnimplementedUsersServiceServer) CreateOrganization(context.Context, *CreateOrganizationRequest) (*OrganizationResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateOrganization not implemented")
 }
-func (UnimplementedUsersServiceServer) InviteOrganizationMember(context.Context, *IniviteOrganizationMemberRequest) (*Invitation, error) {
+func (UnimplementedUsersServiceServer) CompleteOnboarding(context.Context, *CompleteOnboardingRequest) (*OrganizationResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CompleteOnboarding not implemented")
+}
+func (UnimplementedUsersServiceServer) InviteOrganizationMember(context.Context, *InviteOrganizationMemberRequest) (*Invitation, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method InviteOrganizationMember not implemented")
 }
 func (UnimplementedUsersServiceServer) CreateWorkspace(context.Context, *CreateWorkspaceRequest) (*WorkspaceResponse, error) {
@@ -209,7 +223,7 @@ func _UsersService_SignIn_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.UsersService/SignIn",
+		FullMethod: "/v1.UsersService/SignIn",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UsersServiceServer).SignIn(ctx, req.(*SignInRequest))
@@ -227,7 +241,7 @@ func _UsersService_SignUp_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.UsersService/SignUp",
+		FullMethod: "/v1.UsersService/SignUp",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UsersServiceServer).SignUp(ctx, req.(*SignUpRequest))
@@ -245,7 +259,7 @@ func _UsersService_SignUpWithInvite_Handler(srv interface{}, ctx context.Context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.UsersService/SignUpWithInvite",
+		FullMethod: "/v1.UsersService/SignUpWithInvite",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UsersServiceServer).SignUpWithInvite(ctx, req.(*SignUpWithInvitationRequest))
@@ -263,7 +277,7 @@ func _UsersService_SignOut_Handler(srv interface{}, ctx context.Context, dec fun
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.UsersService/SignOut",
+		FullMethod: "/v1.UsersService/SignOut",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UsersServiceServer).SignOut(ctx, req.(*SignOutRequest))
@@ -281,7 +295,7 @@ func _UsersService_RefreshToken_Handler(srv interface{}, ctx context.Context, de
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.UsersService/RefreshToken",
+		FullMethod: "/v1.UsersService/RefreshToken",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UsersServiceServer).RefreshToken(ctx, req.(*RefreshRequest))
@@ -299,7 +313,7 @@ func _UsersService_ListOrganizations_Handler(srv interface{}, ctx context.Contex
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.UsersService/ListOrganizations",
+		FullMethod: "/v1.UsersService/ListOrganizations",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UsersServiceServer).ListOrganizations(ctx, req.(*emptypb.Empty))
@@ -317,7 +331,7 @@ func _UsersService_CreateOrganization_Handler(srv interface{}, ctx context.Conte
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.UsersService/CreateOrganization",
+		FullMethod: "/v1.UsersService/CreateOrganization",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UsersServiceServer).CreateOrganization(ctx, req.(*CreateOrganizationRequest))
@@ -325,8 +339,26 @@ func _UsersService_CreateOrganization_Handler(srv interface{}, ctx context.Conte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _UsersService_CompleteOnboarding_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CompleteOnboardingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UsersServiceServer).CompleteOnboarding(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v1.UsersService/CompleteOnboarding",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UsersServiceServer).CompleteOnboarding(ctx, req.(*CompleteOnboardingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _UsersService_InviteOrganizationMember_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(IniviteOrganizationMemberRequest)
+	in := new(InviteOrganizationMemberRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -335,10 +367,10 @@ func _UsersService_InviteOrganizationMember_Handler(srv interface{}, ctx context
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.UsersService/InviteOrganizationMember",
+		FullMethod: "/v1.UsersService/InviteOrganizationMember",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(UsersServiceServer).InviteOrganizationMember(ctx, req.(*IniviteOrganizationMemberRequest))
+		return srv.(UsersServiceServer).InviteOrganizationMember(ctx, req.(*InviteOrganizationMemberRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -353,7 +385,7 @@ func _UsersService_CreateWorkspace_Handler(srv interface{}, ctx context.Context,
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.UsersService/CreateWorkspace",
+		FullMethod: "/v1.UsersService/CreateWorkspace",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UsersServiceServer).CreateWorkspace(ctx, req.(*CreateWorkspaceRequest))
@@ -371,7 +403,7 @@ func _UsersService_InviteWorkspaceMember_Handler(srv interface{}, ctx context.Co
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/users.UsersService/InviteWorkspaceMember",
+		FullMethod: "/v1.UsersService/InviteWorkspaceMember",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(UsersServiceServer).InviteWorkspaceMember(ctx, req.(*InviteWorkspaceMemberRequest))
@@ -383,7 +415,7 @@ func _UsersService_InviteWorkspaceMember_Handler(srv interface{}, ctx context.Co
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var UsersService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "users.UsersService",
+	ServiceName: "v1.UsersService",
 	HandlerType: (*UsersServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -413,6 +445,10 @@ var UsersService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateOrganization",
 			Handler:    _UsersService_CreateOrganization_Handler,
+		},
+		{
+			MethodName: "CompleteOnboarding",
+			Handler:    _UsersService_CompleteOnboarding_Handler,
 		},
 		{
 			MethodName: "InviteOrganizationMember",

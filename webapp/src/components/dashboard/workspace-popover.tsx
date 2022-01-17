@@ -13,8 +13,8 @@ interface WorkspacePopoverProps {
 }
 
 interface WorkspaceName {
-  ID: string;
-  organizationID: string;
+  id: string;
+  organizationid: string;
   name: string;
 }
 
@@ -27,8 +27,8 @@ export const WorkspacePopover: FC<WorkspacePopoverProps> = (props) => {
   const handleChange = (workspace: WorkspaceName): void => {
     dispatch(
       setCurrentWorkspace({
-        organizationId: workspace.organizationID,
-        workspaceId: workspace.ID
+        organizationId: workspace.organizationid,
+        workspaceId: workspace.id
       })
     );
     onClose();
@@ -58,7 +58,7 @@ export const WorkspacePopover: FC<WorkspacePopoverProps> = (props) => {
       {...other}
     >
       {workspaceNames.map((workspace) => (
-        <MenuItem key={workspace.ID} onClick={() => handleChange(workspace)}>
+        <MenuItem key={workspace.id} onClick={() => handleChange(workspace)}>
           {workspace.name}
         </MenuItem>
       ))}
