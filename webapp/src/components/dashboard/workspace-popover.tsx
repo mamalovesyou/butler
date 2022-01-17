@@ -3,7 +3,8 @@ import { MenuItem, Popover } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { useWorkspace } from '../../hooks/use-workspace';
 import { V1Workspace } from '../../api';
-import { setCurrentWorkspace } from '../../features/workspace';
+import {getOrganizationRequest, setCurrentWorkspace} from '../../features/workspace';
+import {onGetOrganizationRequest} from "../../features/workspace/WorkspaceEffects";
 
 interface WorkspacePopoverProps {
   anchorEl: null | Element;
@@ -21,7 +22,7 @@ interface WorkspaceName {
 export const WorkspacePopover: FC<WorkspacePopoverProps> = (props) => {
   const { anchorEl, onClose, open, ...other } = props;
   const dispatch = useDispatch();
-  const [workspaceNames, setworkspaceNames] = useState<WorkspaceName[]>([]);
+  const [workspaceNames, setWorkspaceNames] = useState<WorkspaceName[]>([]);
   const { organizations, organizationId } = useWorkspace();
 
   const handleChange = (workspace: WorkspaceName): void => {
@@ -30,6 +31,11 @@ export const WorkspacePopover: FC<WorkspacePopoverProps> = (props) => {
         organizationId: workspace.organizationid,
         workspaceId: workspace.id
       })
+    );
+    dispatch(
+        getOrganizationRequest({
+          organizationId: workspace.organizationid,
+        })
     );
     onClose();
   };
@@ -40,7 +46,7 @@ export const WorkspacePopover: FC<WorkspacePopoverProps> = (props) => {
           (w: V1Workspace) => w as WorkspaceName
         )
       : [];
-    setworkspaceNames(names);
+    setWorkspaceNames(names);
   }, [organizationId]);
 
   return (

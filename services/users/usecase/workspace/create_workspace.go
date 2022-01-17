@@ -12,7 +12,7 @@ import (
 )
 
 func (svc *WorkspaceUsecase) CreateWorkspace(ctx context.Context, organizationID uuid.UUID, name, description string) (*models.Workspace, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "workspace_ucase.CreateWorkspace")
+	span, ctx := opentracing.StartSpanFromContext(ctx, "workspace_ucase.CreateWorkspaceDialog")
 	defer span.Finish()
 
 	// TODO: verify user is admin on ORGANIZATION_ID

@@ -71,7 +71,7 @@ services:
     image: cosmtrek/air
     working_dir: /butler
     volumes:
-      - ../..:/butler
+      - ../..:/butler:delegated
       - ../../config/services/users:/config
     entrypoint: [ "air", "-c", "/config/air.toml" ]
     ports:
@@ -87,7 +87,7 @@ services:
     ports:
       - 3002:3002
     volumes:
-      - ../..:/butler
+      - ../..:/butler:delegated
       - ../../config/services/octopus:/config
     entrypoint: [ "air", "-c", "/config/air.toml" ]
     depends_on:
@@ -99,7 +99,7 @@ services:
     image: cosmtrek/air
     working_dir: /butler
     volumes:
-      - ../..:/butler
+      - ../..:/butler:delegated
       - ../../config/services/gateway:/config
     entrypoint: [ "air", "-c", "/config/air.toml" ]
     ports:

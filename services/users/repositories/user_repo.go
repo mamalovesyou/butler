@@ -15,6 +15,10 @@ func NewUserRepo(db *gorm.DB) *UserRepo {
 	return &UserRepo{db: db}
 }
 
+func (u *UserRepo) DB() *gorm.DB {
+	return u.db
+}
+
 func (u *UserRepo) WithTransaction(db *gorm.DB) *UserRepo {
 	return NewUserRepo(db)
 }

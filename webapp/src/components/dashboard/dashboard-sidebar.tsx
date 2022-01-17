@@ -34,8 +34,8 @@ const getSections = (): Section[] => [
     path: '/',
     items: [
       {
-        title: 'Account',
-        path: 'account'
+        title: 'Organization',
+        path: 'organization'
       },
       {
         title: 'Data Sources',

@@ -229,7 +229,7 @@ export const AccountGeneralSettings: FC = (props) => {
           </Grid>
         </CardContent>
       </Card>
-      {/* TODO: Add self account delete */}
+      {/* TODO: Add self organization delete */}
       {/*<Card sx={{ mt: 4 }}>*/}
       {/*  <CardContent>*/}
       {/*    <Grid*/}
@@ -254,13 +254,13 @@ export const AccountGeneralSettings: FC = (props) => {
       {/*          sx={{ mb: 3 }}*/}
       {/*          variant="subtitle1"*/}
       {/*        >*/}
-      {/*          Delete your account and all of your source data. This is irreversible.*/}
+      {/*          Delete your organization and all of your source data. This is irreversible.*/}
       {/*        </Typography>*/}
       {/*        <Button*/}
       {/*          color="error"*/}
       {/*          variant="outlined"*/}
       {/*        >*/}
-      {/*          Delete account*/}
+      {/*          Delete organization*/}
       {/*        </Button>*/}
       {/*      </Grid>*/}
       {/*    </Grid>*/}

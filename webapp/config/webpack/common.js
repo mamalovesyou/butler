@@ -47,7 +47,7 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         { from: resolve('public', 'static'), to: resolve('dist', 'static') },
-        { from: resolve('public', 'manifest.json'), to: resolve('dist', 'manifest.json') },
+        { from: resolve('public', 'site.webmanifest'), to: resolve('dist', 'site.webmanifest') },
       ],
     }),
   ],

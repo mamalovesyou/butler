@@ -4,7 +4,7 @@ import {
   V1AuthenticatedUser,
   V1RefreshRequest,
   V1SignInRequest,
-  V1SignUpRequest
+  V1SignUpRequest, V1SignUpWithInvitationRequest
 } from '../../api';
 
 export const loginRequest = (
@@ -46,6 +46,27 @@ export const signupFailure = (
   error: GoogleRpcStatus
 ): ActionTypes.AuthActionType => ({
   type: ActionTypes.SIGNUP_FAILURE,
+  error
+});
+
+export const signupWithInviteRequest = (
+    payload: V1SignUpWithInvitationRequest
+): ActionTypes.AuthActionType => ({
+  type: ActionTypes.SIGNUP_WITH_INVITE_REQUEST,
+  payload
+});
+
+export const signupWithInviteSuccess = (
+    payload: V1AuthenticatedUser
+): ActionTypes.AuthActionType => ({
+  type: ActionTypes.SIGNUP_WITH_INVITE_SUCCESS,
+  payload
+});
+
+export const signupWithInviteFailure = (
+    error: GoogleRpcStatus
+): ActionTypes.AuthActionType => ({
+  type: ActionTypes.SIGNUP_WITH_INVITE_FAILURE,
   error
 });
 

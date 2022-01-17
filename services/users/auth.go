@@ -18,7 +18,7 @@ func (svc *UsersService) AuthFuncOverride(ctx context.Context, fullmethodName st
 
 	// Skip authentication when user sign in or register
 	switch fullmethodName {
-	case "/v1.UsersService/SignIn", "/v1.UsersService/SignUp":
+	case "/v1.UsersService/SignIn", "/v1.UsersService/SignUp", "/v1.UsersService/GetInvitation":
 		return ctx, nil
 	}
 

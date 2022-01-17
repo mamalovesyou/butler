@@ -5,7 +5,11 @@ import {
   V1OrganizationListResponse,
   V1OrganizationResponse,
   V1AuthenticatedUser,
-  V1WorkspaceResponse, V1InviteWorkspaceMemberRequest, V1CreateWorkspaceRequest
+  V1WorkspaceResponse,
+  V1CreateWorkspaceRequest,
+  V1BulkInviteWorkspaceMemberRequest,
+  V1GetOrganizationRequest,
+  V1Organization
 } from '../../api';
 
 export const createOrganizationRequest = (
@@ -26,6 +30,27 @@ export const createOrganizationFailure = (
   error: GoogleRpcStatus
 ): ActionTypes.WorkspaceActionType => ({
   type: ActionTypes.CREATE_ORGANIZATION_FAILURE,
+  error
+});
+
+export const getOrganizationRequest = (
+    payload: V1GetOrganizationRequest
+): ActionTypes.WorkspaceActionType => ({
+  type: ActionTypes.GET_ORGANIZATION_REQUEST,
+  payload
+});
+
+export const getOrganizationSuccess = (
+    payload: V1Organization
+): ActionTypes.WorkspaceActionType => ({
+  type: ActionTypes.GET_ORGANIZATION_SUCCESS,
+  payload
+});
+
+export const getOrganizationFailure = (
+    error: GoogleRpcStatus
+): ActionTypes.WorkspaceActionType => ({
+  type: ActionTypes.GET_ORGANIZATION_FAILURE,
   error
 });
 
@@ -84,7 +109,7 @@ export const createWorkspaceFailure = (
 });
 
 export const addWorkspaceMembersRequest = (
-  payload: V1InviteWorkspaceMemberRequest
+  payload: V1BulkInviteWorkspaceMemberRequest
 ): ActionTypes.WorkspaceActionType => ({
   type: ActionTypes.ADD_WORKSPACE_MEMBER_REQUEST,
   payload

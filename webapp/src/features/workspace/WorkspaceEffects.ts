@@ -1,18 +1,18 @@
-import { takeEvery, put, fork, select } from 'redux-saga/effects';
+import {  takeEvery, put, fork, select } from 'redux-saga/effects';
 import * as ActionTypes from './WorkspaceActions.types';
 import * as Actions from './WorkspaceActions';
 import {
-  GoogleRpcStatus,
+  GoogleRpcStatus, V1Organization,
   V1OrganizationListResponse,
   V1OrganizationResponse,
-  V1AuthenticatedUser,
   V1WorkspaceResponse
 } from '../../api';
 import { AxiosResponse } from 'axios';
 import { Api } from '../configureEffects';
 import { Location, useLocation } from 'react-router-dom';
-import { ONBOARDING_ROOT_PATH } from '../../routes';
+import {ONBOARDING_ROOT_PATH, SERVER_ERROR_ROUTE_PATH} from '../../routes';
 import { OnboardingStep, setOnboardingStep } from '../onboarding';
+import {push} from "redux-first-history";
 
 export function* onCreateOrganizationRequest() {
   yield takeEvery(
@@ -37,7 +37,7 @@ export function* onCreateOrganizationRequest() {
   );
 }
 
-export function* onListWorkspacesRequest() {
+export function* onListOrganizationsRequest() {
   yield takeEvery(ActionTypes.LIST_ORGANIZATIONS_REQUEST, function* () {
     try {
       const response: AxiosResponse<V1OrganizationListResponse> =
@@ -72,27 +72,38 @@ export function* onCreateWorkspaceRequest() {
   );
 }
 
-export function* onAddWorkspaceMembersRequest() {
+export function* onGetOrganizationRequest() {
   yield takeEvery(
-    ActionTypes.ADD_WORKSPACE_MEMBER_REQUEST,
-    function* ({ payload }: ActionTypes.IAddWorkspaceMembersRequest) {
-      try {
-        const response: AxiosResponse<V1AuthenticatedUser> =
-          yield Api.v1.usersServiceInviteWorkspaceMember(payload);
-        yield put(Actions.addWorkspaceMembersSuccess(response.data));
-      } catch (error) {
-        const rpcError: GoogleRpcStatus = error.response.data;
-        yield put(Actions.addWorkspaceMembersFailure(rpcError));
+      ActionTypes.GET_ORGANIZATION_REQUEST,
+      function* ({ payload }: ActionTypes.IGetOrganizationRequest) {
+        try {
+          const response: AxiosResponse<V1Organization> =
+              yield Api.v1.usersServiceGetOrganization(payload);
+          yield put(Actions.getOrganizationSuccess(response.data));
+        } catch (error) {
+          const rpcError: GoogleRpcStatus = error.response.data;
+          yield put(Actions.getOrganizationFailure(rpcError));
+        }
       }
-    }
   );
 }
 
+export function* onGetOrganizationFailure() {
+  yield takeEvery(
+      ActionTypes.GET_ORGANIZATION_FAILURE,
+      function* ({ error }: ActionTypes.IGetOrganizationFailure) {
+          yield put(push(SERVER_ERROR_ROUTE_PATH));
+      }
+  );
+}
+
+
 export const workspaceEffects = [
   fork(onCreateOrganizationRequest),
-  fork(onListWorkspacesRequest),
+  fork(onGetOrganizationRequest),
+  fork(onGetOrganizationFailure),
+  fork(onListOrganizationsRequest),
   fork(onCreateWorkspaceRequest),
-  fork(onAddWorkspaceMembersRequest)
 ];
 
 export default workspaceEffects;

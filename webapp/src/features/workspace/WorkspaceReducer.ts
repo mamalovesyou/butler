@@ -4,24 +4,19 @@ import * as ActionType from './WorkspaceActions.types';
 import * as OnboardingActionType from '../onboarding/OnboardingAction.types';
 
 export type WorkspaceStateType = {
-    error: GoogleRpcStatus;
-
+    loading: boolean;
     organizationId: string;
     workspaceId: string;
-
     organizations: Record<string, V1Organization>;
-
-    selectedOrganization: V1Organization;
-    selectedWorkspace: V1Workspace;
+    organization: V1Organization;
 };
 
 const initialWorkspaceState: WorkspaceStateType = {
-    error: null,
+    loading: false,
     organizationId: null,
     workspaceId: null,
     organizations: {},
-    selectedOrganization: null,
-    selectedWorkspace: null
+    organization: null
 };
 
 const authReducer = (
@@ -29,12 +24,32 @@ const authReducer = (
     action: ActionType.WorkspaceActionType | OnboardingActionType.OnboardingActionType
 ) => {
     switch (action.type) {
+        case ActionType.LIST_ORGANIZATIONS_REQUEST:
+        case ActionType.GET_ORGANIZATION_REQUEST:
+            return { ...state, loading: true };
+
         case ActionType.LIST_ORGANIZATIONS_SUCCESS:
             return {
                 ...state,
+                loading: false,
                 organizationId: action.payload.organizations[0]?.id || null,
                 workspaceId: action.payload.organizations[0]?.workspaces[0]?.id || null,
                 organizations: ArrayToObject(action.payload.organizations, 'id')
+            };
+
+        case ActionType.GET_ORGANIZATION_SUCCESS:
+            return {
+                ...state,
+                loading: false,
+                organizationId: action.payload.id,
+                workspaceId: action.payload.workspaces[0]?.id || null,
+                organization: action.payload
+            };
+
+        case ActionType.LIST_ORGANIZATIONS_FAILURE:
+            return {
+                ...state,
+                loading: false
             };
 
         case ActionType.CREATE_ORGANIZATION_SUCCESS:
