@@ -16,11 +16,11 @@ postgres:
   password: password
 connectors:
   google:
-    clientID: "133098310007-oq0arc40c3o9821rmcq9oen5bncnn1ru.apps.googleusercontent.com"
-    clientSecret: "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"
-    redirectURL: "http://localhost:3000/oauth"
+    clientID: clientID
+    clientSecret: clientSecret
+    redirectURL: redirectUrl
   linkedin:
-    clientID: "86b45hlfzb80o7"
-    clientSecret: "mYjBhNuv81dAGWTk"
-    redirectURL: "http://localhost:3000/oauth"
+    clientID: clientID
+    clientSecret: clientSecret
+    redirectURL: redirectUrl
 port: 3002
