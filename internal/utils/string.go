@@ -5,6 +5,8 @@ import (
 	"strings"
 )
 
+//var keywords = map[string]int8{"ID": 1, "JWT": 1, "URL": 1}
+
 var matchFirstCap = regexp.MustCompile("(.)([A-Z][a-z]+)")
 var matchAllCap = regexp.MustCompile("([a-z0-9])([A-Z])")
 

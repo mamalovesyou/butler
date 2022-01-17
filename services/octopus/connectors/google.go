@@ -17,7 +17,7 @@ type GoogleConnector struct {
 	config oauth2.Config
 }
 
-func NewGoogleConnector(cfg OAuthConnectorConfig) *GoogleConnector {
+func NewGoogleConnector(cfg OAuthConnectorConfig, redirectURL string) *GoogleConnector {
 	return &GoogleConnector{
 		config: oauth2.Config{
 			ClientID:     cfg.ClientID,
@@ -27,7 +27,7 @@ func NewGoogleConnector(cfg OAuthConnectorConfig) *GoogleConnector {
 				"https://www.googleapis.com/auth/adwords",
 			},
 			Endpoint:    google.Endpoint,
-			RedirectURL: cfg.RedirectURL,
+			RedirectURL: redirectURL,
 		},
 	}
 }

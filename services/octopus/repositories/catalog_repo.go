@@ -22,9 +22,9 @@ type CatalogRepo struct {
 	connectorsMap map[string]models.CatalogConnector
 }
 
-func NewCatalogRepo(cfg *connectors.ConnectorsConfig) *CatalogRepo {
-	googleConnector := connectors.NewGoogleConnector(cfg.Google)
-	linkedinConnector := connectors.NewLinkedinConnector(cfg.Linkedin)
+func NewCatalogRepo(cfg *connectors.Config) *CatalogRepo {
+	googleConnector := connectors.NewGoogleConnector(cfg.Google, cfg.RedirectURL)
+	linkedinConnector := connectors.NewLinkedinConnector(cfg.Linkedin, cfg.RedirectURL)
 	return &CatalogRepo{
 		connectorsMap: map[string]models.CatalogConnector{
 			googleConnector.Name():   googleConnector,

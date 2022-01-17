@@ -1,9 +1,13 @@
 package config
 
 import (
+	"fmt"
+	"log"
+	"os"
 	"path/filepath"
 
 	"github.com/butlerhq/butler/internal/utils"
+	"github.com/kelseyhightower/envconfig"
 	"github.com/spf13/viper"
 )
 
@@ -26,6 +30,7 @@ func LoadEnvConfig() {
 }
 
 func ReadConfig(cfgFilePath string, prefixKey string, cfg interface{}) error {
+	fmt.Println(os.Environ())
 	LoadYAMLConfig(cfgFilePath)
 	LoadEnvConfig()
 
@@ -38,5 +43,11 @@ func ReadConfig(cfgFilePath string, prefixKey string, cfg interface{}) error {
 			return err
 		}
 	}
+
+	err := envconfig.Process("", cfg)
+	if err != nil {
+		log.Fatal(err.Error())
+	}
+
 	return nil
 }

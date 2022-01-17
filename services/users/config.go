@@ -15,17 +15,17 @@ var DefaultServiceConfig = ServiceConfig{
 	Redis:          redis.DefaultRedisConfig,
 	Logger:         logger.DefaultLoggerConfig,
 	Jaeger:         logger.DefaultJaegerConfig,
-	WebAppBaseURL:  "http://localhost:3000",
+	WebappBaseURL:  "http://localhost:3000",
 }
 
 type ServiceConfig struct {
 	Environment    string
 	Port           string
 	JWTSecret      string `mapstructure:"jwtSecret"`
-	SendgridAPIKey string `mapstructure:"sendgridAPIKey"`
+	SendgridAPIKey string `mapstructure:"sendgridAPIKey" envconfig:"sendgrid_api_key"`
 	Postgres       postgres.PostgresConfig
 	Redis          redis.RedisConfig
 	Jaeger         logger.JaegerConfig
 	Logger         logger.LoggerConfig
-	WebAppBaseURL  string `mapstructure:"webAppBaseURL"`
+	WebappBaseURL  string `mapstructure:"webAppBaseURL" envconfig:"webapp_base_url"`
 }

@@ -17,14 +17,14 @@ type LinkedinConnector struct {
 	config oauth2.Config
 }
 
-func NewLinkedinConnector(cfg OAuthConnectorConfig) *LinkedinConnector {
+func NewLinkedinConnector(cfg OAuthConnectorConfig, redirectURL string) *LinkedinConnector {
 	return &LinkedinConnector{
 		config: oauth2.Config{
 			ClientID:     cfg.ClientID,
 			ClientSecret: cfg.ClientSecret,
 			Scopes:       []string{"r_liteprofile", "r_emailaddress"},
 			Endpoint:     linkedin.Endpoint,
-			RedirectURL:  cfg.RedirectURL,
+			RedirectURL:  redirectURL,
 		},
 	}
 }

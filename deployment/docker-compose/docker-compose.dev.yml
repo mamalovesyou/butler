@@ -74,6 +74,8 @@ services:
       - ../..:/butler:delegated
       - ../../config/services/users:/config
     entrypoint: [ "air", "-c", "/config/air.toml" ]
+    env_file:
+      - ../../.env
     ports:
       - 3001:3001
     depends_on:
@@ -84,6 +86,8 @@ services:
   octopus:
     image: cosmtrek/air
     working_dir: /butler
+    env_file:
+      - ../../.env
     ports:
       - 3002:3002
     volumes:

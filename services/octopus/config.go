@@ -16,7 +16,7 @@ var DefaultServiceConfig = ServiceConfig{
 type ServiceConfig struct {
 	Environment string
 	Port        string
-	Connectors  connectors.ConnectorsConfig
+	Connectors  connectors.Config
 	Postgres    postgres.PostgresConfig
 	Jaeger      logger.JaegerConfig
 	Logger      logger.LoggerConfig
