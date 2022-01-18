@@ -10,7 +10,7 @@ var DefaultGatewayConfig = ServiceConfig{
 	Logger:             logger.DefaultLoggerConfig,
 	Jaeger:             logger.DefaultJaegerConfig,
 	UsersServiceAddr:   "users:3001",
-	OcotpusServiceAddr: "ocotpus:3002",
+	OctopusServiceAddr: "octopus:3002",
 	DashboardOriginUrl: "app.heybutler.local",
 }
 
@@ -20,6 +20,6 @@ type ServiceConfig struct {
 	Jaeger             logger.JaegerConfig
 	Logger             logger.LoggerConfig
 	UsersServiceAddr   string
-	OcotpusServiceAddr string
+	OctopusServiceAddr string
 	DashboardOriginUrl string
 }

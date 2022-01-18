@@ -26,8 +26,8 @@ var (
 )
 
 type GooseMigrations struct {
-	servicesPostgresConfigMap map[string]postgres.PostgresConfig
-	migrationMap              map[string]embed.FS
+	migrationMap map[string]embed.FS
+	postgres     *postgres.Config
 }
 
 func NewGooseMigrations(config *VictorioxConfig) *GooseMigrations {
@@ -36,13 +36,10 @@ func NewGooseMigrations(config *VictorioxConfig) *GooseMigrations {
 	// Adding user service migration
 	migrationMap[UsersMigrationName] = users.EmbedMigrations
 	migrationMap[OctopusMigrationName] = octopus.EmbedMigrations
-	servicesDbConfigMap := make(map[string]postgres.PostgresConfig)
-	servicesDbConfigMap[UsersMigrationName] = config.Services.Users
-	servicesDbConfigMap[OctopusMigrationName] = config.Services.Octopus
 
 	return &GooseMigrations{
-		servicesPostgresConfigMap: servicesDbConfigMap,
-		migrationMap:              migrationMap,
+		migrationMap: migrationMap,
+		postgres:     &config.Postgres,
 	}
 }
 
@@ -57,12 +54,7 @@ func (m *GooseMigrations) RunGooseMigration(ctx context.Context, name, cmd strin
 	logger.Infof(ctx, "Applying migrations %s", name)
 
 	// Initialize DB connection
-	postgresCfg, ok := m.servicesPostgresConfigMap[name]
-	if !ok {
-		logger.Fatalf(ctx, "Postgres configuration %s not found", name)
-	}
-
-	pg := postgres.NewPostgresGorm(&postgresCfg)
+	pg := postgres.NewPostgresGorm(m.postgres)
 	if err := pg.ConnectLoop(5 * time.Second); err != nil {
 		logger.Fatal(ctx, "Cannot connect to postgres.", zap.Error(err))
 	}

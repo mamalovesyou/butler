@@ -2,6 +2,7 @@ package victorinox
 
 import (
 	"context"
+
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/internal/utils"
 	"github.com/spf13/cobra"
@@ -47,7 +48,7 @@ var (
 			//		logger.Fatal(ctx, "❌ Failed to load migrations.", zap.Error(err))
 			//	}
 			//	logger.Info(ctx, "Migrate database schema...")
-			//	config := &postgres.PostgresConfig{}
+			//	config := &postgres.Config{}
 			//	key := fmt.Sprintf("%s.postgres", prefix)
 			//	if err := viper.UnmarshalKey(key, config); err != nil {
 			//		logger.Fatal(ctx, "❌ Failed to unmarshal config.", zap.Error(err))

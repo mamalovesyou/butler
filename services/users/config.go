@@ -11,7 +11,7 @@ var DefaultServiceConfig = ServiceConfig{
 	Port:           "5001",
 	JWTSecret:      "SuperSecretJWT",
 	SendgridAPIKey: "apikey",
-	Postgres:       postgres.DefaultPostgresConfig,
+	Postgres:       postgres.DefaultConfig,
 	Redis:          redis.DefaultRedisConfig,
 	Logger:         logger.DefaultLoggerConfig,
 	Jaeger:         logger.DefaultJaegerConfig,
@@ -23,7 +23,7 @@ type ServiceConfig struct {
 	Port           string
 	JWTSecret      string `mapstructure:"jwtSecret"`
 	SendgridAPIKey string `mapstructure:"sendgridAPIKey" envconfig:"sendgrid_api_key"`
-	Postgres       postgres.PostgresConfig
+	Postgres       postgres.Config
 	Redis          redis.RedisConfig
 	Jaeger         logger.JaegerConfig
 	Logger         logger.LoggerConfig
