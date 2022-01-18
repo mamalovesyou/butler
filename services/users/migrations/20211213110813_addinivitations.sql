@@ -12,8 +12,8 @@ CREATE TABLE IF NOT EXISTS invitations (
     deleted_at TIMESTAMP WITH TIME ZONE DEFAULT NULL
 );
 
-CREATE INDEX IF NOT EXISTS invitations_organization_idx ON invitations_organization_idx(organization_id);
-CREATE INDEX IF NOT EXISTS invitations_workspace_idx ON invitations_workspace_idx(workspace_id);
+CREATE INDEX IF NOT EXISTS invitations_organization_idx ON invitations(organization_id);
+CREATE INDEX IF NOT EXISTS invitations_workspace_idx ON invitations(workspace_id);
 -- +goose StatementEnd
 
 -- +goose Down

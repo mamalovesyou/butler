@@ -49,8 +49,6 @@ CREATE INDEX IF NOT EXISTS workspace_members_workspace_idx ON workspace_members(
 
 -- +goose Down
 -- +goose StatementBegin
-DROP EXTENSION IF EXISTS "uuid-ossp";
-
 DROP TABLE IF EXISTS organizations;
 
 DROP TABLE IF EXISTS workspaces;
