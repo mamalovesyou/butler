@@ -24,6 +24,11 @@ FROM scratch as service-users
 COPY --from=builder /butler/bin/butler-users /butler-users
 ENTRYPOINT ["/butler-users", "start"]
 
+# butler-users service
+FROM scratch as service-octopus
+COPY --from=builder /butler/bin/butler-octopus /butler-octopus
+ENTRYPOINT ["/butler-octopus", "start"]
+
 # butler-gateway service
 FROM scratch as service-gateway
 COPY --from=builder /butler/bin/butler-gateway /butler-gateway

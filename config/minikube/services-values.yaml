@@ -1,55 +1,40 @@
-# Default values for webapp.
-# This is a YAML-formatted file.
-# Declare variables to be passed into your templates.
-
 environment: local
-
 replicaCount: 1
-
-provisionStore:
-  elasticsearch: false
-
-jaeger:
-  enabled: false
-  addr: "jaeger-agent:6831"
-  logSpans: true
-
 image:
   repository: butlerhq
-  pullPolicy: Always
-  tag: ""
-
+  pullPolicy: IfNotPresent
+  tag: "test"
 
 certManager:
-  enabled: true
-  provisionIssuer: true
-  issuerName: letsencrypt-prod
-  dnsZone: heybutler.io
-  route53:
-    region: "us-east-2"
-    hostedZoneID: "zoneID"
+  enabled: false
 
 services:
+
+  gateway:
+    serviceType: LoadBalancer
+    containerPort: 5000
+    host: api.heybutler.local
+
   webapp:
-    serviceType: ClusterIP
+    serviceType: LoadBalancer
     containerPort: 80
-    host: app.heybutler.io
+    host: app.heybutler.local
 
   users:
     sendgridAPIKey: sendgridKey
-    webappBaseURL: "https://app.heybutler.io"
+    webappBaseURL: "https://app.heybutler.local"
     jwtSecret: superSecret
     containerPort: 5001
     postgres:
       external: false
       host: postgres
-      name: octopus_db
+      name: users_db
       user: postgres
       password: password
 
   octopus:
     connectors:
-      redirectURL: "http://app.heybutler.io/oauth"
+      redirectURL: "http://app.heybutler.local/oauth"
       google:
         clientID: clientID
         clientSecret: clientSecret
@@ -58,7 +43,6 @@ services:
         clientID: clientID
         clientSecret: clientSecret
         developerToken: developerToken
-
     containerPort: 5002
     postgres:
       external: false
@@ -68,18 +52,13 @@ services:
       password: password
 
 
-  gateway:
-    serviceType: ClusterIP
-    containerPort: 5000
-    host: api.heybutler.io
-
 resources:
-   limits:
-     cpu: 200m
-     memory: 256Mi
-   requests:
-     cpu: 100m
-     memory: 128Mi
+  limits:
+    cpu: 100m
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 128Mi
 
 autoscaling:
   enabled: false

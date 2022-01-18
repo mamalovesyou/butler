@@ -1,0 +1,29 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ .Release.Name}}-svc-octopus
+  labels:
+    app.kubernetes.io/name: service-octopus
+    app.kubernetes.io/instance: {{ .Release.Name}}
+    app.kubernetes.io/component: service
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+data:
+  ENVIRONMENT: {{ default "local" .Values.environment | quote }}
+  LOGGER_LEVEL: "debug"
+  LOGGER_ENCODING: "json"
+  LOGGER_DISABLE_CALLER: "true"
+  LOGGER_DISABLE_STACKTRACE: "false"
+  JAEGER_ADDR: {{ default "jaeger-agent:6831" .Values.jaeger.addr | quote }}
+  JAEGER_DISABLED: {{ default "true" (not .Values.jaeger.enabled) | quote }}
+  POSTGRES_HOST: {{ default "localhost" .Values.services.octopus.postgres.host | quote }}
+  POSTGRES_PORT: {{ default "5432" .Values.services.octopus.postgres.port | quote }}
+  POSTGRES_NAME: {{ default "ocotopus_db" .Values.services.octopus.postgres.name | quote }}
+  POSTGRES_USER: {{ default "butler" .Values.services.octopus.postgres.user | quote }}
+  POSTGRES_PASSWORD: {{ default "password" .Values.services.octopus.postgres.password | quote }}
+  CONNECTORS_REDIRECTURL: {{ default "http://app.heybutler.local" .Values.services.octopus.connectors.redirectURL | quote }}
+  GOOGLE_CLIENT_ID: {{ .Values.services.octopus.connectors.google.clientID | quote }}
+  GOOGLE_CLIENT_SECRET: {{ .Values.services.octopus.connectors.google.clientSecret | quote }}
+  GOOGLE_DEVELOPER_TOKEN: {{ .Values.services.octopus.connectors.google.developerToken | quote }}
+  LINKEDIN_CLIENT_ID: {{ .Values.services.octopus.connectors.linkedin.clientID | quote }}
+  LINKEDIN_CLIENT_SECRET: {{ .Values.services.octopus.connectors.linkedin.clientSecret | quote }}
+  LINKEDIN_DEVELOPER_TOKEN: {{ .Values.services.octopus.connectors.linkedin.developerToken | quote }}

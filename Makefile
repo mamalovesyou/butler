@@ -83,7 +83,7 @@ open-api:
 
 ##### Binaries #####
 tools: clean-tools-bins butler-victorinox
-services: clean-services-bins butler-users butler-gateway
+services: clean-services-bins butler-users butler-octopus butler-gateway
 
 clean-tools-bins:
 	@echo "Delete old binaries..."
@@ -109,10 +109,15 @@ butler-users:
 	@mkdir -p $(BIN)
 	CGO_ENABLED=$(CGO_ENABLED) go build -o $(BIN)/butler-users cmd/users/main.go
 
+butler-octopus:
+	@printf "Build butler-octopus service with OS: $(GOOS), ARCH: $(GOARCH)..."
+	@mkdir -p $(BIN)
+	CGO_ENABLED=$(CGO_ENABLED) go build -o $(BIN)/butler-octopus cmd/octopus/main.go
+
 
 ##### Docker #####
-docker-all: docker-service-gateway docker-service-users docker-webapp docker-victorinox
-docker-services: docker-service-gateway docker-service-users
+docker-all: docker-service-gateway docker-service-users docker-service-octopus docker-webapp docker-victorinox
+docker-services: docker-service-gateway docker-service-users docker-service-octopus
 docker-tools: docker-victorinox
 
 .PHONY: docker-victorinox
@@ -151,6 +156,15 @@ docker-service-users:
 	@if [ $(DOCKER_PUSH) = true ]; then \
 		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG)...\n"; \
 		docker push $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG); \
+	fi
+
+.PHONY: docker-service-octopus
+docker-service-octopus:
+	@printf "Building docker image $(DOCKER_REGISTRY)/butler-octopus:$(DOCKER_IMAGE_TAG)...\n"
+	@docker build . -t $(DOCKER_REGISTRY)/butler-octopus:$(DOCKER_IMAGE_TAG) --target service-octopus
+	@if [ $(DOCKER_PUSH) = true ]; then \
+		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-octopus:$(DOCKER_IMAGE_TAG)...\n"; \
+		docker push $(DOCKER_REGISTRY)/butler-octopus:$(DOCKER_IMAGE_TAG); \
 	fi
 
 
@@ -214,12 +228,28 @@ dev.clean: ## Clean docker dev evironment
 .PHONY: minikube-start
 minikube-start:
 	@echo "Starting minikube..."
-	@minikube start --profile new --kubernetes-version=v1.20.0 --cpus 4 --memory 6144
+	@minikube start --profile butler --cpus 4 --memory 6144
 
-.PHONY: minikube-env
-minikube-env:
-	@echo "Loading minikube docker-env..."
-	$(shell eval $(minikube -p new docker-env))
+.PHONY: minikube-images
+minikube-images:
+	@echo "Loading docker images in minikube"
+	minikube image build . -t $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG) --target service-gateway
+	minikube image build . -t $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG) --target service-users
+	minikube image build . -t $(DOCKER_REGISTRY)/butler-octopus:$(DOCKER_IMAGE_TAG) --target service-octopus
+	minikube image build . -t $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG) --target service-victorinox
+	cd ./webapp && minikube build . -t $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG) --target prod
+
+.PHONY: minikube-helm
+minikube-helm:
+	@echo "Deploying infra: postgres,redis..."
+	#helm upgrade butler-infra deployment/helm/minikube-infra/ --install --wait --values config/minikube/minikube-infra-values.yaml
+	@echo "Deploying services..."
+	helm upgrade butler-services deployment/helm/services/ --install --wait --values config/minikube/services-values.yaml --dry-run --debug
+
+.PHONY: minikube-clean
+minikube-clean:
+	helm uninstall butler-infra
+	helm uninstall butler-services
 
 help: ## Display this help screen
 	@grep -h -E '^[a-zA-Z_-]+(\.[a-zA-Z_-]+)*:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
