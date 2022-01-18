@@ -39,5 +39,10 @@ var (
 
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&service, "service", "s", "users", "Services name")
+	rootCmd.PersistentFlags().StringVarP(&victorinoxCfg.Postgres.Host, "pg-host", "", victorinoxCfg.Postgres.Host, "Postgres host")
+	rootCmd.PersistentFlags().StringVarP(&victorinoxCfg.Postgres.Port, "pg-port", "", victorinoxCfg.Postgres.Port, "Postgres port")
+	rootCmd.PersistentFlags().StringVarP(&victorinoxCfg.Postgres.Name, "pg-name", "", victorinoxCfg.Postgres.Name, "Postgres database name")
+	rootCmd.PersistentFlags().StringVarP(&victorinoxCfg.Postgres.User, "pg-user", "", victorinoxCfg.Postgres.User, "Postgres user")
+	rootCmd.PersistentFlags().StringVarP(&victorinoxCfg.Postgres.Password, "pg-password", "", victorinoxCfg.Postgres.Password, "Postgres password")
 	rootCmd.AddCommand(migrateCmd)
 }

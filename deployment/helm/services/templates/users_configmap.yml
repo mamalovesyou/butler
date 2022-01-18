@@ -21,3 +21,5 @@ data:
   POSTGRES_USER: {{ default "butler" .Values.services.users.postgres.user | quote }}
   POSTGRES_PASSWORD: {{ default "password" .Values.services.users.postgres.password | quote }}
   JWTSECRET: {{ default "superSecret" .Values.services.users.jwtSecret | quote }}
+  SENGRID_API_KEY: {{ .Values.services.users.sendgridAPIKey | quote }}
+  WEBAPP_BASE_URL: {{ .Values.services.users.webappBaseURL | quote }}

@@ -31,7 +31,7 @@ var (
 
 			//for _, prefix := range services.ServiceWithPostgresDBList {
 			//	logger.Infof(ctx, "Provisioning database for service %s", prefix)
-			//	config := &postgres.PostgresConfig{}
+			//	config := &postgres.Config{}
 			//	key := fmt.Sprintf("%s.postgres", prefix)
 			//
 			//	if err := viper.UnmarshalKey(key, config); err != nil {

@@ -21,7 +21,7 @@ var (
 			//logger.Info(ctx, "Loaded config", zap.Any("cfg", cfg))
 			//registry := &victorinox.DBRegistry{
 			//	RootDBConfig: cfg.RootPostgres,
-			//	DBToProvision: []*postgres.PostgresConfig{cfg.UsersPostgres},
+			//	DBToProvision: []*postgres.Config{cfg.UsersPostgres},
 			//}
 			//if err := registry.ProvisionAll(ctx); err != nil {
 			//	logger.Fatalf(ctx, "Failed to provision protgres postgres: %v", err)

@@ -8,7 +8,7 @@ metadata:
     app.kubernetes.io/component: service
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
 spec:
-  type: ClusterIP
+  type: {{ default "ClusterIP" .Values.services.gateway.serviceType }}
   ports:
     - port: 80
       protocol: TCP

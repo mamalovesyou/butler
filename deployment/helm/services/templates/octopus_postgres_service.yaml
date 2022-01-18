@@ -1,0 +1,16 @@
+{{- if .Values.services.octopus.postgres.external }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name}}-postgresql-octopus
+  annotations:
+    "helm.sh/hook-weight": "1"
+  labels:
+    app.kubernetes.io/name: postgresql-octopus
+    app.kubernetes.io/instance: {{ .Release.Name}}
+    app.kubernetes.io/component: postgresql
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+spec:
+  type: ExternalName
+  externalName: {{ .Values.services.octopus.postgres.host }}
+{{- end }}

@@ -5,7 +5,7 @@ import (
 )
 
 var (
-	DefaultPostgresConfig = PostgresConfig{
+	DefaultConfig = Config{
 		Host:     "postgres",
 		Port:     "5432",
 		Name:     "postgres",
@@ -14,8 +14,8 @@ var (
 	}
 )
 
-// PostgresConfig contains infos needed to open a postgres connection
-type PostgresConfig struct {
+// Config contains infos needed to open a postgres connection
+type Config struct {
 	Host     string
 	Port     string
 	Name     string
@@ -25,7 +25,7 @@ type PostgresConfig struct {
 
 // GetConnectionURI build and return database connection URI
 // host=postgres port=5432 user=postgres_user dbname=postgres_name  password=strongPassword
-func (cfg *PostgresConfig) GetConnectionURI() string {
+func (cfg *Config) GetConnectionURI() string {
 	return fmt.Sprintf(
 		"host=%s port=%s user=%s dbname=%s sslmode=disable password=%s",
 		cfg.Host, cfg.Port, cfg.User, cfg.Name, cfg.Password)
@@ -33,7 +33,7 @@ func (cfg *PostgresConfig) GetConnectionURI() string {
 
 // GetConnectionURL build and return database connection URL
 // ex. postgres://username:password@localhost:5432/database_name
-func (cfg *PostgresConfig) GetConnectionURL() string {
+func (cfg *Config) GetConnectionURL() string {
 	return fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/%s",
 		cfg.User, cfg.Password, cfg.Host, cfg.Port, cfg.Name)
@@ -41,7 +41,7 @@ func (cfg *PostgresConfig) GetConnectionURL() string {
 
 // GetConnectionURI build and return database connection URI
 // host=postgres port=5432 user=postgres_user dbname=postgres_name  password=strongPassword
-func (cfg *PostgresConfig) GetConnectionURIWithoutDB() string {
+func (cfg *Config) GetConnectionURIWithoutDB() string {
 	return fmt.Sprintf(
 		"host=%s port=%s user=%s sslmode=disable password=%s",
 		cfg.Host, cfg.Port, cfg.User, cfg.Password)
@@ -49,7 +49,7 @@ func (cfg *PostgresConfig) GetConnectionURIWithoutDB() string {
 
 // GetConnectionURL build and return database connection URL
 // ex. postgres://username:password@localhost:5432/database_name
-func (cfg *PostgresConfig) GetConnectionURLWithoutDB() string {
+func (cfg *Config) GetConnectionURLWithoutDB() string {
 	return fmt.Sprintf(
 		"postgres://%s:%s@%s:%s/",
 		cfg.User, cfg.Password, cfg.Host, cfg.Port)

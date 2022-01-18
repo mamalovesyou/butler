@@ -17,7 +17,7 @@ type ServiceConfig struct {
 	Environment string
 	Port        string
 	Connectors  connectors.Config
-	Postgres    postgres.PostgresConfig
+	Postgres    postgres.Config
 	Jaeger      logger.JaegerConfig
 	Logger      logger.LoggerConfig
 }

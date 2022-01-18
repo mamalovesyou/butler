@@ -1,9 +1,9 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name}}-svc-users
+  name: {{ .Release.Name}}-svc-octopus
   labels:
-    app.kubernetes.io/name: service-users
+    app.kubernetes.io/name: service-octopus
     app.kubernetes.io/instance: {{ .Release.Name}}
     app.kubernetes.io/component: service
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
@@ -13,26 +13,26 @@ spec:
   {{- end }}
   selector:
     matchLabels:
-      app.kubernetes.io/name: service-users
+      app.kubernetes.io/name: service-octopus
       app.kubernetes.io/instance: {{ .Release.Name}}
       app.kubernetes.io/component: service
       app.kubernetes.io/version: {{ .Chart.AppVersion }}
   template:
     metadata:
       labels:
-        app.kubernetes.io/name: service-users
+        app.kubernetes.io/name: service-octopus
         app.kubernetes.io/instance: {{ .Release.Name}}
         app.kubernetes.io/component: service
         app.kubernetes.io/version: {{ .Chart.AppVersion }}
     spec:
 
       containers:
-        - name: butler-svc-users
-          image: "{{ .Values.image.repository }}/butler-users:{{ .Values.image.tag }}"
+        - name: butler-svc-octopus
+          image: "{{ .Values.image.repository }}/butler-octopus:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
             - configMapRef:
-                name: {{ .Release.Name}}-svc-users
+                name: {{ .Release.Name}}-svc-octopus
           ports:
             - name: http
               containerPort: 5000

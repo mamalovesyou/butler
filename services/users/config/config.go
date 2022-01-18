@@ -1,17 +1,18 @@
 package config
 
 import (
+	"log"
+
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/internal/postgres"
 	"github.com/butlerhq/butler/internal/redis"
 	"github.com/spf13/viper"
-	"log"
 )
 
 // App config struct
 type Config struct {
 	Server   ServerConfig
-	Postgres *postgres.PostgresConfig
+	Postgres *postgres.Config
 	Redis    *redis.RedisConfig
 	Jaeger   *logger.JaegerConfig
 	Logger   *logger.LoggerConfig

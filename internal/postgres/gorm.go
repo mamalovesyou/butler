@@ -14,13 +14,13 @@ const (
 )
 
 type PostgresGorm struct {
-	Config *PostgresConfig
+	Config *Config
 	DB     *gorm.DB
 	SqlDB  *sql.DB
 }
 
 // NewPostgresGorm create a new gorm wrapper
-func NewPostgresGorm(cfg *PostgresConfig) *PostgresGorm {
+func NewPostgresGorm(cfg *Config) *PostgresGorm {
 	return &PostgresGorm{Config: cfg}
 }
 

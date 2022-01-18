@@ -1,0 +1,6 @@
+postgres:
+  user: postgres
+  password: password
+
+  # databases: Comma separated databases. All those databases will be created
+  databases: "users_db,octopus_db"

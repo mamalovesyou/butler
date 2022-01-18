@@ -5,8 +5,8 @@ import (
 )
 
 type DBRegistry struct {
-	RootDBConfig  *postgres.PostgresConfig
-	DBToProvision []*postgres.PostgresConfig
+	RootDBConfig  *postgres.Config
+	DBToProvision []*postgres.Config
 }
 
 //func (regitry *DBRegistry) ProvisionAll(ctx context.Context) error {
@@ -20,7 +20,7 @@ type DBRegistry struct {
 //	return nil
 //}
 
-//func provisionDB (ctx context.Context, rootConfig *postgres.PostgresConfig, provisionCfg *postgres.PostgresConfig) error {
+//func provisionDB (ctx context.Context, rootConfig *postgres.Config, provisionCfg *postgres.Config) error {
 //	logger.Infof(ctx, "Provisioning database: %s", provisionCfg.Name)
 //
 //	// Attempt to connect db with root user

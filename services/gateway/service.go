@@ -50,7 +50,7 @@ func (gw *RESTGatewayService) RegisterGRPCServices() error {
 	}
 
 	// Register octopus service
-	err = octopus.RegisterOctopusServiceHandlerFromEndpoint(ctx, gw.Mux, gw.Config.OcotpusServiceAddr, gw.GRPCDialOptions)
+	err = octopus.RegisterOctopusServiceHandlerFromEndpoint(ctx, gw.Mux, gw.Config.OctopusServiceAddr, gw.GRPCDialOptions)
 	if err != nil {
 		logger.Fatal(ctx, "Unable to register octopus service", zap.Error(err))
 		return err
