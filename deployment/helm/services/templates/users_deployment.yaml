@@ -35,7 +35,7 @@ spec:
                 name: {{ .Release.Name}}-svc-users
           ports:
             - name: http
-              containerPort: {{ .Values.services.users.containerPort }}
+              containerPort: 5000
               protocol: TCP
           resources:
             requests:
@@ -45,6 +45,10 @@ spec:
               cpu: {{ .Values.resources.limits.cpu }}
               memory: {{ .Values.resources.limits.memory }}
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            exec:
+              command: ["/grpc-health-probe", "-addr=:5000"]
+            initialDelaySeconds: 5
+          livenessProbe:
+            exec:
+              command: ["/grpc-health-probe", "-addr=:5000"]
+            initialDelaySeconds: 10

@@ -44,6 +44,10 @@ var (
 			grpcServer := grpc.NewGRPCServer(cfgService.Port, tracer)
 			octopusService := octopus.NewOctopusService(&cfgService, pgGorm.DB)
 			octopusService.RegisterGRPCServer(grpcServer.Server)
+
+			healthService := octopus.NewHealthService(pgGorm.DB)
+			healthService.RegisterGRPCServer(grpcServer.Server)
+
 			grpcServer.Serve()
 		},
 	}

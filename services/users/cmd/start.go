@@ -13,6 +13,7 @@ import (
 
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/internal/protocol/grpc"
+
 	"github.com/spf13/cobra"
 )
 
@@ -46,8 +47,12 @@ var (
 
 			// Serve
 			grpcServer := grpc.NewGRPCServer(usersConfig.Port, tracer)
+
 			usersService := users.NewUsersService(&usersConfig, pgGorm.DB, rdb)
 			usersService.RegisterGRPCServer(grpcServer.Server)
+
+			healthService := users.NewHealthService(pgGorm.DB)
+			healthService.RegisterGRPCServer(grpcServer.Server)
 			grpcServer.Serve()
 		},
 	}

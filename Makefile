@@ -36,6 +36,7 @@ endif
 DOCKER_PUSH ?= false
 DOCKER_REGISTRY ?= butlerhq
 DOCKER_IMAGE_TAG ?= test
+DOCKER_BUILD_FLAGS ?= --progress plain
 
 # Git
 GIT_CURRENT_SHA=$(shell git rev-parse --short HEAD)
@@ -123,7 +124,7 @@ docker-tools: docker-victorinox
 .PHONY: docker-victorinox
 docker-victorinox:
 	@printf "Building docker image  $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG)...\n"
-	docker build . -t $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG) --target victorinox
+	docker build . -t $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG) $(DOCKER_BUILD_FLAGS) --target victorinox
 	@if [ $(DOCKER_PUSH) = true ]; then \
   		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG)...\n"; \
 		docker push $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG); \
@@ -132,7 +133,7 @@ docker-victorinox:
 .PHONY: docker-webapp
 docker-webapp:
 	@printf "Building docker image $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG)...\n"
-	cd ./webapp && docker build . -t $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG) --target prod
+	cd ./webapp && docker build . -t $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG) $(DOCKER_BUILD_FLAGS) --target prod
 	@if [ $(DOCKER_PUSH) = true ]; then \
 		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG)...\n"; \
 		docker push $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG); \
@@ -143,7 +144,7 @@ docker-webapp:
 .PHONY: docker-service-gateway
 docker-service-gateway:
 	@printf "Building docker image $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG)...\n"
-	@docker build . -t $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG) --target service-gateway
+	@docker build . -t $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG) $(DOCKER_BUILD_FLAGS) --target service-gateway
 	@if [ $(DOCKER_PUSH) = true ]; then \
 		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG)...\n"; \
 		docker push $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG); \
@@ -152,7 +153,7 @@ docker-service-gateway:
 .PHONY: docker-service-users
 docker-service-users:
 	@printf "Building docker image $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG)...\n"
-	@docker build . -t $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG) --target service-users
+	@docker build . -t $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG) $(DOCKER_BUILD_FLAGS) --target service-users
 	@if [ $(DOCKER_PUSH) = true ]; then \
 		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG)...\n"; \
 		docker push $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG); \
@@ -161,7 +162,7 @@ docker-service-users:
 .PHONY: docker-service-octopus
 docker-service-octopus:
 	@printf "Building docker image $(DOCKER_REGISTRY)/butler-octopus:$(DOCKER_IMAGE_TAG)...\n"
-	@docker build . -t $(DOCKER_REGISTRY)/butler-octopus:$(DOCKER_IMAGE_TAG) --target service-octopus
+	@docker build . -t $(DOCKER_REGISTRY)/butler-octopus:$(DOCKER_IMAGE_TAG) $(DOCKER_BUILD_FLAGS) --target service-octopus
 	@if [ $(DOCKER_PUSH) = true ]; then \
 		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-octopus:$(DOCKER_IMAGE_TAG)...\n"; \
 		docker push $(DOCKER_REGISTRY)/butler-octopus:$(DOCKER_IMAGE_TAG); \
@@ -228,28 +229,21 @@ dev.clean: ## Clean docker dev evironment
 .PHONY: minikube-start
 minikube-start:
 	@echo "Starting minikube..."
-	@minikube start --profile butler --cpus 4 --memory 6144
-
-.PHONY: minikube-images
-minikube-images:
-	@echo "Loading docker images in minikube"
-	minikube image build . -t $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG) --target service-gateway
-	minikube image build . -t $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG) --target service-users
-	minikube image build . -t $(DOCKER_REGISTRY)/butler-octopus:$(DOCKER_IMAGE_TAG) --target service-octopus
-	minikube image build . -t $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG) --target service-victorinox
-	cd ./webapp && minikube build . -t $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG) --target prod
+	minikube start --profile butler --cpus 4 --memory 6144
+	minikube addons enable ingress --profile butler
+	eval $(minikube --profile docker-env)
 
 .PHONY: minikube-helm
 minikube-helm:
 	@echo "Deploying infra: postgres,redis..."
-	#helm upgrade butler-infra deployment/helm/minikube-infra/ --install --wait --values config/minikube/minikube-infra-values.yaml
+	helm upgrade butler-infra deployment/helm/minikube-infra/ --install --wait --values config/minikube/minikube-infra-values.yaml --debug
 	@echo "Deploying services..."
-	helm upgrade butler-services deployment/helm/services/ --install --wait --values config/minikube/services-values.yaml --dry-run --debug
+	helm upgrade butler-services deployment/helm/services/ --install --force --wait --values config/minikube/services-values.yaml --debug
 
 .PHONY: minikube-clean
 minikube-clean:
-	helm uninstall butler-infra
-	helm uninstall butler-services
+	minikube delete --profile butler
+	eval $(minikube docker-env -u)
 
 help: ## Display this help screen
 	@grep -h -E '^[a-zA-Z_-]+(\.[a-zA-Z_-]+)*:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
