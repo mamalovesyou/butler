@@ -3,9 +3,8 @@ import type { FC } from 'react';
 import { styled } from '@mui/material/styles';
 import { DashboardNavbar } from './dashboard-navbar';
 import { DashboardSidebar } from './dashboard-sidebar';
-import {Box, CircularProgress} from '@mui/material';
+import {Box} from '@mui/material';
 import { Outlet } from 'react-router-dom';
-import {useWorkspace} from "../../hooks/use-workspace";
 
 const DashboardLayoutRoot = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -20,8 +19,6 @@ const DashboardLayoutRoot = styled('div')(({ theme }) => ({
 export const DashboardLayout: FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(false);
 
-  const { loading } = useWorkspace();
-
   return (
     <>
       <DashboardLayoutRoot>
@@ -30,11 +27,10 @@ export const DashboardLayout: FC = () => {
             display: 'flex',
             flex: '1 1 auto',
             flexDirection: 'column',
-            width: '100%'
+            width: '100%',
           }}
         >
-            { loading ? <CircularProgress />
-                 : <Outlet /> }
+            <Outlet />
         </Box>
       </DashboardLayoutRoot>
       <DashboardNavbar onOpenSidebar={(): void => setIsSidebarOpen(true)} />

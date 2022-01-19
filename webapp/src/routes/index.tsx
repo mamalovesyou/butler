@@ -28,6 +28,7 @@ import Organization from "../pages/dashboard/organization/organization";
 import {TeamMembersTabs} from "../components/dashboard/organization/team-members-tabs";
 import {useWorkspace} from "../hooks/use-workspace";
 import GeneralSettings from "../pages/dashboard/general-settings";
+import Dashboard from "../pages/dashboard/dashboard";
 
 export * from "./constants";
 
@@ -72,6 +73,7 @@ export const AppRoutes: React.FC = () => {
                     />
                 ),
                 children: [
+                    { path: "", element: <Dashboard />},
                     {path: `${ACCOUNT_ROOT_PATH}/${ACCOUNT_SETTINGS_PATH}`, element: <GeneralSettings />},
                     {
                         path: ORGANIZATION_ROOT_PATH, element: <OrganizationLayout/>, children: [
