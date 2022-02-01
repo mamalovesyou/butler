@@ -4,6 +4,12 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/butlerhq/butler/internal/logger"
+	"go.uber.org/zap"
+
+	"github.com/butlerhq/google-ads-go/ads"
+	"github.com/butlerhq/google-ads-go/services"
+
 	"github.com/butlerhq/butler/api/services/octopus/v1"
 
 	"github.com/butlerhq/butler/services/octopus/models"
@@ -45,24 +51,66 @@ func (gc *GoogleConnector) SVGIcon() string {
 }
 
 func (gc *GoogleConnector) AuthURL() string {
-	return gc.config.AuthCodeURL("")
+	return gc.config.AuthCodeURL("", oauth2.AccessTypeOffline, oauth2.ApprovalForce)
 }
 
 func (gc *GoogleConnector) ExchangeCode(ctx context.Context, code string) (*oauth2.Token, error) {
-	token, err := gc.config.Exchange(ctx, code, oauth2.AccessTypeOffline)
+	token, err := gc.config.Exchange(ctx, code, oauth2.AccessTypeOffline, oauth2.ApprovalForce)
 	if err != nil {
 		return nil, err
 	}
 	return token, nil
 }
 
+func (gc *GoogleConnector) ListAccounts(ctx context.Context, secrets *models.ConnectorSecrets) (*octopus.ListAccountsResponse, error) {
+
+	client, err := ads.NewClient(&ads.GoogleAdsClientParams{
+		ClientID:     gc.config.ClientID,
+		ClientSecret: gc.config.ClientSecret,
+		RefreshToken: secrets.RefreshToken,
+	})
+
+	if err != nil {
+		panic(err)
+	}
+
+	customerService := services.NewCustomerServiceClient(client.Conn())
+	response, err := customerService.ListAccessibleCustomers(client.Context(), &services.ListAccessibleCustomersRequest{})
+	if err != nil {
+		logger.Error(ctx, "Unable to list accessible customers", zap.Error(err), zap.String("provider", gc.Name()))
+		return &octopus.ListAccountsResponse{}, err
+	}
+
+	result := make([]*octopus.ProviderAccount, len(response.ResourceNames))
+	for i, name := range response.ResourceNames {
+		customer, err := customerService.GetCustomer(client.Context(), &services.GetCustomerRequest{
+			ResourceName: name,
+		})
+
+		if err != nil {
+			logger.Error(ctx, "Unable to retrieve account", zap.Error(err), zap.String("provider", gc.Name()))
+			continue
+		}
+
+		result[i] = &octopus.ProviderAccount{
+			Name:     *customer.DescriptiveName,
+			Id:       fmt.Sprintf("%d", customer.Id),
+			Test:     *customer.TestAccount,
+			Currency: *customer.CurrencyCode,
+		}
+	}
+
+	return &octopus.ListAccountsResponse{
+		Accounts: result,
+	}, nil
+}
+
 func (gc *GoogleConnector) ToPb() *octopus.CatalogConnector {
-	authTypeInt := octopus.CatalogConnector_AuthType_value[string(gc.AuthScheme())]
-	fmt.Printf("Connector scheme int: %s", string(authTypeInt))
+	authTypeInt := octopus.AuthType_value[string(gc.AuthScheme())]
 	return &octopus.CatalogConnector{
 		Name:     gc.Name(),
 		AuthUrl:  gc.AuthURL(),
-		AuthType: octopus.CatalogConnector_AuthType(authTypeInt),
+		AuthType: octopus.AuthType(authTypeInt),
 		IconSvg:  gc.SVGIcon(),
 	}
 }

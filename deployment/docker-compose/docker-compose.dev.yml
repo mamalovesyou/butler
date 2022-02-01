@@ -135,6 +135,7 @@ volumes:
   postgres:
   redis:
   pgadmin:
+  mongo:
 
 networks:
   dev_net:

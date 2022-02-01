@@ -11,8 +11,6 @@ export const DashboardPage = (props: IDashboardPage = {title: "", loading: true,
 
     const {title, loading, children} = props;
 
-    console.log(children)
-
     return <Box
         component="main"
         sx={{
@@ -21,7 +19,7 @@ export const DashboardPage = (props: IDashboardPage = {title: "", loading: true,
             height: '100%'
         }}
     >
-        <Container maxWidth="md" sx={{ height: '100%'}}>
+        <Container sx={{ width: '100%', height: '100%'}}>
             <Typography variant="h4">{title}</Typography>
             <Divider sx={{mb: 3}}/>
             { loading || !children ?

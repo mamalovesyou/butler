@@ -5,6 +5,7 @@ import { DashboardNavbar } from './dashboard-navbar';
 import { DashboardSidebar } from './dashboard-sidebar';
 import {Box} from '@mui/material';
 import { Outlet } from 'react-router-dom';
+import {DASHBOARD_NAVBAR_HEIGHT, DASHBOARD_SIDEBAR_WIDTH} from "../../theme/constants";
 
 const DashboardLayoutRoot = styled('div')(({ theme }) => ({
   display: 'flex',
@@ -12,7 +13,7 @@ const DashboardLayoutRoot = styled('div')(({ theme }) => ({
   maxWidth: '100%',
   paddingTop: 64,
   [theme.breakpoints.up('lg')]: {
-    paddingLeft: 280
+    paddingLeft: DASHBOARD_SIDEBAR_WIDTH
   }
 }));
 

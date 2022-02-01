@@ -29,13 +29,19 @@ func (as AuthScheme) String() string {
 	return string(as)
 }
 
+func (as AuthScheme) ToPb() octopus.AuthType {
+	value := octopus.AuthType_value[as.String()]
+	return octopus.AuthType(value)
+}
+
 type WorkspaceConnector struct {
 	BaseModel
-	WorkspaceID uuid.UUID
-	AuthScheme  AuthScheme `sql:"auth_scheme_enum"`
-	Provider    string
-	ExpiresIn   time.Time
-	Secret      *ConnectorSecret `gorm:"foreignKey:ConnectorID"`
+	WorkspaceID   uuid.UUID  `gorm:"uniqueIndex:connectors_workspace_provider_idx;index:connectors_workspace_idx"`
+	AuthScheme    AuthScheme `sql:"auth_scheme_enum"`
+	Provider      string     `gorm:"uniqueIndex:connectors_workspace_provider_idx"`
+	ExpiresIn     time.Time
+	Secret        *ConnectorSecret `gorm:"foreignKey:ConnectorID"`
+	AccountConfig *ConnectorConfig `gorm:"foreignKey:ConnectorID"`
 }
 
 func (c *WorkspaceConnector) TableName() string {
@@ -48,6 +54,7 @@ func (c *WorkspaceConnector) ToPb() *octopus.WorkspaceConnector {
 		Id:          c.ID.String(),
 		WorkspaceId: c.WorkspaceID.String(),
 		Name:        c.Provider,
+		AuthScheme:  c.AuthScheme.ToPb(),
 		CreatedAt:   timestamppb.New(c.CreatedAt),
 		UpdatedAt:   timestamppb.New(c.UpdatedAt),
 	}
@@ -56,15 +63,21 @@ func (c *WorkspaceConnector) ToPb() *octopus.WorkspaceConnector {
 		pb.ExpiresIn = timestamppb.New(c.ExpiresIn)
 	}
 
+	if c.AccountConfig != nil {
+		pb.AccountConfig = c.AccountConfig.ToPb()
+	}
+
 	return pb
 }
 
-type ConnectorSecret struct {
-	BaseModel
-	ConnectorID uuid.UUID
-	Value       string
-}
+// ToConnectorSecretPairPb
+func (c *WorkspaceConnector) ToConnectorSecretPairPb() *octopus.ConnectorSecretPair {
+	pb := &octopus.ConnectorSecretPair{
+		Connector: c.ToPb(),
+	}
+	if c.Secret != nil {
+		pb.Credentials = c.Secret.ToPb()
+	}
 
-func (c *ConnectorSecret) TableName() string {
-	return "connector_secrets"
+	return pb
 }

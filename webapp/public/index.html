@@ -20,8 +20,15 @@
     <title>HeyButler App</title>
     <base href="/">
     <style>
-      body > #root > div {
-        height: 100vh;
+      html,
+      body {
+        min-height: 100vh;
+        display: flex;
+        flex: 1;
+      }
+      #root {
+        display: flex;
+        flex: 1;
       }
     </style>
   </head>

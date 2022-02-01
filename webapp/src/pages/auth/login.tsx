@@ -25,7 +25,8 @@ const Login: FC = () => {
         backgroundColor: 'background.default',
         display: 'flex',
         flexDirection: 'column',
-        minHeight: '100vh'
+        minHeight: '100%',
+        minWidth: '100%'
       }}
     >
       <Container

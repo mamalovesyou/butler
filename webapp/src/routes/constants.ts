@@ -1,8 +1,13 @@
+// Auth
 export const LOGIN_ROUTE_PATH = "/login";
 export const REGISTER_ROOT_PATH = "/register";
+export const JOIN_ROOT_PATH = "/join";
 export const OAUTH_CALLBACK = "/oauth";
 
 export const DASHBOARD_ROOT_PATH = "/";
+
+// Analytics
+export const ANALYTICS_ROOT_PATH = "/analytics";
 
 // Account section
 export const ACCOUNT_ROOT_PATH = "/account";
@@ -14,10 +19,13 @@ export const ORGANIZATION_TEAM_PATH = "team";
 export const ORGANIZATION_WORKSPACES_PATH = "workspaces";
 export const ORGANIZATION_WORKSPACES_DETAIL_PATH = "workspaces/:workspaceId";
 
-
+// Data sources
 export const DATA_SOURCES_ROOT_PATH = "data-sources";
 export const ONBOARDING_ROOT_PATH = "/onboarding";
 
+// Campaigns
+export const CAMPAIGNS_ROOT_PATH = "/campaigns";
+
 // Errors
-export const SERVER_ERROR_ROUTE_PATH = "/500";
-export const NOT_FOUND_ROUTE_PATH = "*";
+export const ERROR_ROOT_PATH = "/error";
+export const ERROR_CODE_PATH = "/error/:code";

@@ -231,7 +231,7 @@ minikube-start:
 	@echo "Starting minikube..."
 	minikube start --profile butler --cpus 4 --memory 6144
 	minikube addons enable ingress --profile butler
-	eval $(minikube --profile docker-env)
+	eval $(minikube --profile butler docker-env)
 
 .PHONY: minikube-helm
 minikube-helm:

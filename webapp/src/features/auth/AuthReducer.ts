@@ -28,6 +28,7 @@ const authReducer = (
 
     case ActionType.LOGIN_FAILURE:
     case ActionType.SIGNUP_FAILURE:
+    case ActionType.SIGNUP_WITH_INVITE_FAILURE:
     case ActionType.REFRESH_TOKEN_FAILURE:
     case ActionType.LOGOUT:
       return initialAuthState;

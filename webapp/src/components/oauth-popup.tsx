@@ -12,7 +12,7 @@ type IWindowProps = {
 };
 
 type IPopupProps = IWindowProps & {
-  onClose: () => void;
+  onClose?: () => void;
   onCode: (code: string, params: URLSearchParams) => void;
   // onError?: (error: Error) => void;
   children: React.ReactNode;
@@ -98,5 +98,9 @@ export const OAuthPopup: React.FC<IPopupProps> = ({
     </div>
   );
 };
+
+OAuthPopup.defaultProps = {
+  onClose: () => {}
+}
 
 export default OAuthPopup;

@@ -3,7 +3,6 @@ package connector
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/services/octopus/models"
@@ -16,11 +15,9 @@ func (uc *ConnectorUsecase) ConnectWithCode(ctx context.Context, workspaceID, pr
 	span, ctx := opentracing.StartSpanFromContext(ctx, "connector_ucase.ConnectWithCode")
 	defer span.Finish()
 
-	fmt.Println("connectWithCode", workspaceID, provider, code)
-	fmt.Println(uc.CatalogRepo)
-
 	token, err := uc.CatalogRepo.ExchangeOAuthCode(ctx, provider, code)
 	if err != nil {
+		logger.Error(ctx, "Unable to exchange oauth code", zap.Error(err))
 		return &models.WorkspaceConnector{}, err
 	}
 
@@ -29,22 +26,24 @@ func (uc *ConnectorUsecase) ConnectWithCode(ctx context.Context, workspaceID, pr
 		logger.Error(ctx, "Unable to exchange oauth code", zap.Error(err), zap.String("provider", provider))
 		return nil, err
 	}
-
-	connector := &models.WorkspaceConnector{
+	connector := models.WorkspaceConnector{
 		WorkspaceID: uuid.MustParse(workspaceID),
 		Provider:    provider,
 		AuthScheme:  models.OAUTH2,
 		ExpiresIn:   token.Expiry,
-		Secret: &models.ConnectorSecret{
-			Value: string(secretData),
-		},
 	}
-
-	result, err := uc.ConnectorRepo.CreateOne(connector)
-	if err != nil {
+	if connector, err := uc.ConnectorRepo.UpsertOne(&connector); err != nil {
 		logger.Error(ctx, "Failed to create workspace connector", zap.Error(err))
 		return &models.WorkspaceConnector{}, err
+	} else {
+		logger.Debug(ctx, "About to update secret of connector", zap.Any("connector", connector))
+		if connector, err = uc.ConnectorRepo.UpsertConnectorSecret(models.ConnectorSecret{
+			ConnectorID: connector.ID,
+			Value:       string(secretData),
+		}); err != nil {
+			logger.Error(ctx, "Failed to set connector secret", zap.Error(err))
+			return &models.WorkspaceConnector{}, err
+		}
+		return connector, nil
 	}
-
-	return result, nil
 }

@@ -7,7 +7,7 @@
 package octopus
 
 import (
-	_ "github.com/butlerhq/butler/api/googleapis/openapi/annotations"
+	_ "google.golang.org/genproto/googleapis/api/annotations"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	_ "google.golang.org/protobuf/types/known/timestamppb"
@@ -132,6 +132,195 @@ func (x *ConnectWithCodeRequest) GetCode() string {
 	return ""
 }
 
+type ListAccountsRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	WorkspaceId string `protobuf:"bytes,1,opt,name=workspaceId,proto3" json:"workspaceId,omitempty"`
+	Provider    string `protobuf:"bytes,2,opt,name=provider,proto3" json:"provider,omitempty"`
+}
+
+func (x *ListAccountsRequest) Reset() {
+	*x = ListAccountsRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_octopus_v1_requests_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *ListAccountsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAccountsRequest) ProtoMessage() {}
+
+func (x *ListAccountsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_octopus_v1_requests_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAccountsRequest.ProtoReflect.Descriptor instead.
+func (*ListAccountsRequest) Descriptor() ([]byte, []int) {
+	return file_services_octopus_v1_requests_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ListAccountsRequest) GetWorkspaceId() string {
+	if x != nil {
+		return x.WorkspaceId
+	}
+	return ""
+}
+
+func (x *ListAccountsRequest) GetProvider() string {
+	if x != nil {
+		return x.Provider
+	}
+	return ""
+}
+
+type SelectAccountRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	WorkspaceConnectorId string `protobuf:"bytes,1,opt,name=workspaceConnectorId,proto3" json:"workspaceConnectorId,omitempty"`
+	AccountId            string `protobuf:"bytes,2,opt,name=accountId,proto3" json:"accountId,omitempty"`
+	AccountName          string `protobuf:"bytes,3,opt,name=accountName,proto3" json:"accountName,omitempty"`
+	IsTestAccount        bool   `protobuf:"varint,4,opt,name=isTestAccount,proto3" json:"isTestAccount,omitempty"`
+}
+
+func (x *SelectAccountRequest) Reset() {
+	*x = SelectAccountRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_octopus_v1_requests_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SelectAccountRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SelectAccountRequest) ProtoMessage() {}
+
+func (x *SelectAccountRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_octopus_v1_requests_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SelectAccountRequest.ProtoReflect.Descriptor instead.
+func (*SelectAccountRequest) Descriptor() ([]byte, []int) {
+	return file_services_octopus_v1_requests_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *SelectAccountRequest) GetWorkspaceConnectorId() string {
+	if x != nil {
+		return x.WorkspaceConnectorId
+	}
+	return ""
+}
+
+func (x *SelectAccountRequest) GetAccountId() string {
+	if x != nil {
+		return x.AccountId
+	}
+	return ""
+}
+
+func (x *SelectAccountRequest) GetAccountName() string {
+	if x != nil {
+		return x.AccountName
+	}
+	return ""
+}
+
+func (x *SelectAccountRequest) GetIsTestAccount() bool {
+	if x != nil {
+		return x.IsTestAccount
+	}
+	return false
+}
+
+type GetConnectorSecretRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	OrganizationId string `protobuf:"bytes,1,opt,name=organizationId,proto3" json:"organizationId,omitempty"`
+	WorkspaceId    string `protobuf:"bytes,2,opt,name=workspaceId,proto3" json:"workspaceId,omitempty"`
+	Provider       string `protobuf:"bytes,3,opt,name=provider,proto3" json:"provider,omitempty"`
+}
+
+func (x *GetConnectorSecretRequest) Reset() {
+	*x = GetConnectorSecretRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_services_octopus_v1_requests_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *GetConnectorSecretRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetConnectorSecretRequest) ProtoMessage() {}
+
+func (x *GetConnectorSecretRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_services_octopus_v1_requests_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetConnectorSecretRequest.ProtoReflect.Descriptor instead.
+func (*GetConnectorSecretRequest) Descriptor() ([]byte, []int) {
+	return file_services_octopus_v1_requests_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetConnectorSecretRequest) GetOrganizationId() string {
+	if x != nil {
+		return x.OrganizationId
+	}
+	return ""
+}
+
+func (x *GetConnectorSecretRequest) GetWorkspaceId() string {
+	if x != nil {
+		return x.WorkspaceId
+	}
+	return ""
+}
+
+func (x *GetConnectorSecretRequest) GetProvider() string {
+	if x != nil {
+		return x.Provider
+	}
+	return ""
+}
+
 var File_services_octopus_v1_requests_proto protoreflect.FileDescriptor
 
 var file_services_octopus_v1_requests_proto_rawDesc = []byte{
@@ -152,11 +341,36 @@ var file_services_octopus_v1_requests_proto_rawDesc = []byte{
 	0x65, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x18,
 	0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x12,
 	0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x63,
-	0x6f, 0x64, 0x65, 0x42, 0x3c, 0x5a, 0x3a, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
-	0x6d, 0x2f, 0x62, 0x75, 0x74, 0x6c, 0x65, 0x72, 0x68, 0x71, 0x2f, 0x62, 0x75, 0x74, 0x6c, 0x65,
-	0x72, 0x2f, 0x61, 0x70, 0x69, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2f, 0x6f,
-	0x63, 0x74, 0x6f, 0x70, 0x75, 0x73, 0x2f, 0x76, 0x31, 0x3b, 0x6f, 0x63, 0x74, 0x6f, 0x70, 0x75,
-	0x73, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
+	0x6f, 0x64, 0x65, 0x22, 0x53, 0x0a, 0x13, 0x4c, 0x69, 0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75,
+	0x6e, 0x74, 0x73, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x20, 0x0a, 0x0b, 0x77, 0x6f,
+	0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x0b, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08,
+	0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08,
+	0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x22, 0xb0, 0x01, 0x0a, 0x14, 0x53, 0x65, 0x6c,
+	0x65, 0x63, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
+	0x74, 0x12, 0x32, 0x0a, 0x14, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x43, 0x6f,
+	0x6e, 0x6e, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x14, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63,
+	0x74, 0x6f, 0x72, 0x49, 0x64, 0x12, 0x1c, 0x0a, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74,
+	0x49, 0x64, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x09, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x49, 0x64, 0x12, 0x20, 0x0a, 0x0b, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x4e, 0x61,
+	0x6d, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x61, 0x63, 0x63, 0x6f, 0x75, 0x6e,
+	0x74, 0x4e, 0x61, 0x6d, 0x65, 0x12, 0x24, 0x0a, 0x0d, 0x69, 0x73, 0x54, 0x65, 0x73, 0x74, 0x41,
+	0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x18, 0x04, 0x20, 0x01, 0x28, 0x08, 0x52, 0x0d, 0x69, 0x73,
+	0x54, 0x65, 0x73, 0x74, 0x41, 0x63, 0x63, 0x6f, 0x75, 0x6e, 0x74, 0x22, 0x81, 0x01, 0x0a, 0x19,
+	0x47, 0x65, 0x74, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x6f, 0x72, 0x53, 0x65, 0x63, 0x72,
+	0x65, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x26, 0x0a, 0x0e, 0x6f, 0x72, 0x67,
+	0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28,
+	0x09, 0x52, 0x0e, 0x6f, 0x72, 0x67, 0x61, 0x6e, 0x69, 0x7a, 0x61, 0x74, 0x69, 0x6f, 0x6e, 0x49,
+	0x64, 0x12, 0x20, 0x0a, 0x0b, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63, 0x65, 0x49, 0x64,
+	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x77, 0x6f, 0x72, 0x6b, 0x73, 0x70, 0x61, 0x63,
+	0x65, 0x49, 0x64, 0x12, 0x1a, 0x0a, 0x08, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x18,
+	0x03, 0x20, 0x01, 0x28, 0x09, 0x52, 0x08, 0x70, 0x72, 0x6f, 0x76, 0x69, 0x64, 0x65, 0x72, 0x42,
+	0x3c, 0x5a, 0x3a, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x62, 0x75,
+	0x74, 0x6c, 0x65, 0x72, 0x68, 0x71, 0x2f, 0x62, 0x75, 0x74, 0x6c, 0x65, 0x72, 0x2f, 0x61, 0x70,
+	0x69, 0x2f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x73, 0x2f, 0x6f, 0x63, 0x74, 0x6f, 0x70,
+	0x75, 0x73, 0x2f, 0x76, 0x31, 0x3b, 0x6f, 0x63, 0x74, 0x6f, 0x70, 0x75, 0x73, 0x62, 0x06, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -171,10 +385,13 @@ func file_services_octopus_v1_requests_proto_rawDescGZIP() []byte {
 	return file_services_octopus_v1_requests_proto_rawDescData
 }
 
-var file_services_octopus_v1_requests_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_services_octopus_v1_requests_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_services_octopus_v1_requests_proto_goTypes = []interface{}{
 	(*WorkspaceConnectorsRequest)(nil), // 0: v1.WorkspaceConnectorsRequest
 	(*ConnectWithCodeRequest)(nil),     // 1: v1.ConnectWithCodeRequest
+	(*ListAccountsRequest)(nil),        // 2: v1.ListAccountsRequest
+	(*SelectAccountRequest)(nil),       // 3: v1.SelectAccountRequest
+	(*GetConnectorSecretRequest)(nil),  // 4: v1.GetConnectorSecretRequest
 }
 var file_services_octopus_v1_requests_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
@@ -214,6 +431,42 @@ func file_services_octopus_v1_requests_proto_init() {
 				return nil
 			}
 		}
+		file_services_octopus_v1_requests_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*ListAccountsRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_octopus_v1_requests_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SelectAccountRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_services_octopus_v1_requests_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*GetConnectorSecretRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -221,7 +474,7 @@ func file_services_octopus_v1_requests_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_services_octopus_v1_requests_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   2,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

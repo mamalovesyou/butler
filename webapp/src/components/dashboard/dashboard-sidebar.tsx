@@ -8,6 +8,8 @@ import {Scrollbar} from '../scrollbar';
 import {DashboardSidebarSection} from './dashboard-sidebar-section';
 import {WorkspacePopover} from './workspace-popover';
 import {useCurrentWorkspace} from '../../hooks/use-workspace';
+import {DASHBOARD_SIDEBAR_WIDTH} from "../../theme/constants";
+import AssignmentIcon from '@mui/icons-material/Assignment';
 
 interface DashboardSidebarProps {
     onClose: () => void;
@@ -30,13 +32,29 @@ interface Section {
 
 const getSections = (): Section[] => [
     {
-        title: 'General',
+        title: 'Analytics',
         path: '/',
         items: [
             {
                 title: 'Dashboard',
                 path: ''
             },
+        ]
+    },
+    {
+        title: 'Tracking',
+        path: '/',
+        items: [
+            {
+                title: 'UTM Automation',
+                path: 'campaigns',
+            }
+        ]
+    },
+    {
+        title: 'Configuration',
+        path: '/',
+        items: [
             {
                 title: 'Organization',
                 path: 'organization/workspaces'
@@ -44,7 +62,7 @@ const getSections = (): Section[] => [
             {
                 title: 'Data Sources',
                 path: 'data-sources'
-            }
+            },
         ]
     }
 ];
@@ -160,7 +178,7 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
                         borderRightWidth: (theme) =>
                             theme.palette.mode === 'dark' ? 1 : 0,
                         color: '#FFFFFF',
-                        width: 280
+                        width: DASHBOARD_SIDEBAR_WIDTH
                     }
                 }}
                 variant="permanent"
@@ -179,7 +197,7 @@ export const DashboardSidebar: FC<DashboardSidebarProps> = (props) => {
                 sx: {
                     backgroundColor: 'neutral.900',
                     color: '#FFFFFF',
-                    width: 280
+                    width: DASHBOARD_SIDEBAR_WIDTH
                 }
             }}
             sx={{zIndex: (theme) => theme.zIndex.appBar + 100}}

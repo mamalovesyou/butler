@@ -3,6 +3,8 @@ import {styled} from "@mui/material/styles";
 
 interface LogoProps {
     variant?: "light" | "primary";
+    height?: number;
+    width?: number;
 }
 
 export const Logo = styled((props: LogoProps) => {
@@ -34,4 +36,5 @@ Logo.defaultProps = {
 
 Logo.propTypes = {
     variant: PropTypes.oneOf(["light", "primary"]),
+
 };

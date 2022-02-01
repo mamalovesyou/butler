@@ -5,11 +5,12 @@ package v1;
 import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
 
+enum AuthType {
+  OAUTH2 = 0;
+  API_KEY = 1;
+}
+
 message CatalogConnector {
-  enum AuthType {
-    OAUTH2 = 0;
-    API_KEY = 1;
-  }
   string name = 1;
   string iconSvg = 2;
   AuthType authType = 3;
@@ -29,7 +30,29 @@ message WorkspaceConnector {
   string workspaceId = 2;
   string name = 3;
   string status = 4;
-  google.protobuf.Timestamp expiresIn = 5;
-  google.protobuf.Timestamp createdAt = 6;
-  google.protobuf.Timestamp updatedAt = 7;
+  AuthType authScheme = 5;
+  ProviderAccount accountConfig = 6;
+  google.protobuf.Timestamp expiresIn = 7;
+  google.protobuf.Timestamp createdAt = 8;
+  google.protobuf.Timestamp updatedAt = 9;
+}
+
+message ProviderAccount {
+  string name = 1;
+  string id = 2;
+  bool test = 3;
+  string currency = 4;
+}
+
+message ListAccountsResponse {
+  repeated ProviderAccount accounts = 1;
+}
+
+message ConnectorSecret {
+  map<string, string> value = 1;
+}
+
+message ConnectorSecretPair {
+  WorkspaceConnector connector = 1;
+  ConnectorSecret credentials = 2;
 }

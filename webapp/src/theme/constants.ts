@@ -1,0 +1,2 @@
+export const DASHBOARD_SIDEBAR_WIDTH = 200;
+export const DASHBOARD_NAVBAR_HEIGHT = 64;

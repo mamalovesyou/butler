@@ -4,6 +4,11 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/butlerhq/butler/internal/logger"
+	"go.uber.org/zap"
+
+	linkedin_ads "github.com/butlerhq/butler/integrations/linkedin-ads"
+
 	"github.com/butlerhq/butler/api/services/octopus/v1"
 
 	"github.com/butlerhq/butler/services/octopus/models"
@@ -22,7 +27,7 @@ func NewLinkedinConnector(cfg OAuthConnectorConfig, redirectURL string) *Linkedi
 		config: oauth2.Config{
 			ClientID:     cfg.ClientID,
 			ClientSecret: cfg.ClientSecret,
-			Scopes:       []string{"r_liteprofile", "r_emailaddress"},
+			Scopes:       []string{"r_liteprofile", "r_emailaddress", "rw_ads"},
 			Endpoint:     linkedin.Endpoint,
 			RedirectURL:  redirectURL,
 		},
@@ -42,7 +47,7 @@ func (lc *LinkedinConnector) SVGIcon() string {
 }
 
 func (lc *LinkedinConnector) AuthURL() string {
-	return lc.config.AuthCodeURL("")
+	return lc.config.AuthCodeURL("", oauth2.AccessTypeOffline, oauth2.ApprovalForce)
 }
 
 func (lc *LinkedinConnector) ExchangeCode(ctx context.Context, code string) (*oauth2.Token, error) {
@@ -54,12 +59,34 @@ func (lc *LinkedinConnector) ExchangeCode(ctx context.Context, code string) (*oa
 }
 
 func (lc *LinkedinConnector) ToPb() *octopus.CatalogConnector {
-	authTypeInt := octopus.CatalogConnector_AuthType_value[string(lc.AuthScheme())]
-	fmt.Printf("Connector scheme int: %s", string(authTypeInt))
+	authTypeInt := octopus.AuthType_value[string(lc.AuthScheme())]
 	return &octopus.CatalogConnector{
 		Name:     lc.Name(),
 		AuthUrl:  lc.AuthURL(),
-		AuthType: octopus.CatalogConnector_AuthType(authTypeInt),
+		AuthType: octopus.AuthType(authTypeInt),
 		IconSvg:  lc.SVGIcon(),
 	}
+}
+
+func (lc *LinkedinConnector) ListAccounts(ctx context.Context, secrets *models.ConnectorSecrets) (*octopus.ListAccountsResponse, error) {
+	linkedin_client := linkedin_ads.NewLinkedinClient(secrets.AccessToken)
+	resp, err := linkedin_client.ListAccounts()
+	if err != nil {
+		logger.Error(ctx, "Failed to list linkedin accounts", zap.Error(err))
+		return &octopus.ListAccountsResponse{}, nil
+	}
+
+	result := make([]*octopus.ProviderAccount, len(resp.Accounts))
+	for i, acc := range resp.Accounts {
+		result[i] = &octopus.ProviderAccount{
+			Name: acc.Name,
+			Id:   fmt.Sprintf("%d", acc.Id),
+			Test: acc.Test,
+		}
+	}
+
+	return &octopus.ListAccountsResponse{
+		Accounts: result,
+	}, nil
+
 }

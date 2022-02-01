@@ -3,56 +3,23 @@ import {Box, Card, Container, Divider, Typography} from '@mui/material';
 import {Logo} from '../../components/logo';
 import {
     DASHBOARD_ROOT_PATH,
-    LOGIN_ROUTE_PATH, NOT_FOUND_ROUTE_PATH,
-    REGISTER_ROOT_PATH
+    LOGIN_ROUTE_PATH
 } from '../../routes';
-import {Link, useLocation} from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {useAuth} from '../../hooks/use-auth';
 import {push} from 'redux-first-history';
 import {useDispatch} from 'react-redux';
 import {JWTRegister} from '../../components/auth/jwt-register';
-import {Api, V1Invitation} from "../../api";
-import {AxiosResponse} from "axios";
-import JWTRegisterWithInvitation from "../../components/auth/jwt-register-with-invitation";
+import {V1Invitation} from "../../api";
 
 const Register: FC = () => {
     const dispatch = useDispatch();
     const {isAuthenticated, user} = useAuth();
-    const {search} = useLocation();
-    const params = new URLSearchParams(search);
 
-    const withInvitation = (): boolean => {
-        return params.get("invitationId") !== null && params.get("token") !== null;
-    }
-
-    const processInvite = () => {
-        const invitationId = params.get("invitationId");
-        const invitationToken = params.get("token");
-        Api.v1.usersServiceGetInvitation({
-            invitationId,
-            token: invitationToken
-        }).then((response: AxiosResponse<V1Invitation>) => {
-            const invitation = response.data;
-            console.log("got invitation", invitation);
-            if (isAuthenticated && user.email !== invitation.email) dispatch(push(DASHBOARD_ROOT_PATH));
-            if (isAuthenticated && user.email === invitation.email) {
-                // TODO: JOIN
-
-            }
-        }).catch((error) => {
-            console.log(error);
-            dispatch(push(NOT_FOUND_ROUTE_PATH));
-        });
-    }
-
+    // Redirect if user authenticated
     useEffect(() => {
-        if (!withInvitation() && isAuthenticated) {
-            console.log("not invitation and authanticated");
-            dispatch(push(DASHBOARD_ROOT_PATH));
-        } else {
-            processInvite();
-        }
-    }, []);
+        if (isAuthenticated) dispatch(push(DASHBOARD_ROOT_PATH));
+    }, [isAuthenticated])
 
     return (
         <>
@@ -62,7 +29,9 @@ const Register: FC = () => {
                     backgroundColor: 'background.default',
                     display: 'flex',
                     flexDirection: 'column',
-                    minHeight: '100vh'
+                    minHeight: '100vh',
+                    width: '100%',
+
                 }}
             >
                 <Container
@@ -102,9 +71,7 @@ const Register: FC = () => {
                                 mt: 3
                             }}
                         >
-                            { withInvitation() ? <JWTRegisterWithInvitation invitationId={params.get("invitationId")}
-                                                                            token={params.get("token")}
-                            /> : <JWTRegister /> }
+                            <JWTRegister />
                         </Box>
                         <Divider sx={{my: 3}}/>
 
