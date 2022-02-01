@@ -4,8 +4,7 @@ locals {
   vpc_name = "${var.prefix}-vpc-${terraform.workspace}"
 }
 module "network" {
-  source  = "terraform-aws-modules/vpc/aws"
-  version = "3.2.0"
+  source = "terraform-aws-modules/vpc/aws"
 
   name                 = local.vpc_name
   cidr                 = var.cidr
@@ -25,11 +24,11 @@ module "network" {
 
   public_subnet_tags = {
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-    "kubernetes.io/role/elb"                      = "1"
+    "kubernetes.io/role/elb"                    = "1"
   }
 
   private_subnet_tags = {
     "kubernetes.io/cluster/${var.cluster_name}" = "shared"
-    "kubernetes.io/role/internal-elb"             = "1"
+    "kubernetes.io/role/internal-elb"           = "1"
   }
 }

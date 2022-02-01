@@ -1,41 +1,41 @@
 variable "prefix" {
-  default = "butler"
+  default     = "butler"
   description = "Prefix used to name the eks cluster"
 }
 
 variable "db_name" {
-  type = string
+  type        = string
   description = "Database name"
 }
 
 variable "db_user" {
-  type = string
+  type        = string
   description = "Database username"
 }
 
 variable "db_password" {
-  type = string
+  type        = string
   description = "Database password"
 }
 
 variable "instance_type" {
-  type = string
-  default = "db.t3.micro"
+  type        = string
+  default     = "db.t3.micro"
   description = "DB instance type"
 }
 
 variable "vpc_id" {
-  type = string
+  type        = string
   description = "VPC ID"
 }
 
 variable "database_subnets" {
-  type = list(string)
+  type        = list(string)
   description = "Database private subnets"
 }
 
 variable "vpc_cidr_block" {
-  type = string
+  type        = string
   description = "VPC CIDR Block"
 }
 
