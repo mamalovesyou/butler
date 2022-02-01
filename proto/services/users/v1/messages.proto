@@ -49,7 +49,8 @@ message UserMember {
 message Invitation {
   string id = 1;
   string email = 2;
-  Organization organization = 3;
-  Workspace workspace = 4;
+  string token = 3;
+  Organization organization = 4;
+  Workspace workspace = 5;
   google.protobuf.Timestamp expires_at = 6;
 }

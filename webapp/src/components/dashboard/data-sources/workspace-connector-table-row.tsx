@@ -52,9 +52,6 @@ export const CatalogTableRow: React.FC<ICatalogTableRowProps> = ({ connector, on
                         provider: connector.name
                     })
                     }
-                    onClose={() => {
-                        console.log("window closed")
-                    }}
                 >
                     <Button variant="contained">
                         Connect

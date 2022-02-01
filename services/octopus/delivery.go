@@ -67,3 +67,24 @@ func (svc *OctopusService) ListWorkspaceConnectors(ctx context.Context, req *oct
 		Connectors: result,
 	}, nil
 }
+
+func (svc *OctopusService) ListAccounts(ctx context.Context, req *octopus.ListAccountsRequest) (*octopus.ListAccountsResponse, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "octopus.ListAccounts")
+	defer span.Finish()
+
+	return svc.ConnectorUsecase.ListAccounts(ctx, req.WorkspaceId, req.Provider)
+}
+
+func (svc *OctopusService) SelectAccount(ctx context.Context, req *octopus.SelectAccountRequest) (*octopus.WorkspaceConnector, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "octopus.SelectAccount")
+	defer span.Finish()
+
+	return svc.ConnectorUsecase.SelectProviderAccount(ctx, req)
+}
+
+func (svc *OctopusService) GetConnectorSecret(ctx context.Context, req *octopus.GetConnectorSecretRequest) (*octopus.ConnectorSecretPair, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "octopus.GetConnectorSecret")
+	defer span.Finish()
+
+	return svc.ConnectorUsecase.GetConnectorSecret(ctx, req)
+}

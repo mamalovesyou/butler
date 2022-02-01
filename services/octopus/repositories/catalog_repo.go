@@ -45,10 +45,17 @@ func (repo *CatalogRepo) ListAvailableConnectors() []models.CatalogConnector {
 	return tmp
 }
 
-func (repo *CatalogRepo) ExchangeOAuthCode(ctx context.Context, provider, code string) (*oauth2.Token, error) {
-	fmt.Println("About to echange code", provider, code)
+// GetConnector returns a list of available connector
+func (repo *CatalogRepo) GetConnector(name string) (models.CatalogConnector, bool) {
 	repo.mu.Lock()
-	fmt.Println("About to echange code", provider, code)
+	connector, ok := repo.connectorsMap[name]
+	repo.mu.Unlock()
+	return connector, ok
+}
+
+func (repo *CatalogRepo) ExchangeOAuthCode(ctx context.Context, provider, code string) (*oauth2.Token, error) {
+	logger.Debug(ctx, "About to exchange oauth code", zap.String("provider", provider))
+	repo.mu.Lock()
 	connector, ok := repo.connectorsMap[provider]
 	fmt.Printf("%v", connector)
 	if !ok {

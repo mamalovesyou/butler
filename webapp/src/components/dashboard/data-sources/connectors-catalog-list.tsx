@@ -1,18 +1,10 @@
-import {FC, useEffect, useState} from 'react';
+import {FC, Fragment, useEffect, useState} from 'react';
 import {
-    Avatar,
     Box,
-    Button,
-    Card,
-    CardContent,
-    CardHeader,
-    Chip,
-    Grid, IconButton,
-    Tab,
     Table, TableBody,
     TableCell,
     TableHead,
-    TableRow, Typography
+    TableRow
 } from '@mui/material';
 import {useCatalog, useConnectors, useDataSources} from '../../../hooks/use-connectors';
 import {
@@ -21,24 +13,16 @@ import {
     listWorkspaceConnectorsRequest
 } from '../../../features/connectors';
 import {useDispatch} from 'react-redux';
-import {useCurrentWorkspace, useWorkspace} from "../../../hooks/use-workspace";
-import ConnectorItem from "./connector-item";
-import {put} from "redux-saga/effects";
-import * as WorkspaceActions from "../../../features/workspace/WorkspaceActions";
-import TabContext from "@mui/lab/TabContext";
-import TabList from "@mui/lab/TabList";
-import TabPanel from "@mui/lab/TabPanel";
-import {V1CatalogConnector, V1Invitation, V1UserMember, V1WorkspaceConnector} from "../../../api";
-import {UserCircle as UserCircleIcon} from "../../../icons/user-circle";
-import {SeverityPill} from "../../severity-pill";
-import {DotsHorizontal as DotsHorizontalIcon} from "../../../icons/dots-horizontal";
+import {useWorkspace} from "../../../hooks/use-workspace";
+import {Api, V1CatalogConnector, V1WorkspaceConnector} from "../../../api";
 import CatalogTableRow from "./catalog-table-row";
+import ConfigureAccountDialog from "./configure-account-dialog";
 
 export const ConnectorsCatalogList: FC = () => {
 
     const dispatch = useDispatch();
     const {workspaceId} = useWorkspace();
-    const {catalog, connectors} = useConnectors();
+    const {catalog, connectors, configure} = useConnectors();
     const [workspaceConnectorByName, setWorkspaceConnectorByName] = useState({});
 
     useEffect(() => {
@@ -46,7 +30,6 @@ export const ConnectorsCatalogList: FC = () => {
     }, []);
 
     useEffect(() => {
-        console.log("worksapce id")
         if (workspaceId) {
             dispatch(listWorkspaceConnectorsRequest({workspaceId}));
         }
@@ -55,17 +38,16 @@ export const ConnectorsCatalogList: FC = () => {
     useEffect(() => {
         const wsConnectorByName = {};
         Object.values(connectors).forEach((connector: V1WorkspaceConnector) => wsConnectorByName[connector.name] = connector);
-        console.log("connector by bame", wsConnectorByName);
         setWorkspaceConnectorByName(wsConnectorByName);
     }, [catalog, connectors]);
 
-    const handleConnectOAuth = (params: { code: string, provider: string }) => {
-        dispatch(connectOAuthConnectorRequest({workspaceId, ...params}))
+    const handleConnectOAuth = async (params: { code: string, provider: string }) => {
+        dispatch(connectOAuthConnectorRequest({workspaceId, ...params}));
     }
 
 
     return (
-        <Box sx={{width: '100%', p: 1}}>
+        <Fragment>
             <Table sx={{minWidth: 400}}>
                 <TableHead>
                     <TableRow>
@@ -84,6 +66,7 @@ export const ConnectorsCatalogList: FC = () => {
                     )}
                 </TableBody>
             </Table>
-        </Box>
+        <ConfigureAccountDialog />
+        </Fragment>
     );
 };

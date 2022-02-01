@@ -1,14 +1,13 @@
-import React, {useEffect, useState} from "react";
-import {useLocation, useRoutes, Navigate} from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useLocation, useRoutes, Navigate } from "react-router-dom";
 import DataSources from "../pages/dashboard/data-sources";
-import {DashboardLayout} from "../components/dashboard/dashboard-layout";
-import NotFound from "../pages/404";
+import { DashboardLayout } from "../components/dashboard/dashboard-layout";
 import WorkspaceDetail from "../pages/dashboard/organization/workspace-detail";
 
 import {
-    ACCOUNT_ROOT_PATH, ACCOUNT_SETTINGS_PATH,
+    ACCOUNT_ROOT_PATH, ACCOUNT_SETTINGS_PATH, ANALYTICS_ROOT_PATH, CAMPAIGNS_ROOT_PATH,
     DASHBOARD_ROOT_PATH,
-    DATA_SOURCES_ROOT_PATH,
+    DATA_SOURCES_ROOT_PATH, ERROR_ROOT_PATH, JOIN_ROOT_PATH,
     LOGIN_ROUTE_PATH,
     OAUTH_CALLBACK,
     ONBOARDING_ROOT_PATH,
@@ -16,18 +15,21 @@ import {
     REGISTER_ROOT_PATH,
 } from "./constants";
 import Onboarding from "../pages/onboarding";
-import {AuthGuard} from "../components/auth/auth-guard";
+import { AuthGuard } from "../components/auth/auth-guard";
 import Login from "../pages/auth/login";
 import Register from "../pages/auth/register";
-import {OnboardingGuard} from "../components/onboarding/onboarding-guard";
+import { OnboardingGuard } from "../components/onboarding/onboarding-guard";
 import OAuthCallback from "../pages/oauth-callback";
-import {OrganizationLayout} from "../components/dashboard/organization/organization-layout";
+import { OrganizationLayout } from "../components/dashboard/organization/organization-layout";
 import WorkspacesList from "../components/dashboard/organization/workspaces-list";
-import ServerError from "../pages/500";
 import Organization from "../pages/dashboard/organization/organization";
-import {TeamMembersTabs} from "../components/dashboard/organization/team-members-tabs";
-import {useWorkspace} from "../hooks/use-workspace";
+import { TeamMembersTabs } from "../components/dashboard/organization/team-members-tabs";
+import { useWorkspace } from "../hooks/use-workspace";
 import GeneralSettings from "../pages/dashboard/general-settings";
+import UTMAutomation from "../pages/dashboard/utm-automation";
+import ErrorPage from "../pages/errors";
+import JoinInvitation from "../pages/auth/join-invitation";
+import Analytics from "../pages/dashboard/analytics";
 
 export * from "./constants";
 
@@ -36,7 +38,7 @@ export const AppRoutes: React.FC = () => {
     const location = useLocation();
 
     const [organization, setOrganization] = useState(null);
-    const {organizationId, organizations} = useWorkspace();
+    const { organizationId, organizations } = useWorkspace();
 
     useEffect(() => {
         if (organizationId) {
@@ -48,19 +50,23 @@ export const AppRoutes: React.FC = () => {
         [
             {
                 path: OAUTH_CALLBACK,
-                element: <OAuthCallback/>,
+                element: <OAuthCallback />,
             },
             {
                 path: LOGIN_ROUTE_PATH,
-                element: <Login/>,
+                element: <Login />,
             },
             {
                 path: REGISTER_ROOT_PATH,
-                element: <Register/>,
+                element: <Register />,
+            },
+            {
+                path: JOIN_ROOT_PATH,
+                element: <JoinInvitation />,
             },
             {
                 path: ONBOARDING_ROOT_PATH,
-                element: <AuthGuard children={<Onboarding/>}/>,
+                element: <AuthGuard children={<Onboarding />} />,
             },
             // A route object has the same properties as a <Route>
             // element. The `children` is just an array of child routes.
@@ -68,41 +74,51 @@ export const AppRoutes: React.FC = () => {
                 path: DASHBOARD_ROOT_PATH,
                 element: (
                     <AuthGuard
-                        children={<OnboardingGuard children={<DashboardLayout/>}/>}
+                        children={<OnboardingGuard children={<DashboardLayout />} />}
                     />
                 ),
                 children: [
-                    {path: `${ACCOUNT_ROOT_PATH}/${ACCOUNT_SETTINGS_PATH}`, element: <GeneralSettings />},
+                    { path: "", element: <Navigate replace to={ANALYTICS_ROOT_PATH} /> },
+                    { path: ANALYTICS_ROOT_PATH, element: <Analytics /> },
+                    { path: `${ACCOUNT_ROOT_PATH}/${ACCOUNT_SETTINGS_PATH}`, element: <GeneralSettings /> },
                     {
-                        path: ORGANIZATION_ROOT_PATH, element: <OrganizationLayout/>, children: [
+                        path: ORGANIZATION_ROOT_PATH, element: <OrganizationLayout />, children: [
                             {
-                                path: "", element: <Organization/>, children: [
-                                    {path: "", element: <Navigate to={ORGANIZATION_WORKSPACES_PATH}/>},
-                                    {path: ORGANIZATION_WORKSPACES_PATH, element: <WorkspacesList/>},
+                                path: "", element: <Organization />, children: [
+                                    { path: "", element: <Navigate to={ORGANIZATION_WORKSPACES_PATH} /> },
+                                    { path: ORGANIZATION_WORKSPACES_PATH, element: <WorkspacesList /> },
                                     {
                                         path: ORGANIZATION_TEAM_PATH, element: <>{
                                             organization
                                                 ? <TeamMembersTabs mode={"organization"} members={organization.members}
-                                                                   invitations={organization.invitations}/>
+                                                    invitations={organization.invitations} />
                                                 : null
                                         }
                                         </>
                                     }
                                 ]
                             },
-                            {path: ORGANIZATION_WORKSPACES_DETAIL_PATH, element: <WorkspaceDetail/>},
+                            { path: ORGANIZATION_WORKSPACES_DETAIL_PATH, element: <WorkspaceDetail /> },
                         ]
                     },
-                    {path: DATA_SOURCES_ROOT_PATH, element: <DataSources/>},
+                    { path: DATA_SOURCES_ROOT_PATH, element: <DataSources /> },
+                    {
+                        path: CAMPAIGNS_ROOT_PATH, element: <UTMAutomation />,
+                        // children: [
+                        //     { path: "", element: <Campaigns />},
+                        // ]
+                    }
                 ],
             },
             {
-                path: "500",
-                element: <ServerError/>,
-            },
-            {
-                path: "*",
-                element: <NotFound/>,
+                path: ERROR_ROOT_PATH,
+                element: <ErrorPage />,
+                children: [
+                    {
+                        path: ":code",
+                        element: <ErrorPage />
+                    }
+                ]
             },
         ],
         location

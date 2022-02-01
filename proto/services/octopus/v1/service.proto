@@ -25,4 +25,20 @@ service OctopusService {
       body: "*"
     };
   }
+
+  rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse) {
+    option (google.api.http) = {
+      post: "/v1/connectors/accounts"
+      body: "*"
+    };
+  }
+
+  rpc SelectAccount(SelectAccountRequest) returns (WorkspaceConnector) {
+    option (google.api.http) = {
+      post: "/v1/connectors/accounts/setup"
+      body: "*"
+    };
+  }
+
+  rpc GetConnectorSecret(GetConnectorSecretRequest) returns (ConnectorSecretPair) {}
 }

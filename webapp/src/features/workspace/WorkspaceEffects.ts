@@ -10,7 +10,7 @@ import {
 import { AxiosResponse } from 'axios';
 import { Api } from '../configureEffects';
 import { Location, useLocation } from 'react-router-dom';
-import {ONBOARDING_ROOT_PATH, SERVER_ERROR_ROUTE_PATH} from '../../routes';
+import {ONBOARDING_ROOT_PATH} from '../../routes';
 import { OnboardingStep, setOnboardingStep } from '../onboarding';
 import {push} from "redux-first-history";
 
@@ -92,7 +92,7 @@ export function* onGetOrganizationFailure() {
   yield takeEvery(
       ActionTypes.GET_ORGANIZATION_FAILURE,
       function* ({ error }: ActionTypes.IGetOrganizationFailure) {
-          yield put(push(SERVER_ERROR_ROUTE_PATH));
+          yield put(push("/error/404"));
       }
   );
 }

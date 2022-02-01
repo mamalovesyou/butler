@@ -14,3 +14,21 @@ message ConnectWithCodeRequest {
   string provider = 2;
   string code = 3;
 }
+
+message ListAccountsRequest {
+  string workspaceId = 1;
+  string provider = 2;
+}
+
+message SelectAccountRequest {
+  string workspaceConnectorId = 1;
+  string accountId = 2;
+  string accountName = 3;
+  bool isTestAccount = 4;
+}
+
+message GetConnectorSecretRequest {
+  string organizationId = 1;
+  string workspaceId = 2;
+  string provider = 3;
+}

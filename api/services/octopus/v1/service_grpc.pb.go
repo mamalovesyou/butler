@@ -22,6 +22,9 @@ type OctopusServiceClient interface {
 	GetCatalogConnectors(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CatalogConnectorList, error)
 	ListWorkspaceConnectors(ctx context.Context, in *WorkspaceConnectorsRequest, opts ...grpc.CallOption) (*WorkspaceConnectorList, error)
 	ConnectWithCode(ctx context.Context, in *ConnectWithCodeRequest, opts ...grpc.CallOption) (*WorkspaceConnector, error)
+	ListAccounts(ctx context.Context, in *ListAccountsRequest, opts ...grpc.CallOption) (*ListAccountsResponse, error)
+	SelectAccount(ctx context.Context, in *SelectAccountRequest, opts ...grpc.CallOption) (*WorkspaceConnector, error)
+	GetConnectorSecret(ctx context.Context, in *GetConnectorSecretRequest, opts ...grpc.CallOption) (*ConnectorSecretPair, error)
 }
 
 type octopusServiceClient struct {
@@ -59,6 +62,33 @@ func (c *octopusServiceClient) ConnectWithCode(ctx context.Context, in *ConnectW
 	return out, nil
 }
 
+func (c *octopusServiceClient) ListAccounts(ctx context.Context, in *ListAccountsRequest, opts ...grpc.CallOption) (*ListAccountsResponse, error) {
+	out := new(ListAccountsResponse)
+	err := c.cc.Invoke(ctx, "/v1.OctopusService/ListAccounts", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *octopusServiceClient) SelectAccount(ctx context.Context, in *SelectAccountRequest, opts ...grpc.CallOption) (*WorkspaceConnector, error) {
+	out := new(WorkspaceConnector)
+	err := c.cc.Invoke(ctx, "/v1.OctopusService/SelectAccount", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *octopusServiceClient) GetConnectorSecret(ctx context.Context, in *GetConnectorSecretRequest, opts ...grpc.CallOption) (*ConnectorSecretPair, error) {
+	out := new(ConnectorSecretPair)
+	err := c.cc.Invoke(ctx, "/v1.OctopusService/GetConnectorSecret", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OctopusServiceServer is the server API for OctopusService service.
 // All implementations must embed UnimplementedOctopusServiceServer
 // for forward compatibility
@@ -66,6 +96,9 @@ type OctopusServiceServer interface {
 	GetCatalogConnectors(context.Context, *emptypb.Empty) (*CatalogConnectorList, error)
 	ListWorkspaceConnectors(context.Context, *WorkspaceConnectorsRequest) (*WorkspaceConnectorList, error)
 	ConnectWithCode(context.Context, *ConnectWithCodeRequest) (*WorkspaceConnector, error)
+	ListAccounts(context.Context, *ListAccountsRequest) (*ListAccountsResponse, error)
+	SelectAccount(context.Context, *SelectAccountRequest) (*WorkspaceConnector, error)
+	GetConnectorSecret(context.Context, *GetConnectorSecretRequest) (*ConnectorSecretPair, error)
 	mustEmbedUnimplementedOctopusServiceServer()
 }
 
@@ -81,6 +114,15 @@ func (UnimplementedOctopusServiceServer) ListWorkspaceConnectors(context.Context
 }
 func (UnimplementedOctopusServiceServer) ConnectWithCode(context.Context, *ConnectWithCodeRequest) (*WorkspaceConnector, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConnectWithCode not implemented")
+}
+func (UnimplementedOctopusServiceServer) ListAccounts(context.Context, *ListAccountsRequest) (*ListAccountsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method ListAccounts not implemented")
+}
+func (UnimplementedOctopusServiceServer) SelectAccount(context.Context, *SelectAccountRequest) (*WorkspaceConnector, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SelectAccount not implemented")
+}
+func (UnimplementedOctopusServiceServer) GetConnectorSecret(context.Context, *GetConnectorSecretRequest) (*ConnectorSecretPair, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetConnectorSecret not implemented")
 }
 func (UnimplementedOctopusServiceServer) mustEmbedUnimplementedOctopusServiceServer() {}
 
@@ -149,6 +191,60 @@ func _OctopusService_ConnectWithCode_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OctopusService_ListAccounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListAccountsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OctopusServiceServer).ListAccounts(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v1.OctopusService/ListAccounts",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OctopusServiceServer).ListAccounts(ctx, req.(*ListAccountsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OctopusService_SelectAccount_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SelectAccountRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OctopusServiceServer).SelectAccount(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v1.OctopusService/SelectAccount",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OctopusServiceServer).SelectAccount(ctx, req.(*SelectAccountRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OctopusService_GetConnectorSecret_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetConnectorSecretRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OctopusServiceServer).GetConnectorSecret(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/v1.OctopusService/GetConnectorSecret",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OctopusServiceServer).GetConnectorSecret(ctx, req.(*GetConnectorSecretRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OctopusService_ServiceDesc is the grpc.ServiceDesc for OctopusService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -167,6 +263,18 @@ var OctopusService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "ConnectWithCode",
 			Handler:    _OctopusService_ConnectWithCode_Handler,
+		},
+		{
+			MethodName: "ListAccounts",
+			Handler:    _OctopusService_ListAccounts_Handler,
+		},
+		{
+			MethodName: "SelectAccount",
+			Handler:    _OctopusService_SelectAccount_Handler,
+		},
+		{
+			MethodName: "GetConnectorSecret",
+			Handler:    _OctopusService_GetConnectorSecret_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

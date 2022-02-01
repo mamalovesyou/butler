@@ -2,12 +2,11 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"path/filepath"
 
 	"github.com/butlerhq/butler/internal/utils"
-	"github.com/kelseyhightower/envconfig"
+	"github.com/caarlos0/env/v6"
 	"github.com/spf13/viper"
 )
 
@@ -44,10 +43,5 @@ func ReadConfig(cfgFilePath string, prefixKey string, cfg interface{}) error {
 		}
 	}
 
-	err := envconfig.Process("", cfg)
-	if err != nil {
-		log.Fatal(err.Error())
-	}
-
-	return nil
+	return env.Parse(cfg)
 }

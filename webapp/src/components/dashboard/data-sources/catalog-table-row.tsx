@@ -5,6 +5,7 @@ import OAuthPopup from "../../oauth-popup";
 import {useMemo} from "react";
 import RefreshIcon from '@mui/icons-material/Refresh';
 import {V1CatalogConnector, V1WorkspaceConnector} from "../../../api";
+import {TableRowProps} from "@mui/material/TableRow/TableRow";
 
 type ICatalogTableRowProps = {
     isConnected?: boolean;
@@ -13,14 +14,15 @@ type ICatalogTableRowProps = {
     onOAuthConnect: (params: { code: string, provider: string }) => void;
 };
 
-export const CatalogTableRow: React.FC<ICatalogTableRowProps> = ({
-                                                                     isConnected,
-                                                                     connector,
-                                                                     workspaceConnector,
-                                                                     onOAuthConnect
-                                                                 }) => {
+export const CatalogTableRow: React.FC<ICatalogTableRowProps> = (props) => {
 
-    console.log()
+    const {
+        isConnected,
+        connector,
+        workspaceConnector,
+        onOAuthConnect
+    } = props;
+
     const imageURL = useMemo(() => {
         const blob = new Blob([connector.iconSvg], {type: 'image/svg+xml'});
         return URL.createObjectURL(blob);

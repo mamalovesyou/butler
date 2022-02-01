@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS workspace_connectors (
                              );
 
 CREATE INDEX IF NOT EXISTS connectors_workspace_idx ON workspace_connectors(workspace_id);
+CREATE UNIQUE INDEX connectors_workspace_provider_idx ON workspace_connectors(workspace_id, provider);
 
 CREATE TABLE IF NOT EXISTS connector_secrets (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -35,15 +36,17 @@ CREATE TABLE IF NOT EXISTS connector_secrets (
     deleted_at TIMESTAMP WITH TIME ZONE DEFAULT NULL
                              );
 
-CREATE INDEX IF NOT EXISTS connector_secrets_connector_idx ON connector_secrets(connector_id);
+CREATE UNIQUE INDEX IF NOT EXISTS connector_secrets_connector_idx ON connector_secrets(connector_id);
 -- +goose StatementEnd
 
 -- +goose Down
 -- +goose StatementBegin
+DROP INDEX IF EXISTS connectors_workspace_provider_idx;
 DROP INDEX IF EXISTS connectors_workspace_idx;
-DROP TABLE IF EXISTS workspace_connectors;
-DROP TYPE auth_scheme_enum;
-
 DROP INDEX IF EXISTS connector_secrets_connector_idx;
+
 DROP TABLE IF EXISTS connectors_secrets;
+DROP TABLE IF EXISTS workspace_connectors;
+
+DROP TYPE auth_scheme_enum;
 -- +goose StatementEnd

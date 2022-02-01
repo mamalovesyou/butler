@@ -15,7 +15,7 @@ postgres:
   user: postgres
   password: password
 connectors:
-  redirectURL: redirectUrl
+  redirectURL: http://localhost:3000/oauth
   google:
     clientID: clientID
     clientSecret: clientSecret

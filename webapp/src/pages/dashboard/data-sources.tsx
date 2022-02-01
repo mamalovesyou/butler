@@ -3,6 +3,7 @@ import { Box, Container, Divider, Typography } from '@mui/material';
 import { ConnectorsCatalogList } from '../../components/dashboard/data-sources/connectors-catalog-list';
 import { listCatalogConnectorsRequest } from '../../features/connectors';
 import { useDispatch } from 'react-redux';
+import {AccountGeneralSettings} from "../../components/dashboard/account/account-general-settings";
 
 const DataSources: FC = () => {
 
@@ -13,21 +14,19 @@ const DataSources: FC = () => {
   }, []);
 
   return (
-    <>
       <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          py: 8
-        }}
+          component="main"
+          sx={{
+              flexGrow: 1,
+              py: 8
+          }}
       >
-        <Container maxWidth="md">
-          <Typography variant="h4">Data Sources</Typography>
-          <Divider sx={{ mb: 3 }} />
-          <ConnectorsCatalogList />
-        </Container>
+          <Container maxWidth="md">
+              <Typography variant="h4">Data Sources</Typography>
+              <Divider sx={{ mb: 3 }} />
+              <ConnectorsCatalogList />
+          </Container>
       </Box>
-    </>
   );
 };
 

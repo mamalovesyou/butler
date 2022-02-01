@@ -1,13 +1,12 @@
 package connectors
 
 type OAuthConnectorConfig struct {
-	ClientID       string `envconfig:"client_id"`
-	ClientSecret   string `envconfig:"client_secret"`
-	DeveloperToken string `envconfig:"developer_token"`
+	ClientID     string `env:"CLIENT_ID"`
+	ClientSecret string `env:"CLIENT_SECRET"`
 }
 
 type Config struct {
-	Google      OAuthConnectorConfig `envconfig:"google"`
-	Linkedin    OAuthConnectorConfig `envconfig:"linkedin"`
+	Google      OAuthConnectorConfig `envPrefix:"GOOGLE_"`
+	Linkedin    OAuthConnectorConfig `envPrefix:"LINKEDIN_"`
 	RedirectURL string               `mapStructure:"redirectURL"`
 }

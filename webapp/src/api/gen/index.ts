@@ -20,6 +20,11 @@ export interface GoogleRpcStatus {
   details?: GoogleProtobufAny[];
 }
 
+export enum V1AuthType {
+  OAUTH2 = "OAUTH2",
+  API_KEY = "API_KEY",
+}
+
 /**
  * The response message containing the User.
  */
@@ -38,13 +43,8 @@ export interface V1BatchInviteMemberRequest {
 export interface V1CatalogConnector {
   name?: string;
   iconSvg?: string;
-  authType?: V1CatalogConnectorAuthType;
+  authType?: V1AuthType;
   authUrl?: string;
-}
-
-export enum V1CatalogConnectorAuthType {
-  OAUTH2 = "OAUTH2",
-  API_KEY = "API_KEY",
 }
 
 export interface V1CatalogConnectorList {
@@ -59,6 +59,15 @@ export interface V1ConnectWithCodeRequest {
   workspaceId?: string;
   provider?: string;
   code?: string;
+}
+
+export interface V1ConnectorSecret {
+  value?: Record<string, string>;
+}
+
+export interface V1ConnectorSecretPair {
+  connector?: V1WorkspaceConnector;
+  credentials?: V1ConnectorSecret;
 }
 
 export interface V1CreateOrganizationRequest {
@@ -92,6 +101,7 @@ export interface V1GetWorkspaceRequest {
 export interface V1Invitation {
   id?: string;
   email?: string;
+  token?: string;
   organization?: V1Organization;
   workspace?: V1Workspace;
 
@@ -101,6 +111,15 @@ export interface V1Invitation {
 
 export interface V1InvitationListResponse {
   invitations?: V1Invitation[];
+}
+
+export interface V1ListAccountsRequest {
+  workspaceId?: string;
+  provider?: string;
+}
+
+export interface V1ListAccountsResponse {
+  accounts?: V1ProviderAccount[];
 }
 
 export interface V1Organization {
@@ -127,8 +146,22 @@ export interface V1OrganizationResponse {
   organization?: V1Organization;
 }
 
+export interface V1ProviderAccount {
+  name?: string;
+  id?: string;
+  test?: boolean;
+  currency?: string;
+}
+
 export interface V1RefreshRequest {
   refreshToken?: string;
+}
+
+export interface V1SelectAccountRequest {
+  workspaceConnectorId?: string;
+  accountId?: string;
+  accountName?: string;
+  isTestAccount?: boolean;
 }
 
 export interface V1SignInRequest {
@@ -203,6 +236,8 @@ export interface V1WorkspaceConnector {
   workspaceId?: string;
   name?: string;
   status?: string;
+  authScheme?: V1AuthType;
+  accountConfig?: V1ProviderAccount;
 
   /** @format date-time */
   expiresIn?: string;
@@ -394,6 +429,40 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     octopusServiceConnectWithCode: (body: V1ConnectWithCodeRequest, params: RequestParams = {}) =>
       this.request<V1WorkspaceConnector, GoogleRpcStatus>({
         path: `/v1/connector/connect/oauth`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags OctopusService
+     * @name OctopusServiceListAccounts
+     * @request POST:/v1/connectors/accounts
+     */
+    octopusServiceListAccounts: (body: V1ListAccountsRequest, params: RequestParams = {}) =>
+      this.request<V1ListAccountsResponse, GoogleRpcStatus>({
+        path: `/v1/connectors/accounts`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags OctopusService
+     * @name OctopusServiceSelectAccount
+     * @request POST:/v1/connectors/accounts/setup
+     */
+    octopusServiceSelectAccount: (body: V1SelectAccountRequest, params: RequestParams = {}) =>
+      this.request<V1WorkspaceConnector, GoogleRpcStatus>({
+        path: `/v1/connectors/accounts/setup`,
         method: "POST",
         body: body,
         type: ContentType.Json,

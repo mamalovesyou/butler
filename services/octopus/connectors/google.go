@@ -2,7 +2,6 @@ package connectors
 
 import (
 	"context"
-	"fmt"
 
 	"github.com/butlerhq/butler/api/services/octopus/v1"
 
@@ -45,24 +44,28 @@ func (gc *GoogleConnector) SVGIcon() string {
 }
 
 func (gc *GoogleConnector) AuthURL() string {
-	return gc.config.AuthCodeURL("")
+	return gc.config.AuthCodeURL("", oauth2.AccessTypeOffline, oauth2.ApprovalForce)
 }
 
 func (gc *GoogleConnector) ExchangeCode(ctx context.Context, code string) (*oauth2.Token, error) {
-	token, err := gc.config.Exchange(ctx, code, oauth2.AccessTypeOffline)
+	token, err := gc.config.Exchange(ctx, code, oauth2.AccessTypeOffline, oauth2.ApprovalForce)
 	if err != nil {
 		return nil, err
 	}
 	return token, nil
 }
 
+func (gc *GoogleConnector) ListAccounts(ctx context.Context, secrets *models.ConnectorSecrets) (*octopus.ListAccountsResponse, error) {
+	// TODO: replace with temporalio workflow
+	return &octopus.ListAccountsResponse{}, nil
+}
+
 func (gc *GoogleConnector) ToPb() *octopus.CatalogConnector {
-	authTypeInt := octopus.CatalogConnector_AuthType_value[string(gc.AuthScheme())]
-	fmt.Printf("Connector scheme int: %s", string(authTypeInt))
+	authTypeInt := octopus.AuthType_value[string(gc.AuthScheme())]
 	return &octopus.CatalogConnector{
 		Name:     gc.Name(),
 		AuthUrl:  gc.AuthURL(),
-		AuthType: octopus.CatalogConnector_AuthType(authTypeInt),
+		AuthType: octopus.AuthType(authTypeInt),
 		IconSvg:  gc.SVGIcon(),
 	}
 }

@@ -15,6 +15,7 @@ import { Menu as MenuIcon } from '../../icons/menu';
 import { UserAvatar } from '../user-avatar';
 import { useAuth } from '../../hooks/use-auth';
 import { AccountPopover } from './account-popover';
+import {DASHBOARD_NAVBAR_HEIGHT, DASHBOARD_SIDEBAR_WIDTH} from "../../theme/constants";
 
 interface DashboardNavbarProps extends AppBarProps {
   onOpenSidebar?: () => void;
@@ -84,10 +85,10 @@ export const DashboardNavbar: FC<DashboardNavbarProps> = (props) => {
       <DashboardNavbarRoot
         sx={{
           left: {
-            lg: 280
+            lg: DASHBOARD_SIDEBAR_WIDTH
           },
           width: {
-            lg: 'calc(100% - 280px)'
+            lg: `calc(100% - ${DASHBOARD_SIDEBAR_WIDTH}px)`
           }
         }}
         {...other}
@@ -95,7 +96,7 @@ export const DashboardNavbar: FC<DashboardNavbarProps> = (props) => {
         <Toolbar
           disableGutters
           sx={{
-            minHeight: 64,
+            minHeight: DASHBOARD_NAVBAR_HEIGHT,
             left: 0,
             px: 2
           }}
