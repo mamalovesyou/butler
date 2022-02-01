@@ -4,7 +4,8 @@ variable "prefix" {
 }
 
 variable "cluster_name" {
-  description = "EKS Cluster name"
+  description = "Name of the EKS cluster. Also used as a prefix in names of related resources"
+  type        = string
 }
 
 variable "private_subnets" {
@@ -15,4 +16,9 @@ variable "private_subnets" {
 variable "vpc_id" {
   type        = string
   description = "VPC ID"
+}
+
+variable "assume_developer_role" {
+  description = "A list of ARN's of users/roles that can assume the cluster_admin role"
+  type        = list(string)
 }

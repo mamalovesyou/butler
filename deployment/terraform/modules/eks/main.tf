@@ -30,6 +30,7 @@ module "eks" {
   ]
 
   manage_aws_auth = true
+  map_roles       = local.role_map_obj
   enable_irsa     = true
 }
 

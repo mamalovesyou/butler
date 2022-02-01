@@ -11,10 +11,11 @@ module "network" {
 module "eks_cluster" {
   source = "./modules/eks"
 
-  cluster_name    = local.cluster_name
-  prefix          = var.prefix
-  vpc_id          = module.network.vpc_id
-  private_subnets = module.network.private_subnets
+  cluster_name          = local.cluster_name
+  prefix                = var.prefix
+  vpc_id                = module.network.vpc_id
+  private_subnets       = module.network.private_subnets
+  assume_developer_role = var.assume_developer_role
 }
 
 module "users_db" {
