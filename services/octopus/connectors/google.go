@@ -2,13 +2,6 @@ package connectors
 
 import (
 	"context"
-	"fmt"
-
-	"github.com/butlerhq/butler/internal/logger"
-	"go.uber.org/zap"
-
-	"github.com/butlerhq/google-ads-go/ads"
-	"github.com/butlerhq/google-ads-go/services"
 
 	"github.com/butlerhq/butler/api/services/octopus/v1"
 
@@ -63,46 +56,8 @@ func (gc *GoogleConnector) ExchangeCode(ctx context.Context, code string) (*oaut
 }
 
 func (gc *GoogleConnector) ListAccounts(ctx context.Context, secrets *models.ConnectorSecrets) (*octopus.ListAccountsResponse, error) {
-
-	client, err := ads.NewClient(&ads.GoogleAdsClientParams{
-		ClientID:     gc.config.ClientID,
-		ClientSecret: gc.config.ClientSecret,
-		RefreshToken: secrets.RefreshToken,
-	})
-
-	if err != nil {
-		panic(err)
-	}
-
-	customerService := services.NewCustomerServiceClient(client.Conn())
-	response, err := customerService.ListAccessibleCustomers(client.Context(), &services.ListAccessibleCustomersRequest{})
-	if err != nil {
-		logger.Error(ctx, "Unable to list accessible customers", zap.Error(err), zap.String("provider", gc.Name()))
-		return &octopus.ListAccountsResponse{}, err
-	}
-
-	result := make([]*octopus.ProviderAccount, len(response.ResourceNames))
-	for i, name := range response.ResourceNames {
-		customer, err := customerService.GetCustomer(client.Context(), &services.GetCustomerRequest{
-			ResourceName: name,
-		})
-
-		if err != nil {
-			logger.Error(ctx, "Unable to retrieve account", zap.Error(err), zap.String("provider", gc.Name()))
-			continue
-		}
-
-		result[i] = &octopus.ProviderAccount{
-			Name:     *customer.DescriptiveName,
-			Id:       fmt.Sprintf("%d", customer.Id),
-			Test:     *customer.TestAccount,
-			Currency: *customer.CurrencyCode,
-		}
-	}
-
-	return &octopus.ListAccountsResponse{
-		Accounts: result,
-	}, nil
+	// TODO: replace with temporalio workflow
+	return &octopus.ListAccountsResponse{}, nil
 }
 
 func (gc *GoogleConnector) ToPb() *octopus.CatalogConnector {
