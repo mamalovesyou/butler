@@ -46,7 +46,7 @@ func (client *LinkedinClient) ListAccounts() (*ListAccounts, error) {
 	var bearer = "Bearer " + client.accessToken
 	//fmt.Println("Using auth header", bearer)
 	url := apiRoot + "/" + apiAccounts + "?q=search&search=(type:(values:List(BUSINESS)),status:(values:List(ACTIVE,CANCELED)))"
-	fmt.Println("using url", url)
+
 	// Create a new request using http
 	req, err := http.NewRequest("GET", url, nil)
 
