@@ -11,6 +11,10 @@ variable "prefix" {
 variable "assume_developer_role" {
   description = "A list of ARN's of users/roles that can assume the cluster_admin role"
   type        = list(string)
+  default = [
+    "arn:aws:iam::135314574862:user/github-ci",
+    "arn:aws:iam::135314574862:user/matthieu"
+  ]
 }
 
 variable "users_db_name" {
