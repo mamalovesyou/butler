@@ -41,6 +41,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
+#      - name: Configure AWS Credentials
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          role-skip-session-tagging: true
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          role-to-assume: ${{ secrets.EKS_ADMIN_ROLE }}
+#          role-duration-seconds: 3000
+#          aws-region: us-east-2
+
       - name: Terraform Init
         uses: hashicorp/setup-terraform@v1
         with:
@@ -82,70 +92,70 @@ jobs:
           echo "::set-output name=users_db_address::$USERS_DB_ADDR"
           echo "::set-output name=cert_manager_irsa_role_arn::$CERT_MANAGER_IRSA_ROLE"
 
-  deploy:
-    needs: terraform
-    name: Deploy
-    runs-on: ubuntu-latest
-    env:
-      KUBECONFIG: "/etc/eks/config"
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
-
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ${{ secrets.AWS_REGION }}
-
-      - name: Install Helm
-        run: |
-          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
-
-      - name: Setup Kube config
-        run: |
-          mkdir -p /etc/k8s/
-          echo ${{ needs.terraform.outputs.kubeconfig }} | base64 -d > $KUBECONFIG
-
-      - name: Install ingress-nginx
-        id: ingress-nginx
-        run: |
-          helm upgrade ingress-nginx ingress-nginx/ingress-nginx --install \
-            --create-namespace --namespace="ingress-nginx" --wait
-
-      - name: Install cert-manager
-        id: cert-manager
-        run: |
-          helm upgrade cert-manager jetstack/cert-manager \
-            --install \
-            --namespace cert-manager \
-            --create-namespace \
-            --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"=${{ needs.terraform.outputs.cert_manager_irsa_role_arn }} \
-            --set installCRDs=true \
-            --set securityContext.enabled=true \
-            --set securityContext.fsGroup=1001 \
-            --wait
-
-      - name: Install butler
-        id: butler-services
-        env:
-          RELEASE_VERSION: ${{ needs.version.outputs.version }}
-          USERS_DB_HOST: ${{ needs.terraform.outputs.cert_manager_irsa_role_arn }}
-          USERS_DB_NAME: ${{ secrets.USERS_DB_NAME }}
-          USERS_DB_USER: ${{ secrets.USERS_DB_USER }}
-          USERS_DB_PASSWORD: ${{ secrets.USERS_DB_PASSWORD }}
-          USERS_JWT_SECRET: ${{ secrets.USERS_JWT_SECRET }}
-          HOSTED_ZONE_ID: ${{ secrets.HOSTED_ZONE_ID }}
-          ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
-        run: |
-          helm upgrade butler ../helm/services --install \
-            --set image.tag=$RELEASE_VERSION \
-            --set image.repository=$ECR_REGISTRY \
-            --set certManager.route53.hostedZoneID=$HOSTED_ZONE_ID \
-            --set services.users.postgres.host=$USERS_DB_HOST \
-            --set services.users.postgres.name=$USERS_DB_NAME \
-            --set services.users.postgres.user=$USERS_DB_USER \
-            --set services.users.postgres.password=$USERS_DB_PASSWORD \
-            --set services.users.jwtSecret=$USERS_JWT_SECRET \
-            --wait
+#  deploy:
+#    needs: terraform
+#    name: Deploy
+#    runs-on: ubuntu-latest
+#    env:
+#      KUBECONFIG: "/etc/eks/config"
+#    steps:
+#      - name: Checkout
+#        uses: actions/checkout@v2
+#
+#      - name: Configure AWS credentials
+#        uses: aws-actions/configure-aws-credentials@v1
+#        with:
+#          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+#          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+#          aws-region: ${{ secrets.AWS_REGION }}
+#
+#      - name: Install Helm
+#        run: |
+#          curl https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 | bash
+#
+#      - name: Setup Kube config
+#        run: |
+#          mkdir -p /etc/k8s/
+#          echo ${{ needs.terraform.outputs.kubeconfig }} | base64 -d > $KUBECONFIG
+#
+#      - name: Install ingress-nginx
+#        id: ingress-nginx
+#        run: |
+#          helm upgrade ingress-nginx ingress-nginx/ingress-nginx --install \
+#            --create-namespace --namespace="ingress-nginx" --wait
+#
+#      - name: Install cert-manager
+#        id: cert-manager
+#        run: |
+#          helm upgrade cert-manager jetstack/cert-manager \
+#            --install \
+#            --namespace cert-manager \
+#            --create-namespace \
+#            --set serviceAccount.annotations."eks\.amazonaws\.com/role-arn"=${{ needs.terraform.outputs.cert_manager_irsa_role_arn }} \
+#            --set installCRDs=true \
+#            --set securityContext.enabled=true \
+#            --set securityContext.fsGroup=1001 \
+#            --wait
+#
+#      - name: Install butler
+#        id: butler-services
+#        env:
+#          RELEASE_VERSION: ${{ needs.version.outputs.version }}
+#          USERS_DB_HOST: ${{ needs.terraform.outputs.cert_manager_irsa_role_arn }}
+#          USERS_DB_NAME: ${{ secrets.USERS_DB_NAME }}
+#          USERS_DB_USER: ${{ secrets.USERS_DB_USER }}
+#          USERS_DB_PASSWORD: ${{ secrets.USERS_DB_PASSWORD }}
+#          USERS_JWT_SECRET: ${{ secrets.USERS_JWT_SECRET }}
+#          HOSTED_ZONE_ID: ${{ secrets.HOSTED_ZONE_ID }}
+#          ECR_REGISTRY: ${{ secrets.AWS_ECR_REGISTRY }}
+#        run: |
+#          helm upgrade butler ../helm/services --install \
+#            --set image.tag=$RELEASE_VERSION \
+#            --set image.repository=$ECR_REGISTRY \
+#            --set certManager.route53.hostedZoneID=$HOSTED_ZONE_ID \
+#            --set services.users.postgres.host=$USERS_DB_HOST \
+#            --set services.users.postgres.name=$USERS_DB_NAME \
+#            --set services.users.postgres.user=$USERS_DB_USER \
+#            --set services.users.postgres.password=$USERS_DB_PASSWORD \
+#            --set services.users.jwtSecret=$USERS_JWT_SECRET \
+#            --wait
