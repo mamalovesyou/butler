@@ -3,6 +3,8 @@ package victorinox
 import (
 	"context"
 	"embed"
+	"errors"
+	"fmt"
 	"sort"
 	"strings"
 	"time"
@@ -25,22 +27,29 @@ var (
 	}
 )
 
-type GooseMigrations struct {
-	migrationMap map[string]embed.FS
-	postgres     *postgres.Config
+type PostgresMigrationsPair struct {
+	Migreations    embed.FS
+	PostgresConfig *postgres.Config
 }
 
+type GooseMigrations map[string]*PostgresMigrationsPair
+
 func NewGooseMigrations(config *VictorioxConfig) *GooseMigrations {
-	migrationMap := make(map[string]embed.FS)
+	migrations := make(GooseMigrations)
 
 	// Adding user service migration
-	migrationMap[UsersMigrationName] = users.EmbedMigrations
-	migrationMap[OctopusMigrationName] = octopus.EmbedMigrations
-
-	return &GooseMigrations{
-		migrationMap: migrationMap,
-		postgres:     &config.Postgres,
+	migrations[UsersMigrationName] = &PostgresMigrationsPair{
+		Migreations:    users.EmbedMigrations,
+		PostgresConfig: &config.Services.Users,
 	}
+
+	// Adding octopus service migration
+	migrations[OctopusMigrationName] = &PostgresMigrationsPair{
+		Migreations:    octopus.EmbedMigrations,
+		PostgresConfig: &config.Services.Octopus,
+	}
+
+	return &migrations
 }
 
 func IsSupportedGooseCmd(cmd string) bool {
@@ -49,23 +58,33 @@ func IsSupportedGooseCmd(cmd string) bool {
 	return i < len(AllowedCommands) && AllowedCommands[i] == cmd
 }
 
-func (m *GooseMigrations) RunGooseMigration(ctx context.Context, name, cmd string, args ...string) error {
-	name = strings.TrimSpace(name)
-	logger.Infof(ctx, "Applying migrations %s", name)
+func (m *GooseMigrations) RunGooseMigrationForAllServices(ctx context.Context, cmd string, args ...string) error {
+	for service, _ := range *m {
+		if err := m.RunGooseMigrationForService(ctx, service, cmd, args...); err != nil {
+			logger.Fatal(ctx, "Failed to run migrations", zap.Error(err), zap.String("service", service))
+		}
+	}
+	return nil
+}
 
-	// Initialize DB connection
-	pg := postgres.NewPostgresGorm(m.postgres)
-	if err := pg.ConnectLoop(5 * time.Second); err != nil {
-		logger.Fatal(ctx, "Cannot connect to postgres.", zap.Error(err))
+func (m *GooseMigrations) RunGooseMigrationForService(ctx context.Context, service, cmd string, args ...string) error {
+	service = strings.TrimSpace(service)
+	config, exists := (*m)[service]
+	if !exists {
+		logger.Fatal(ctx, "Unknown service", zap.String("service", service))
+		return errors.New(fmt.Sprintf("Unknown service: %s", service))
 	}
 
-	if embedded, ok := m.migrationMap[name]; ok {
-		goose.SetBaseFS(embedded)
-		if err := goose.Run(cmd, pg.SqlDB, "migrations", args...); err != nil {
-			logger.Fatalf(ctx, "Goose %v: %v", cmd, err)
-		}
-	} else {
-		logger.Fatalf(ctx, "Embeded migrations %s not found", name)
+	logger.Infof(ctx, "Applying migrations %s", service)
+	// Initialize DB connection
+	pg := postgres.NewPostgresGorm(config.PostgresConfig)
+	if err := pg.ConnectLoop(5 * time.Second); err != nil {
+		logger.Fatal(ctx, "Cannot connect to postgres.", zap.Error(err), zap.String("service", service))
+	}
+
+	goose.SetBaseFS(config.Migreations)
+	if err := goose.Run(cmd, pg.SqlDB, "migrations", args...); err != nil {
+		logger.Fatalf(ctx, "Goose %v: %v", cmd, err)
 	}
 
 	return nil

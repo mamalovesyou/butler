@@ -82,6 +82,14 @@ open-api:
     	--openapiv2_out=openapi_naming_strategy=fqn,allow_merge=true,merge_file_name=$(OPEN_API_NAME),logtostderr=true:$(OPEN_API_OUT) \
     	$(PROTO_FILES)
 
+##### Migrations #####
+fix-migrations:
+	@echo "Fixing migrations"
+	@for NAME in $(sort $(dir $(wildcard $(CURDIR)/services/*/migrations/.))); do \
+  		echo "Fixing $${NAME}"; \
+  		cd $${NAME} && goose fix && echo "All migrations looks good ✅" || (echo "Unable to fix migrations ❌"; exit 1);  \
+  	done
+
 ##### Binaries #####
 tools: clean-tools-bins butler-victorinox
 services: clean-services-bins butler-users butler-octopus butler-gateway
@@ -198,29 +206,36 @@ tidy: ## Clean go.mod dependencies
 
 dev.infra: ## Start dev environment with docker
 	@echo "Starting dev infra..."
-	@$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans postgres redis
+	@$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.infra.yml up --build postgres redis minio
+
+dev.airbyte: ## Start airbyte
+	@echo "Starting airbyte..."
+	@$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/airbyte/docker-compose.yml --env-file $(DOCKER_COMPOSE)/airbyte/.env.dev up
 
 dev.migrate: ## Provision databases
 	@echo "Starting victorinox..."
-	@$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans victorinox
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.services.yml up --build victorinox
 
 
 dev.services: ## Start services with docker in dev environment
 	@echo "Starting dev env..."
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans users octopus gateway
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.services.yml up --build users octopus gateway
 
 
 dev.monitor: ## Start monitor dev evironment with docker
 	@echo "Starting monitoring dev env..."
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans pgadmin
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.yml up --build pgadmin
 
 dev.clean: ## Clean docker dev evironment
 	@echo "Cleaning dev env..."
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml rm -f
-	@echo "Cleaning monitor dev env..."
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.dev.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.dev.yml rm -f
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/airbyte/docker-compose.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/airbyte/docker-compose.yml rm -f
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.services.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.services.yml rm -f
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.yml rm -f
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.infra.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.infra.yml rm -f
 
 
 ########################

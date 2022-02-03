@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS connector_configs (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     connector_id UUID NOT NULL,
     account_id VARCHAR(255) NOT NULL,
-    account_name VARCH AR(255) NOT NULL,
+    account_name VARCHAR(255) NOT NULL,
     currency VARCHAR(255) DEFAULT NULL,
     is_test BOOLEAN DEFAULT FALSE NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
