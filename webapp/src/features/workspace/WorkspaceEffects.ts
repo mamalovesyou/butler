@@ -23,17 +23,26 @@ export function* onCreateOrganizationRequest() {
           yield Api.v1.usersServiceCreateOrganization(payload);
         yield put(Actions.createOrganizationSuccess(response.data));
 
-        // Next step if this is onboarding page
-        const location: Location = yield select(useLocation);
-        if (location.pathname === ONBOARDING_ROOT_PATH) {
-          yield put(setOnboardingStep(OnboardingStep.CREATE_WORKSPACE));
-        }
+
       } catch (error) {
         console.log(error)
         const rpcError: GoogleRpcStatus = error.response.data;
         yield put(Actions.createOrganizationFailure(rpcError));
       }
     }
+  );
+}
+
+export function* onCreateOrganizationSuccess() {
+  yield takeEvery(
+      ActionTypes.CREATE_ORGANIZATION_SUCCESS,
+      function* () {
+        // Next step if this is onboarding page
+        const location: Location = yield select(useLocation);
+        if (location.pathname === ONBOARDING_ROOT_PATH) {
+          yield put(setOnboardingStep(OnboardingStep.CREATE_WORKSPACE));
+        }
+      }
   );
 }
 
@@ -72,6 +81,19 @@ export function* onCreateWorkspaceRequest() {
   );
 }
 
+export function* onCreateWorkspaceSuccess() {
+  yield takeEvery(
+      ActionTypes.CREATE_WORKSPACE_SUCCESS,
+      function* () {
+        // Next step if this is onboarding page
+        const location: Location = yield select(useLocation);
+        if (location.pathname === ONBOARDING_ROOT_PATH) {
+          yield put(setOnboardingStep(OnboardingStep.CONNECT_DATA_SOURCE));
+        }
+      }
+  );
+}
+
 export function* onGetOrganizationRequest() {
   yield takeEvery(
       ActionTypes.GET_ORGANIZATION_REQUEST,
@@ -102,6 +124,8 @@ export const workspaceEffects = [
   fork(onCreateOrganizationRequest),
   fork(onGetOrganizationRequest),
   fork(onGetOrganizationFailure),
+  fork(onCreateOrganizationSuccess),
+  fork(onCreateWorkspaceSuccess),
   fork(onListOrganizationsRequest),
   fork(onCreateWorkspaceRequest),
 ];

@@ -15,9 +15,10 @@ type WorkspaceUsecase struct {
 	EmailClient      *sendgrid.EmailClient
 	DB               *gorm.DB
 	WebAppBaseURL    string
+	AirbyteServerURL string
 }
 
-func NewWorkspaceUsecase(db *gorm.DB, sendgridAPIKey, webAppBaseURL string) *WorkspaceUsecase {
+func NewWorkspaceUsecase(db *gorm.DB, sendgridAPIKey, webAppBaseURL, airbyteServerUrl string) *WorkspaceUsecase {
 	return &WorkspaceUsecase{
 		OrganizationRepo: repositories.NewOrganizationRepo(db),
 		WorkspaceRepo:    repositories.NewWorkspaceRepo(db),
@@ -25,6 +26,7 @@ func NewWorkspaceUsecase(db *gorm.DB, sendgridAPIKey, webAppBaseURL string) *Wor
 		EmailClient:      sendgrid.NewEmailClient(sendgridAPIKey),
 		DB:               db,
 		WebAppBaseURL:    webAppBaseURL,
+		AirbyteServerURL: airbyteServerUrl,
 	}
 }
 

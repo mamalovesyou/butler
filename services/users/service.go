@@ -24,7 +24,7 @@ type UsersService struct {
 func NewUsersService(config *ServiceConfig, db *gorm.DB, rdb *redis.Client) *UsersService {
 	jwtManager := jwt.NewJWTManager(config.JWTSecret)
 	return &UsersService{
-		WorkspaceUsecase:  workspace.NewWorkspaceUsecase(db, config.SendgridAPIKey, config.WebappBaseURL),
+		WorkspaceUsecase:  workspace.NewWorkspaceUsecase(db, config.SendgridAPIKey, config.WebappBaseURL, config.AirbyteServerURL),
 		UserUsecase:       user.NewUserUsecase(db, rdb, jwtManager),
 		PermissionUseCase: permissions.NewPermissionsUsecase(db, rdb, jwtManager),
 	}

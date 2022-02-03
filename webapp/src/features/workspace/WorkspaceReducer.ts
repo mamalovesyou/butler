@@ -4,18 +4,20 @@ import * as ActionType from './WorkspaceActions.types';
 import * as OnboardingActionType from '../onboarding/OnboardingAction.types';
 
 export type WorkspaceStateType = {
+    attempts: number;
     loading: boolean;
     organizationId: string;
     workspaceId: string;
-    organizations: Record<string, V1Organization>;
+    organizations: V1Organization[];
     organization: V1Organization;
 };
 
 const initialWorkspaceState: WorkspaceStateType = {
+    attempts: 0,
     loading: false,
     organizationId: null,
     workspaceId: null,
-    organizations: {},
+    organizations: [],
     organization: null
 };
 
@@ -26,7 +28,7 @@ const authReducer = (
     switch (action.type) {
         case ActionType.LIST_ORGANIZATIONS_REQUEST:
         case ActionType.GET_ORGANIZATION_REQUEST:
-            return { ...state, loading: true };
+            return { ...state, loading: true, attempts: state.attempts + 1 };
 
         case ActionType.LIST_ORGANIZATIONS_SUCCESS:
             return {
@@ -34,7 +36,8 @@ const authReducer = (
                 loading: false,
                 organizationId: action.payload.organizations[0]?.id || null,
                 workspaceId: action.payload.organizations[0]?.workspaces[0]?.id || null,
-                organizations: ArrayToObject(action.payload.organizations, 'id')
+                organizations: action.payload.organizations,
+                organization: state.organization ?? action.payload.organizations[0],
             };
 
         case ActionType.GET_ORGANIZATION_SUCCESS:
@@ -60,7 +63,8 @@ const authReducer = (
                 organizations: {
                     ...state.organizations,
                     [action.payload.organization.id]: action.payload.organization
-                }
+                },
+                organization: action.payload.organization
             };
 
         case OnboardingActionType.COMPLETE_ONBOARDING_SUCCESS:

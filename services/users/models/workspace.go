@@ -13,6 +13,7 @@ type Workspace struct {
 	OrganizationID     uuid.UUID
 	UserMembers        []WorkspaceMember `gorm:"foreignKey:WorkspaceID"`
 	PendingInvitations []Invitation      `gorm:"foreignKey:WorkspaceID"`
+	AirbyteWorkspaceID string
 }
 
 func (u *Workspace) TableName() string {

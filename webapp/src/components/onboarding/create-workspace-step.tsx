@@ -47,8 +47,6 @@ export const CreateWorkspaceStep: FC<CreateWorkspaceStepProps> = (props) => {
           }
         })
       );
-
-      // TODO: Display errors
     }
   });
 
