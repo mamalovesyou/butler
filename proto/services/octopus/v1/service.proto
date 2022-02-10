@@ -8,11 +8,6 @@ import "services/octopus/v1/requests.proto";
 import "services/octopus/v1/responses.proto";
 
 service OctopusService {
-  rpc GetCatalogConnectors(google.protobuf.Empty) returns (CatalogConnectorList) {
-    option (google.api.http) = {
-      get: "/v1/connector/catalog"
-    };
-  }
   rpc ListWorkspaceConnectors(WorkspaceConnectorsRequest) returns (WorkspaceConnectorList) {
     option (google.api.http) = {
       post: "/v1/connector"
@@ -26,16 +21,9 @@ service OctopusService {
     };
   }
 
-  rpc ListAccounts(ListAccountsRequest) returns (ListAccountsResponse) {
-    option (google.api.http) = {
-      post: "/v1/connectors/accounts"
-      body: "*"
-    };
-  }
-
   rpc SelectAccount(SelectAccountRequest) returns (WorkspaceConnector) {
     option (google.api.http) = {
-      post: "/v1/connectors/accounts/setup"
+      post: "/v1/data-sources/accounts/setup"
       body: "*"
     };
   }

@@ -6,6 +6,7 @@ import (
 )
 
 var (
-	ErrInternal     = status.Error(codes.Internal, "Internal error")
-	ErrInvalidGrant = status.Error(codes.Unauthenticated, "Invalid grant")
+	ErrInternal         = status.Error(codes.Internal, "Internal error")
+	ErrInvalidArguments = status.Error(codes.InvalidArgument, "Invalid arguments")
+	ErrInvalidGrant     = status.Error(codes.Unauthenticated, "Invalid grant")
 )

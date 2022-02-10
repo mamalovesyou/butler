@@ -25,3 +25,11 @@ export const getInitials = (name = ""): string =>
     .slice(0, 2)
     .map((v) => v && v[0].toUpperCase())
     .join("");
+
+
+export const labelize = (name: string): string => {
+  const acronyms: string[] = ['id', 'url', 'uri', 'json', 'api']
+  let result = name.toLowerCase().replace("_", " ")
+  acronyms.map((acronym) => { result = result.replace(acronym, acronym.toUpperCase())})
+  return result.replace(/(^|\s)\S/g, function(t) { return t.toUpperCase() });
+}

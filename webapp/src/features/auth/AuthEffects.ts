@@ -1,4 +1,4 @@
-import {takeEvery, put, fork, call} from 'redux-saga/effects';
+import {takeEvery, put, fork, call, select} from 'redux-saga/effects';
 import * as ActionTypes from './AuthAction.types';
 import * as Actions from './AuthActions';
 import * as WorkspaceActions from '../workspace/WorkspaceActions';
@@ -28,10 +28,8 @@ export function* onLoginRequest() {
                     yield Api.v1.usersServiceSignIn(payload);
                 yield put(Actions.loginSuccess(response.data));
                 yield call(addAuthorization, response.data.accessToken);
-
                 // Load organizations
                 yield put(WorkspaceActions.listOrganizationsRequest());
-                yield put(push(DASHBOARD_ROOT_PATH));
             } catch (error) {
                 const rpcError: GoogleRpcStatus = error?.response?.data || {
                     code: 0,

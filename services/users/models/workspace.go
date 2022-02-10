@@ -23,12 +23,13 @@ func (u *Workspace) TableName() string {
 // ToPb return the workspace.UserMembers of a OrganizationMember
 func (w *Workspace) ToPb() *users.Workspace {
 	pb := &users.Workspace{
-		Id:             w.ID.String(),
-		OrganizationId: w.OrganizationID.String(),
-		Description:    w.Description,
-		Name:           w.Name,
-		CreatedAt:      timestamppb.New(w.CreatedAt),
-		UpdatedAt:      timestamppb.New(w.UpdatedAt),
+		Id:                 w.ID.String(),
+		OrganizationId:     w.OrganizationID.String(),
+		Description:        w.Description,
+		Name:               w.Name,
+		AirbyteWorkspaceId: w.AirbyteWorkspaceID,
+		CreatedAt:          timestamppb.New(w.CreatedAt),
+		UpdatedAt:          timestamppb.New(w.UpdatedAt),
 	}
 
 	members := make([]*users.UserMember, len(w.UserMembers))

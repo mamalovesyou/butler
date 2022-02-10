@@ -13,19 +13,18 @@ END IF;
 END
 $$;
 
-CREATE TABLE IF NOT EXISTS workspace_connectors (
+CREATE TABLE IF NOT EXISTS connectors (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     workspace_id UUID NOT NULL,
     provider VARCHAR(255) NOT NULL,
     auth_scheme auth_scheme_enum NOT NULL,
-    expires_in TIMESTAMP WITH TIME ZONE,
     created_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE DEFAULT now() NOT NULL,
     deleted_at TIMESTAMP WITH TIME ZONE DEFAULT NULL
                              );
 
-CREATE INDEX IF NOT EXISTS connectors_workspace_idx ON workspace_connectors(workspace_id);
-CREATE UNIQUE INDEX connectors_workspace_provider_idx ON workspace_connectors(workspace_id, provider);
+CREATE INDEX IF NOT EXISTS connectors_idx ON connectors(workspace_id);
+CREATE UNIQUE INDEX connectors_provider_idx ON connectors(workspace_id, provider);
 
 CREATE TABLE IF NOT EXISTS connector_secrets (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
@@ -41,12 +40,12 @@ CREATE UNIQUE INDEX IF NOT EXISTS connector_secrets_connector_idx ON connector_s
 
 -- +goose Down
 -- +goose StatementBegin
-DROP INDEX IF EXISTS connectors_workspace_provider_idx;
-DROP INDEX IF EXISTS connectors_workspace_idx;
+DROP INDEX IF EXISTS connectors_provider_idx;
+DROP INDEX IF EXISTS connectors_idx;
 DROP INDEX IF EXISTS connector_secrets_connector_idx;
 
 DROP TABLE IF EXISTS connectors_secrets;
-DROP TABLE IF EXISTS workspace_connectors;
+DROP TABLE IF EXISTS onnectors;
 
 DROP TYPE auth_scheme_enum;
 -- +goose StatementEnd

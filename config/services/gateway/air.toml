@@ -20,7 +20,7 @@ include_ext = ["go", "tpl", "tmpl", "yaml", "yml"]
 exclude_dir = []
 
 # Watch these directories if you specified.
-include_dir = ["/butler/api", "/butler/internal", "/butler/services/gateway", "/butler/cmd/gateway", "/config"]
+include_dir = ["butler/api", "butler/integrations", "butler/internal", "butler/services/gateway", "butler/cmd/gateway", "config"]
 
 # Exclude files.
 exclude_file = []

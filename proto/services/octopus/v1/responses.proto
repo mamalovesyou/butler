@@ -4,21 +4,11 @@ package v1;
 
 import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
+import "google/protobuf/struct.proto";
 
 enum AuthType {
   OAUTH2 = 0;
   API_KEY = 1;
-}
-
-message CatalogConnector {
-  string name = 1;
-  string iconSvg = 2;
-  AuthType authType = 3;
-  string authUrl = 4;
-}
-
-message CatalogConnectorList {
-  repeated CatalogConnector connectors = 1;
 }
 
 message WorkspaceConnectorList {
@@ -49,7 +39,7 @@ message ListAccountsResponse {
 }
 
 message ConnectorSecret {
-  map<string, string> value = 1;
+  google.protobuf.Struct value = 1;
 }
 
 message ConnectorSecretPair {

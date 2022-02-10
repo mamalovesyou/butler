@@ -16,16 +16,12 @@ export const OnboardingGuard: FC<OnboardingGuardProps> = (props) => {
     const {organization, organizations, attempts} = useWorkspace();
 
     useEffect(() => {
-
         const redirectOnboarding = (organization && !organization.onboarded)
             || (attempts > 0 && organizations.length === 0)
-
         if (redirectOnboarding) {
             dispatch(push(ONBOARDING_ROOT_PATH));
-        } else if (organization && organization.onboarded) {
-            dispatch(push(ANALYTICS_ROOT_PATH));
         }
-    }, [organization, organizations, attempts]);
+    }, [organization, organizations]);
 
     return <>{children}</>;
 };

@@ -31,10 +31,11 @@ message Workspace {
   string name = 2;
   string description = 3;
   string organization_id = 4;
-  repeated UserMember members = 5;
-  repeated Invitation invitations = 6;
-  google.protobuf.Timestamp created_at = 7;
-  google.protobuf.Timestamp updated_at = 8;
+  string airbyteWorkspaceId = 5;
+  repeated UserMember members = 6;
+  repeated Invitation invitations = 7;
+  google.protobuf.Timestamp created_at = 8;
+  google.protobuf.Timestamp updated_at = 9;
 }
 
 message UserMember {

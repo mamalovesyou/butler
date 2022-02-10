@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/butlerhq/airbyte-client-go v1.0.0
 	github.com/caarlos0/env/v6 v6.9.1
+	github.com/cenkalti/backoff/v4 v4.1.2
 	github.com/cosmtrek/air v1.27.10
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/envoyproxy/protoc-gen-validate v0.6.3

@@ -8,7 +8,7 @@ import (
 type ConnectorConfig struct {
 	BaseModel
 	ConnectorID uuid.UUID
-	Connector   WorkspaceConnector `gorm:"foreignKey:ConnectorID"`
+	Connector   Connector `gorm:"foreignKey:ConnectorID"`
 	AccountID   string
 	AccountName string
 	IsTest      bool

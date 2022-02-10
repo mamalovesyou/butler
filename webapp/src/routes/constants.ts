@@ -19,8 +19,10 @@ export const ORGANIZATION_TEAM_PATH = "team";
 export const ORGANIZATION_WORKSPACES_PATH = "workspaces";
 export const ORGANIZATION_WORKSPACES_DETAIL_PATH = "workspaces/:workspaceId";
 
-// Data sources
-export const DATA_SOURCES_ROOT_PATH = "data-sources";
+// Data data-sources
+export const DATA_SOURCES_ROOT_PATH = "/data-sources";
+export const CONNECTORS_DETAIL_PATH = "/data-sources/:connectorId";
+
 export const ONBOARDING_ROOT_PATH = "/onboarding";
 
 // Campaigns

@@ -19,8 +19,9 @@ import { Check as CheckIcon } from "../icons/check";
 import { useAuth } from "../hooks/use-auth";
 import { OnboardingStep, setOnboardingStep } from "../features/onboarding";
 import { ConnectDataSourceStep } from "../components/onboarding/connect-data-source-step";
-import { listCatalogConnectorsRequest, listWorkspaceConnectorsRequest } from "../features/connectors";
+import { listWorkspaceConnectorsRequest } from "../features/connectors";
 import OnboardingLeftPannel from "../components/onboarding/onboarding-left-pannel";
+import {listAvailableSourcesRequest} from "../features/data-sources";
 
 const StepIcon: React.FC<StepIconProps> = (props) => {
   const { active, completed, icon } = props;
@@ -51,8 +52,8 @@ const Onboarding: React.FC = () => {
   useEffect(() => {
     if (organizationId) {
       if (workspaceId) {
+        dispatch(listAvailableSourcesRequest());
         dispatch(listWorkspaceConnectorsRequest({ workspaceId }));
-        dispatch(listCatalogConnectorsRequest());
         dispatch(setOnboardingStep(OnboardingStep.CONNECT_DATA_SOURCE));
       } else {
         dispatch(setOnboardingStep(OnboardingStep.CREATE_WORKSPACE));

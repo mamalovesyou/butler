@@ -10,14 +10,14 @@ import (
 	"go.uber.org/zap"
 )
 
-func (uc *ConnectorUsecase) ListWorkspaceConnectors(ctx context.Context, workspaceID string) ([]models.WorkspaceConnector, error) {
-	span, ctx := opentracing.StartSpanFromContext(ctx, "octopus.ListWorkspaceConnectors")
+func (uc *ConnectorUsecase) ListConnectors(ctx context.Context, workspaceID string) ([]models.Connector, error) {
+	span, ctx := opentracing.StartSpanFromContext(ctx, "octopus.ListConnectors")
 	defer span.Finish()
 
 	result, err := uc.ConnectorRepo.ListByWorkspace(workspaceID)
 	if err != nil {
-		logger.Error(ctx, "Failed to get workspace connectors list", zap.Error(err))
-		return []models.WorkspaceConnector{}, errors.ErrInternal
+		logger.Error(ctx, "Failed to get workspace data-sources list", zap.Error(err))
+		return []models.Connector{}, errors.ErrInternal
 	}
 
 	return result, nil

@@ -216,7 +216,7 @@ dev.migrate: ## Provision databases
 	@echo "Starting victorinox..."
 	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.services.yml up --build victorinox
 
-
+.PHONY: dev.services
 dev.services: ## Start services with docker in dev environment
 	@echo "Starting dev env..."
 	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.services.yml up --build users octopus gateway

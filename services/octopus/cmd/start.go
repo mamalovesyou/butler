@@ -4,6 +4,10 @@ import (
 	"context"
 	"time"
 
+	"github.com/butlerhq/butler/services/octopus/sources"
+
+	"github.com/butlerhq/butler/services/octopus/services"
+
 	"github.com/butlerhq/butler/services/octopus"
 
 	"github.com/butlerhq/butler/internal/postgres"
@@ -40,9 +44,23 @@ var (
 				logger.Fatal(ctx, "Cannot connect to postgres.", zap.Error(err))
 			}
 
+			// Catalog
+			catalog := sources.NewCatalog(&cfgService.Sources, cfgService.AirbyteServerURL)
+			if err := catalog.Init(); err != nil {
+				logger.Fatal(context.Background(), "Unable to initialize catalog", zap.Error(err))
+			}
+
 			// Serve
 			grpcServer := grpc.NewGRPCServer(cfgService.Port, tracer)
-			octopusService := octopus.NewOctopusService(&cfgService, pgGorm.DB)
+
+			dataSourceSvc := services.NewDataSourcesService(catalog)
+			dataSourceSvc.RegisterGRPCServer(grpcServer.Server)
+
+			airbyteSvc := services.NewAirbyteService(cfgService.AirbyteServerURL)
+			connectorSvc := services.NewConnectorsService(catalog, pgGorm.DB, airbyteSvc)
+			connectorSvc.RegisterGRPCServer(grpcServer.Server)
+
+			octopusService := octopus.NewOctopusService(pgGorm.DB, catalog)
 			octopusService.RegisterGRPCServer(grpcServer.Server)
 
 			healthService := octopus.NewHealthService(pgGorm.DB)

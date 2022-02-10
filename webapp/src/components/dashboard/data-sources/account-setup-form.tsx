@@ -10,7 +10,6 @@ import {
     Typography,
 } from "@mui/material";
 import { useDispatch } from "react-redux";
-import { updateConnectorConfigRequest } from "../../../features/connectors";
 import { V1ProviderAccount } from "../../../api";
 
 
@@ -43,12 +42,6 @@ export const AccountSetupForm = (props: AccountSetupFormProps) => {
                 .required('You must specify if this is a test account'),
         }),
         onSubmit: async (values): Promise<void> => {
-            dispatch(updateConnectorConfigRequest({
-                workspaceConnectorId: connectorId,
-                accountId: values.id,
-                accountName: values.name,
-                isTestAccount: values.isTest
-            }))
         }
     });
 
