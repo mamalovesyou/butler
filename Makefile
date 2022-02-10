@@ -224,27 +224,12 @@ dev.clean: ## Clean docker dev evironment
 
 
 ########################
-###     Minikube     ###
+###       K8s        ###
 ########################
-.PHONY: minikube-start
-minikube-start:
-	@echo "Starting minikube..."
-	minikube start --profile butler --cpus 4 --memory 6144
-	minikube addons enable ingress --profile butler
-	eval $(minikube --profile butler docker-env)
 
-.PHONY: minikube-helm
-minikube-helm:
-	@echo "Deploying infra: postgres,redis..."
-	helm upgrade butler-infra deployment/helm/minikube-infra/ --install --wait --values config/minikube/minikube-infra-values.yaml --debug
-	@echo "Deploying services..."
-	helm upgrade butler-services deployment/helm/services/ --install --force --wait --values config/minikube/services-values.yaml --debug
-
-.PHONY: minikube-clean
-minikube-clean:
-	minikube delete --profile butler
-	eval $(minikube docker-env -u)
 
 help: ## Display this help screen
 	@grep -h -E '^[a-zA-Z_-]+(\.[a-zA-Z_-]+)*:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+
 
