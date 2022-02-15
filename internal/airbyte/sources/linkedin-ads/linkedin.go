@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/butlerhq/butler/internal/airbyte/connections"
+
 	"github.com/pkg/errors"
 
 	"github.com/butlerhq/butler/internal/logger"
@@ -122,7 +124,7 @@ func (lc *LinkedinAdsSource) GetAirbyteConfig(config, secrets []byte) (interface
 }
 
 func (lc *LinkedinAdsSource) ValidateAndFormatConfig(config map[string]interface{}) (map[string]interface{}, error) {
-	var formattedConfig map[string]interface{}
+	formattedConfig := make(map[string]interface{})
 
 	// account id parsing
 	if accountID, ok := config["account_id"]; !ok {
@@ -143,4 +145,10 @@ func (lc *LinkedinAdsSource) ValidateAndFormatConfig(config map[string]interface
 	}
 
 	return formattedConfig, nil
+}
+
+func (lc *LinkedinAdsSource) GetStreamCatalog() *connections.SyncCatalog {
+	return &connections.SyncCatalog{
+		Streams: []map[string]interface{}{},
+	}
 }

@@ -55,9 +55,9 @@ func NewGoogleAdWordsSource(cfg config.OAuthSourceConfig, redirectURL string) *G
 	return &GoogleAdWordsSource{
 		OAuth2DataSource{
 			BaseDataSource: BaseDataSource{
-				name:                  GOOGLE_ADS_AIRBYTE_NAME,
+				Name:                  GOOGLE_ADS_AIRBYTE_NAME,
 				ConfigInputJSONSchema: GOOGLE_ADS_CONFIG_INPUT_JSON_SCHEMA,
-				authScheme:            OAUTH2,
+				AuthScheme:            OAUTH2,
 			},
 			OauthConfig: oauthCfg,
 			AuthURL:     oauthCfg.AuthCodeURL("", oauth2.AccessTypeOffline, oauth2.ApprovalForce),
@@ -94,6 +94,12 @@ func (gc *GoogleAdWordsSource) ValidateAndFormatConfig(config map[string]interfa
 	}
 
 	return formattedConfig, nil
+}
+
+func (lc *GoogleAdWordsSource) GetStreamCatalog() *SyncCatalog {
+	return &SyncCatalog{
+		Streams: []map[string]interface{}{},
+	}
 }
 
 func (gc *GoogleAdWordsSource) GetConfig() *oauth2.Config {

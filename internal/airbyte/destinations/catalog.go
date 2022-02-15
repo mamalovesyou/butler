@@ -44,6 +44,7 @@ type Catalog struct {
 	isSyncedWithAirbyte bool
 	sourcesByName       map[string]DataSource
 	sourcesByAirbyteID  map[string]DataSource
+	destinationsByName  map[string]DataSource
 	airbyteURL          string
 }
 
