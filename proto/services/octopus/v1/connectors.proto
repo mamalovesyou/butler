@@ -40,7 +40,8 @@ message AuthenticateConnectorRequest {
 
 message TestConnectionRequest {
   string connectorId = 1;
-  bool createAirbyteSource = 2;
+  string destinationId = 2;
+  google.protobuf.Struct config = 3;
 }
 
 message TestConnectionResponse {
@@ -49,15 +50,21 @@ message TestConnectionResponse {
   repeated string logs = 4;
 }
 
+message SyncConnectionRequest {
+  string connectorId = 1;
+  string airbyteDestinationId = 2;
+}
+
 
 message Connector {
   string id = 1;
   string workspaceId = 2;
   string name = 3;
   string airbyteSourceDefinitionId = 4;
-  AuthType authScheme = 5;
+  bool isActive = 5;
+  AuthType authScheme = 6;
   google.protobuf.Struct config = 7;
-  google.protobuf.Timestamp updatedAt = 9;
+  google.protobuf.Timestamp updatedAt = 8;
 }
 
 message ConnectorList {
@@ -75,14 +82,14 @@ service ConnectorsService {
 
   rpc CreateConnector(CreateConnectorRequest) returns (Connector) {
     option (google.api.http) = {
-      post: "/v1/connectors",
+      post: "/v1/connectors/create",
       body: "*"
     };
   }
 
   rpc MutateConnector(MutateConnectorRequest) returns (Connector) {
     option (google.api.http) = {
-      put: "/v1/connectors",
+      post: "/v1/connectors/update",
       body: "*"
     };
   }

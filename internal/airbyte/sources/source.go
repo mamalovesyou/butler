@@ -9,20 +9,25 @@ import (
 	"golang.org/x/oauth2"
 )
 
+type SyncCatalog struct {
+	Streams []map[string]interface{} `json:"streams"`
+}
+
 type BaseDataSource struct {
-	name                      string
-	authScheme                AuthScheme
+	Name                      string
+	AuthScheme                AuthScheme
 	Icon                      string
 	AirbyteSourceDefinitionID string
 	ConfigInputJSONSchema     string
+	SyncCatalogJSON           string
 }
 
-func (src *BaseDataSource) Name() string {
-	return src.name
+func (src *BaseDataSource) GetName() string {
+	return src.Name
 }
 
-func (src *BaseDataSource) AuthScheme() AuthScheme {
-	return src.authScheme
+func (src *BaseDataSource) GetAuthScheme() AuthScheme {
+	return src.AuthScheme
 }
 
 func (src *BaseDataSource) BindAirbyteSource(sourceDefinitionID, icon string) {
@@ -31,13 +36,13 @@ func (src *BaseDataSource) BindAirbyteSource(sourceDefinitionID, icon string) {
 }
 
 func (src *BaseDataSource) GetAirbyteConfig(config, secrets []byte) (interface{}, error) {
-	return nil, errors.New(fmt.Sprintf("%s doesn't implement GetAirbyteConfig", src.name))
+	return nil, errors.New(fmt.Sprintf("%s doesn't implement GetAirbyteConfig", src.Name))
 }
 
 func (src *BaseDataSource) ToPb() *octopus.DataSource {
-	authTypeInt := octopus.AuthType_value[string(src.authScheme)]
+	authTypeInt := octopus.AuthType_value[string(src.AuthScheme)]
 	return &octopus.DataSource{
-		Name:                         src.Name(),
+		Name:                         src.Name,
 		AuthType:                     octopus.AuthType(authTypeInt),
 		IconSvg:                      src.Icon,
 		ConfigurationInputJSONSchema: src.ConfigInputJSONSchema,
@@ -57,7 +62,7 @@ type OAuth2DataSource struct {
 }
 
 func (src *OAuth2DataSource) ExchangeCode(context.Context, string) (*oauth2.Token, error) {
-	return nil, errors.New(fmt.Sprintf("Data source %s ExchangeCode is not implemented", src.name))
+	return nil, errors.New(fmt.Sprintf("Data source %s ExchangeCode is not implemented", src.Name))
 }
 
 func (src *OAuth2DataSource) ToPb() *octopus.DataSource {

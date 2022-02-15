@@ -1,4 +1,4 @@
-import {Avatar} from "@mui/material";
+import {Box} from "@mui/material";
 
 interface SourceIconProps {
     name: string;
@@ -7,7 +7,14 @@ interface SourceIconProps {
 
 export const SourceIcon = (props: SourceIconProps) => {
     const src = `data:image/svg+xml;utf8,${encodeURI(props.xml)}`;
-    return <Avatar alt={props.name} src={src} />
+    return <Box
+        component="img"
+        sx={{
+            height: 50,
+            maxWidth: 60
+        }}
+        alt={props.name} src={src}
+    />
 }
 
 export default SourceIcon;

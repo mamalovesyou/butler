@@ -1,44 +1,37 @@
 import type {FC} from 'react';
 import {
-    Avatar,
     Box,
-    Button,
     Card,
-    CardContent, Chip,
-    Divider,
+    CardContent,
     IconButton,
-    InputAdornment, Tab,
     Table,
     TableBody,
     TableCell,
     TableHead,
     TableRow,
-    TextField,
     Typography
 } from '@mui/material';
 import {Scrollbar} from '../../scrollbar';
 import {SeverityPill} from '../../severity-pill';
 import {useWorkspace} from "../../../hooks/use-workspace";
 import {useEffect, useState} from "react";
-import {V1Invitation, V1UserMember, V1Workspace} from "../../../api";
+import {V1Workspace} from "../../../api";
 import {ChevronRight} from "@mui/icons-material";
 import {CreateWorkspaceDialog} from "./create-workspace-dialog";
 import {useNavigate} from "react-router-dom";
-import {ORGANIZATION_WORKSPACES_PATH} from "../../../routes";
 
 export const WorkspacesList: FC = () => {
 
     const navigate = useNavigate();
     const [workspaces, setWorkspaces] = useState<V1Workspace[]>([]);
-    const {organizationId, workspaceId, organizations} = useWorkspace();
+    const {workspaceId, organization} = useWorkspace();
 
 
     useEffect(() => {
-        if (organizationId) {
-            const orga = organizations[organizationId];
-            setWorkspaces(orga.workspaces);
+        if (organization) {
+            setWorkspaces(organization.workspaces);
         }
-    }, [organizationId])
+    }, [organization])
 
     return <Card>
         <CardContent sx={{p: 2}}>

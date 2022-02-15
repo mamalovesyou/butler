@@ -1,9 +1,6 @@
-import {Cancel, Tag} from "@mui/icons-material";
-import {Box, Chip, InputAdornment, TextField} from "@mui/material";
-import {FC, useRef, useState} from "react";
-import {Mail as MailIcon} from "../../icons/mail";
+import {Box, Chip, TextField} from "@mui/material";
+import {FC, useState} from "react";
 import {isValidEmail} from "../../utils/email";
-import {V1CatalogConnector, V1WorkspaceConnector} from "../../api";
 
 
 export const MultiEmailInput: FC = () => {

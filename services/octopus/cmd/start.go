@@ -4,7 +4,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/butlerhq/butler/services/octopus/sources"
+	"github.com/butlerhq/butler/internal/airbyte/sources/catalog"
 
 	"github.com/butlerhq/butler/services/octopus/services"
 
@@ -45,7 +45,7 @@ var (
 			}
 
 			// Catalog
-			catalog := sources.NewCatalog(&cfgService.Sources, cfgService.AirbyteServerURL)
+			catalog := catalog.NewCatalog(&cfgService.Sources, cfgService.AirbyteServerURL)
 			if err := catalog.Init(); err != nil {
 				logger.Fatal(context.Background(), "Unable to initialize catalog", zap.Error(err))
 			}

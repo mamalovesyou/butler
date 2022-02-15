@@ -53,7 +53,30 @@ func (svc *WorkspaceUsecase) CreateWorkspace(ctx context.Context, organizationID
 			return err
 		}
 
-		// return nil will commit the whole transaction
+		// Create s3 destination
+		destination, ok := svc.Catalog.GetByName("S3")
+		if !ok {
+			logger.Error(ctx, "Unable to get S3 destination from catalog")
+			return errors.ErrInternal
+		}
+
+		s3ConnCfg := destination.BuildConfig(butlerWorkspace.ID.String())
+		airbyteClient, err := airbyte.NewClientWithResponses(svc.AirbyteServerURL)
+		if err != nil {
+			logger.Error(ctx, "Unable to create airbyte client", zap.Error(err))
+			return errors.ErrInternal
+		}
+		createS3Body := airbyte.CreateDestinationJSONRequestBody{
+			ConnectionConfiguration: s3ConnCfg,
+			DestinationDefinitionId: destination.AirbyteDefinitionID(),
+			Name:                    "Butler S3 Airbyte Data",
+			WorkspaceId:             butlerWorkspace.AirbyteWorkspaceID,
+		}
+		resp, err := airbyteClient.CreateDestinationWithResponse(ctx, createS3Body)
+		if err != nil || resp.JSON200 == nil {
+			logger.Error(ctx, "Unable to create airbyte s3 destination", zap.Error(err), zap.Any("airbyteErr", resp.JSON422))
+			return errors.ErrInternal
+		}
 		return nil
 	})
 

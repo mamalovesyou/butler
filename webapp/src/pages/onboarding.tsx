@@ -50,6 +50,7 @@ const Onboarding: React.FC = () => {
   const { workspaceId, organizationId } = useWorkspace();
 
   useEffect(() => {
+      console.log(organizationId, workspaceId, activeStep)
     if (organizationId) {
       if (workspaceId) {
         dispatch(listAvailableSourcesRequest());

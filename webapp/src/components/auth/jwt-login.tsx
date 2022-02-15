@@ -66,7 +66,7 @@ export const JWTLogin: FC = (props) => {
       )}
       <Box sx={{ mt: 2 }}>
         <Button
-          disabled={formik.isSubmitting}
+          disabled={formik.isSubmitting || !formik.isValid || !formik.dirty}
           fullWidth
           size="large"
           type="submit"

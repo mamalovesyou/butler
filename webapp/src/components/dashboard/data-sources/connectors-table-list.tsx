@@ -1,6 +1,6 @@
 import {Fragment, useEffect, useState} from 'react';
 import {
-    Box, Chip, FormControlLabel, Switch,
+    Box, Chip, Divider, FormControlLabel, List, ListItem, ListItemAvatar, ListItemButton, ListItemText, Switch,
     Table, TableBody,
     TableCell,
     TableHead,
@@ -18,35 +18,6 @@ import {DATA_SOURCES_ROOT_PATH} from "../../../routes";
 
 export type ConnectorWithSource = V1Connector & {
     source: V1DataSource
-}
-
-type ConnectorTableRowProps = TableRowProps & {
-    connector: ConnectorWithSource;
-};
-
-export const ConnectorTableRow = (props: ConnectorTableRowProps) => {
-    const {connector, ...others} = props;
-    return (
-        <TableRow {...others} hover>
-            <TableCell>
-                <Box
-                    sx={{
-                        alignItems: 'center',
-                        display: 'flex'
-                    }}
-                >
-                    <SourceIcon
-                        xml={connector.source.iconSvg}
-                        name={connector.source.name}/>
-                    <Typography
-                        variant="subtitle2">{connector.source.name}</Typography>
-                </Box>
-            </TableCell>
-            <TableCell sx={{display: 'flex', justifyContent: 'flex-end'}}>
-                <Chip label="Uncomplete"/>
-            </TableCell>
-        </TableRow>
-    );
 }
 
 interface ConnectorsTableListProps {
@@ -73,24 +44,29 @@ export const ConnectorsTableList = (props: ConnectorsTableListProps) => {
     }
 
     return (
-        <Table sx={{minWidth: 400}}>
-            <TableHead>
-                <TableRow>
-                    <TableCell>Connect a new data sources</TableCell>
-                    <TableCell/>
-                </TableRow>
-            </TableHead>
-            <TableBody>
-                {enhancedConnectors.map((connector: ConnectorWithSource, index) =>
-                    <ConnectorTableRow
-                        onClick={() => goToConnectorDetails(connector.id)}
-                        sx={{
-                            cursor: 'pointer'
-                        }}
-                        key={`${connector.source.name}-${index}`}
-                        connector={connector}/>
-                )}
-            </TableBody>
-        </Table>
+        <List dense sx={{width: '100%', p: 0, bgcolor: 'background.paper'}}>
+            {enhancedConnectors.map((connector: ConnectorWithSource, index) => {
+                return (
+                    <Box key={connector.id}>
+                        <ListItem
+                            secondaryAction={!connector.isActive ?
+                                <Chip color="error" label="INACTIVE"/>
+                                : <Chip color="primary" label="ACTIVE"/>}
+                            disablePadding
+                        >
+                            <ListItemButton sx={{py: 2}}>
+                                <ListItemAvatar>
+                                    <SourceIcon
+                                        xml={connector.source.iconSvg}
+                                        name={connector.source.name}/>
+                                </ListItemAvatar>
+                                <ListItemText id={connector.id} sx={{paddingLeft: 2}} primary={connector.source.name} primaryTypographyProps={{variant: "h6"}}/>
+                            </ListItemButton>
+                        </ListItem>
+                        { (index === enhancedConnectors.length - 1) ? null : <Divider component="li"/> }
+                    </Box>
+                );
+            })}
+        </List>
     );
 };

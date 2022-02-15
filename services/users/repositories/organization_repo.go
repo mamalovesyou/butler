@@ -33,12 +33,11 @@ func (repo *OrganizationRepo) CreateOne(orga *models.Organization) (*models.Orga
 }
 
 // UpdateOne and save updates it in database
-func (repo *OrganizationRepo) UpdateOne(organizationID string, updates models.Organization) (*models.Organization, error) {
-	orga := &models.Organization{}
-	if err := repo.db.Model(orga).Where("id = ?", organizationID).Updates(updates).Error; err != nil {
+func (repo *OrganizationRepo) UpdateOne(organizationID string, updates map[string]interface{}) (*models.Organization, error) {
+	if err := repo.db.Model(&models.Organization{}).Where("id = ?", organizationID).Updates(updates).Error; err != nil {
 		return &models.Organization{}, err
 	}
-	return orga, nil
+	return repo.FindByID(organizationID)
 }
 
 // FindByID an Organization in database and eager load Worspaces and Members
@@ -77,8 +76,7 @@ func (repo *OrganizationRepo) FindByUserID(userID string) (*models.Organization,
 
 func (repo *OrganizationRepo) ListByUserID(userID string) ([]models.Organization, error) {
 	result := []models.Organization{}
-	// .Where("id IN (SELECT organization_id FROM organization_members WHERE user_id = ?)", userID)
-	if err := repo.db.Preload("Workspaces").Find(&result).Error; err != nil {
+	if err := repo.db.Preload("Workspaces").Where("id IN (SELECT organization_id FROM organization_members WHERE user_id = ?)", userID).Find(&result).Error; err != nil {
 		return nil, err
 	}
 	return result, nil

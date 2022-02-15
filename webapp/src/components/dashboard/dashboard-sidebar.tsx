@@ -10,6 +10,7 @@ import {WorkspacePopover} from './workspace-popover';
 import {useCurrentWorkspace} from '../../hooks/use-workspace';
 import {DASHBOARD_SIDEBAR_WIDTH} from "../../theme/constants";
 import AssignmentIcon from '@mui/icons-material/Assignment';
+import {ORGANIZATION_ROOT_PATH, UTMS_ROOT_PATH} from "../../routes";
 
 interface DashboardSidebarProps {
     onClose: () => void;
@@ -47,7 +48,7 @@ const getSections = (): Section[] => [
         items: [
             {
                 title: 'UTM Automation',
-                path: 'campaigns',
+                path: UTMS_ROOT_PATH,
             }
         ]
     },
@@ -57,7 +58,7 @@ const getSections = (): Section[] => [
         items: [
             {
                 title: 'Organization',
-                path: 'organization/workspaces'
+                path: ORGANIZATION_ROOT_PATH
             },
             {
                 title: 'Data Sources',

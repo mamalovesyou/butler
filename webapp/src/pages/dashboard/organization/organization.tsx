@@ -19,11 +19,9 @@ const Organization: FC = () => {
     const location = useLocation();
 
     useEffect(() => {
-        console.log(location);
         let path = location.pathname.replace(ORGANIZATION_ROOT_PATH, "");
         while(path.charAt(0) === "/") path = path.substring(1);
         if (path === "") path = ORGANIZATION_WORKSPACES_PATH;
-        console.log(path, ORGANIZATION_WORKSPACES_PATH)
         setValue(path);
     }, [location.pathname])
 

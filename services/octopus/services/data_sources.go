@@ -3,7 +3,7 @@ package services
 import (
 	"context"
 
-	"github.com/butlerhq/butler/services/octopus/sources"
+	"github.com/butlerhq/butler/internal/airbyte/sources/catalog"
 
 	"github.com/butlerhq/butler/api/services/octopus/v1"
 
@@ -13,11 +13,11 @@ import (
 )
 
 type DataSourcesService struct {
-	Catalog *sources.Catalog
+	Catalog *catalog.Catalog
 	octopus.DataSourcesServiceServer
 }
 
-func NewDataSourcesService(catalog *sources.Catalog) *DataSourcesService {
+func NewDataSourcesService(catalog *catalog.Catalog) *DataSourcesService {
 	return &DataSourcesService{
 		Catalog: catalog,
 	}

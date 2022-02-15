@@ -48,7 +48,7 @@ func (repo *ConnectorRepo) UpdateOne(connectorID uuid.UUID, updates models.Conne
 		if result.Error != nil {
 			return result.Error
 		}
-		return tx.Model(&connector).Select("*").Updates(updates).Error
+		return tx.Model(&connector).Updates(updates).Error
 	})
 	return &connector, err
 }

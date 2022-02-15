@@ -25,8 +25,8 @@ export const CONNECTORS_DETAIL_PATH = "/data-sources/:connectorId";
 
 export const ONBOARDING_ROOT_PATH = "/onboarding";
 
-// Campaigns
-export const CAMPAIGNS_ROOT_PATH = "/campaigns";
+// UTMs
+export const UTMS_ROOT_PATH = "/utms";
 
 // Errors
 export const ERROR_ROOT_PATH = "/error";

@@ -1,9 +1,8 @@
 package models
 
 import (
+	"github.com/butlerhq/butler/internal/airbyte/sources"
 	"github.com/butlerhq/butler/internal/postgres/types"
-
-	"github.com/butlerhq/butler/services/octopus/sources"
 
 	"github.com/butlerhq/butler/api/services/octopus/v1"
 	"github.com/google/uuid"
@@ -21,8 +20,10 @@ type Connector struct {
 	// Airbyte binding
 	AirbyteSourceDefinitionID string
 	AirbyteSourceID           string
+	AirbyteDestinationID      string
+	AirbyteConnectionID       string
 	AirbyteWorkspaceID        string
-	AirbyteConnectionTested   bool
+	IsActive                  bool
 }
 
 func (c *Connector) TableName() string {
@@ -39,6 +40,7 @@ func (c *Connector) ToPb() *octopus.Connector {
 		AuthScheme:                c.AuthScheme.ToPb(),
 		UpdatedAt:                 timestamppb.New(c.UpdatedAt),
 		Config:                    c.Config.ToPbStruct(),
+		IsActive:                  c.IsActive,
 	}
 
 	return pb

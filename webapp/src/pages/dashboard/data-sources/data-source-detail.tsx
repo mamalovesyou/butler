@@ -61,7 +61,6 @@ const DataSourceDetail: FC = () => {
                 { connectorWithSource ?
                     <Box>
                         <ConnectorDetailsEdit connector={connectorWithSource} />
-                        <TestConnection connector={connectorWithSource} />
                     </Box>
                     : null }
             </Container>

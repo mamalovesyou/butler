@@ -24,7 +24,7 @@ const initialWorkspaceState: WorkspaceStateType = {
 const authReducer = (
     state: WorkspaceStateType = initialWorkspaceState,
     action: ActionType.WorkspaceActionType | OnboardingActionType.OnboardingActionType
-) => {
+): WorkspaceStateType => {
     switch (action.type) {
         case ActionType.LIST_ORGANIZATIONS_REQUEST:
         case ActionType.GET_ORGANIZATION_REQUEST:
@@ -68,13 +68,10 @@ const authReducer = (
             };
 
         case OnboardingActionType.COMPLETE_ONBOARDING_SUCCESS:
-            return {
-                ...state,
-                organizations: {
-                    ...state.organizations,
-                    [action.payload.organization.id]: action.payload.organization
-                }
-            };
+            const updatedOrg = [...state.organizations]
+            const index = updatedOrg.findIndex((org: V1Organization) => org.id === action.payload.organization.id);
+            updatedOrg[index] = action.payload.organization;
+            return { ...state, organizations: updatedOrg };
 
         case ActionType.CREATE_WORKSPACE_SUCCESS:
             return {
@@ -106,11 +103,11 @@ const authReducer = (
                 workspaceId: action.payload.workspaceId
             };
 
-        case ActionType.LIST_WORKSPACES_FAILURE:
-        case ActionType.CREATE_ORGANIZATION_FAILURE:
-        case ActionType.CREATE_WORKSPACE_FAILURE:
-        case ActionType.ADD_WORKSPACE_MEMBER_FAILURE:
-            return {...state, error: action.error};
+        // case ActionType.LIST_WORKSPACES_FAILURE:
+        // case ActionType.CREATE_ORGANIZATION_FAILURE:
+        // case ActionType.CREATE_WORKSPACE_FAILURE:
+        // case ActionType.ADD_WORKSPACE_MEMBER_FAILURE:
+        //     return {...state};
 
         default:
             return state;

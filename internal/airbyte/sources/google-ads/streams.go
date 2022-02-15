@@ -1,6 +1,6 @@
-package linkedin_ads
+package google_ads
 
-const LINKEDIN_ADS_STREAMS_CATALOG = `{
+const GOOGLE_ADS_STREAMS_CATALOG = `{
   "streams":[
     {
       "stream":{

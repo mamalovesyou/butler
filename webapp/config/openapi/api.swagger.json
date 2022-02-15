@@ -89,7 +89,7 @@
         ]
       }
     },
-    "/v1/connectors": {
+    "/v1/connectors/create": {
       "post": {
         "operationId": "ConnectorsService_CreateConnector",
         "responses": {
@@ -113,36 +113,6 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1.CreateConnectorRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ConnectorsService"
-        ]
-      },
-      "put": {
-        "operationId": "ConnectorsService_MutateConnector",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1.Connector"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/google.rpc.Status"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1.MutateConnectorRequest"
             }
           }
         ],
@@ -271,6 +241,38 @@
             "required": true,
             "schema": {
               "$ref": "#/definitions/v1.TestConnectionRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ConnectorsService"
+        ]
+      }
+    },
+    "/v1/connectors/update": {
+      "post": {
+        "operationId": "ConnectorsService_MutateConnector",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.Connector"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.MutateConnectorRequest"
             }
           }
         ],
@@ -873,6 +875,9 @@
         "airbyteSourceDefinitionId": {
           "type": "string"
         },
+        "isActive": {
+          "type": "boolean"
+        },
         "authScheme": {
           "$ref": "#/definitions/v1.AuthType"
         },
@@ -1266,8 +1271,11 @@
         "connectorId": {
           "type": "string"
         },
-        "createAirbyteSource": {
-          "type": "boolean"
+        "destinationId": {
+          "type": "string"
+        },
+        "config": {
+          "type": "object"
         }
       }
     },
@@ -1354,6 +1362,9 @@
           "type": "string"
         },
         "airbyteWorkspaceId": {
+          "type": "string"
+        },
+        "airbyteDestinationId": {
           "type": "string"
         },
         "members": {

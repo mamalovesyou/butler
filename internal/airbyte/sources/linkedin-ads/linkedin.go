@@ -1,4 +1,4 @@
-package sources
+package linkedin_ads
 
 import (
 	"context"
@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/butlerhq/butler/internal/airbyte/connections"
+	"github.com/butlerhq/butler/internal/airbyte/sources"
 
 	"github.com/pkg/errors"
 
@@ -25,27 +25,8 @@ import (
 
 const LINKEDIN_ADS_AIRBYTE_NAME = "LinkedIn Ads"
 
-const LINKEDIN_ADS_CONFIG_INPUT_JSON_SCHEMA = `{
-	  "$id": "https://example.com/person.schema.json",
-	  "$schema": "https://json-schema.org/draft/2020-12/schema",
-	  "title": "LinkedinAdsSource",
-	  "type": "object",
-      "required": [ "account_id", "start_date"],
-	  "properties": {
-		"account_id": {
-		  "type": "string",
-		  "description": "You must specify an account ID."
-		},
-		"start_date": {
-		  "description": "UTC date and time in the format 2017-01-25. Any data before this date will not be replicated.",
-		  "type": "string",
-		  "format": "date"	
-		}
-	  }
-	}`
-
 type LinkedinAdsSource struct {
-	OAuth2DataSource
+	sources.OAuth2DataSource
 }
 
 func NewLinkedinAdsSource(cfg config.OAuthSourceConfig, redirectURL string) *LinkedinAdsSource {
@@ -58,11 +39,12 @@ func NewLinkedinAdsSource(cfg config.OAuthSourceConfig, redirectURL string) *Lin
 	}
 
 	return &LinkedinAdsSource{
-		OAuth2DataSource{
-			BaseDataSource: BaseDataSource{
-				name:                  LINKEDIN_ADS_AIRBYTE_NAME,
+		sources.OAuth2DataSource{
+			BaseDataSource: sources.BaseDataSource{
+				Name:                  LINKEDIN_ADS_AIRBYTE_NAME,
 				ConfigInputJSONSchema: LINKEDIN_ADS_CONFIG_INPUT_JSON_SCHEMA,
-				authScheme:            OAUTH2,
+				SyncCatalogJSON:       LINKEDIN_ADS_STREAMS_CATALOG,
+				AuthScheme:            sources.OAUTH2,
 			},
 			OauthConfig: oauthCfg,
 			AuthURL:     oauthCfg.AuthCodeURL("", oauth2.AccessTypeOffline, oauth2.ApprovalForce),
@@ -80,19 +62,6 @@ func (lc *LinkedinAdsSource) ExchangeCode(ctx context.Context, code string) (*oa
 func (lc *LinkedinAdsSource) GetConfig() *oauth2.Config {
 	return &lc.OauthConfig
 }
-
-//func (lc *LinkedinAdsSource) Format(config map[string]interface{}) (map[string]interface{}, error) {
-//	var result map[string]interface{}
-//	if accountId, ok := config["account_id"]; ok {
-//		result["account_ids"] = []string{accountId.(string)}
-//	} else {
-//		return nil, errors
-//	}
-//	if startDate, ok := config["start_date"]; ok {
-//		result["start_date"] = startDate.(string)
-//	}
-//	return result, nil
-//}
 
 func (lc *LinkedinAdsSource) ToPb() *octopus.DataSource {
 	return lc.OAuth2DataSource.ToPb()
@@ -147,8 +116,6 @@ func (lc *LinkedinAdsSource) ValidateAndFormatConfig(config map[string]interface
 	return formattedConfig, nil
 }
 
-func (lc *LinkedinAdsSource) GetStreamCatalog() *connections.SyncCatalog {
-	return &connections.SyncCatalog{
-		Streams: []map[string]interface{}{},
-	}
+func (lc *LinkedinAdsSource) GetStreamCatalog() string {
+	return lc.SyncCatalogJSON
 }

@@ -116,11 +116,16 @@ const NewSourceStepper = (props: NewSourceStepperProps) => {
                     </Button>
                 </OAuthPopup> : <Typography>Not supported</Typography>}
         </Box> : null}
-        {activeStep === 2 ? <ConfigInputForm
-            connectorId={connector?.id}
-            onComplete={(connector) => console.log("Complete", connector)}
-            source={source}
-        /> : null}
+        {(activeStep === 2 && connector) ? <Box>
+            <ConfigInputForm
+            initialValues={{}}
+            inputJSONSchema={source.configurationInputJSONSchema}
+            onChange={(values) => console.log("new values", values)}
+        />
+            <Button variant="contained" size="large">
+                Set up
+            </Button>
+        </Box> : null}
     </>
 }
 

@@ -1,134 +1,112 @@
 import * as React from "react";
-
-const {buildYup} = require("schema-to-yup");
+import convertToYup from "json-schema-yup-transformer";
 import {useFormik} from 'formik';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import {
-    FormHelperText,
-    TextField,
-} from "@mui/material";
 import {labelize} from "../../../../utils/string";
-import {Api, V1Connector, V1DataSource} from "../../../../api";
+import {useEffect, useState} from "react";
+import {JSONFieldProperty, PropertyField} from "./PropertyField";
+import {Api} from "../../../../api";
+import {Alert, AlertTitle, Button, CircularProgress} from "@mui/material";
+import isEqual from "lodash/isEqual";
 
-interface JSONFieldProperty {
-    description?: string;
-    format?: string;
-    type: string
-}
-
-interface PropertyFieldProps {
-    label: string;
-    name: string;
-    value: string | number;
-    jsonProps: JSONFieldProperty;
-    error: boolean;
-    onBlur?: React.FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
-    onChange?: React.ChangeEventHandler<HTMLTextAreaElement | HTMLInputElement>;
-}
-
-export const PropertyField = (props: PropertyFieldProps) => {
-    const {name, label, value, error, onChange, onBlur} = props;
-    const {description, type, format} = props.jsonProps;
-
-    const getInputType = (type: string): string => {
-        switch (type) {
-            case "number":
-            case "integer":
-                return "number"
-            case "string":
-            default:
-                return "text"
-        }
-    }
-
-    return <TextField
-        error={error}
-        type={getInputType(type)}
-        fullWidth
-        helperText={description}
-        label={label}
-        margin="normal"
-        name={name}
-        onBlur={onBlur}
-        onChange={onChange}
-        value={value}
-    />
-}
 
 interface ConfigInputFormProps {
     connectorId: string;
-    source: V1DataSource;
-    onComplete: (connector: V1Connector) => void;
+    initialValues: object;
+    inputJSONSchema: string;
 }
 
 export const ConfigInputForm = (props: ConfigInputFormProps) => {
-    const { source, connectorId, onComplete } = props;
-    const schemaObj = JSON.parse(source.configurationInputJSONSchema.trim());
-    const {required, properties} = schemaObj;
 
-    const getYupSchema = (obj: object, fields: string[]): object => {
-        let config = {}
-        fields.forEach((name: string) => config[name] = {
-            required: "This field is required.",
-            format: "Wrong format."
-        });
-        return buildYup(obj, config)
-    }
-
-    const getInitialValues = (properties: Record<string, JSONFieldProperty>) => {
-        let initialValues = {}
+    const getInitialFormValues = (properties: Record<string, JSONFieldProperty>) => {
+        let allInitialValues = {...initialValues}
         Object.entries(properties).map(([name, property]) => {
-            initialValues[name] = ''
+            if (!(name in allInitialValues)) {
+                allInitialValues[name] = property.type === 'array' ? [] : ''
+            }
         })
-        return initialValues;
+        return allInitialValues;
     }
+
+    const {connectorId, inputJSONSchema, initialValues} = props;
+    const schemaObj = JSON.parse(inputJSONSchema.trim());
+    const yupSchema = convertToYup(schemaObj);
+    const initialFormValues = getInitialFormValues(schemaObj.properties);
+    const [enableUpdate, setEnableUpdate] = useState(false);
+    const [error, setError] = useState('');
+
 
     const formik = useFormik({
-        initialValues: getInitialValues(properties),
-        validationSchema: getYupSchema(schemaObj, required),
-        onSubmit: async (values): Promise<void> => {
-            const response = await Api.v1.connectorsServiceMutateConnector({
-                    connectorId,
-                    config: {
-                        ...values
-                    }
-                });
-            onComplete(response.data)
-            // TODO: Handle error
-        }
+        initialValues: initialFormValues,
+        validationSchema: yupSchema,
+        onSubmit: async (values) => {
+            setError('');
+            const { status, message } = await testConfig(values);
+            if (status === "succeeded") {
+                setError("");
+                await updateConfig(values);
+            } else {
+                setError(`Failed: ${message}`)
+            }
+        },
     });
 
+    useEffect(() => {
+        const isValid = yupSchema.isValidSync(formik.values);
+        setEnableUpdate(isValid && !isEqual(initialFormValues, formik.values));
+    }, [formik.values])
 
-    return (
-        <form noValidate onSubmit={formik.handleSubmit}>
-            {formik.errors.submit && (
-                <Box sx={{ py: 2 }}>
-                    <FormHelperText error>{formik.errors.submit}</FormHelperText>
-                </Box>
+    const updateConfig = async (values: Record<string, unknown>) => {
+        try {
+            await Api.v1.connectorsServiceMutateConnector({
+                connectorId,
+                config: values,
+            })
+        } catch (err) {
+            console.log("Unable to update config", err);
+            setError("Unable to update config");
+        }
+    }
+
+    const testConfig = async (values: Record<string, unknown>) => {
+        try {
+            const response = await Api.v1.connectorsServiceTestConnection({
+                connectorId,
+                config: values
+            });
+            return response.data;
+        } catch (err) {
+            console.log("Error", err);
+            setError(`Failed: ${err}`)
+        }
+    }
+
+
+    return <form noValidate>
+        <Box sx={{p: 2}}>
+            {Object.entries(schemaObj.properties).map(([name, jsonProps]: [string, JSONFieldProperty]) =>
+                <PropertyField
+                    key={name}
+                    form={formik}
+                    error={Boolean(formik.touched[name] && formik.errors[name])}
+                    name={name} onBlur={formik.handleBlur}
+                    onChange={formik.handleChange}
+                    value={formik.values[name]}
+                    jsonProps={jsonProps}
+                    label={labelize(name)}
+                />
             )}
-            <Box sx={{p: 0}}>
-                {Object.entries(properties).map(([name, jsonProps]: [string, JSONFieldProperty]) =>
-                    <PropertyField
-                        key={name}
-                        error={Boolean(formik.touched[name] && formik.errors[name])}
-                        name={name} onBlur={formik.handleBlur}
-                        onChange={formik.handleChange}
-                        value={formik.values[name]}
-                        jsonProps={jsonProps}
-                        label={labelize(name)}
-                    />
-                )}
+        </Box>
+        {error !== "" && (
+            <Box sx={{ py: 1 }}>
+                <Alert severity="error">
+                    <AlertTitle>Error</AlertTitle>{error}
+                </Alert>
             </Box>
-            <Box sx={{display: 'flex', pt: 2}}>
-                <Button
-                    type="submit"
-                    variant="contained"
-                    disabled={formik.isSubmitting}
-                >
-                    Create
-                </Button>
-            </Box>
-        </form>
-    );
+        )}
+        <Box sx={{p: 1, width: '100%', display: 'flex', alignItems: "center", justifyContent: "center"}}>
+            {formik.isSubmitting ? <CircularProgress/>
+                : <Button disabled={ !enableUpdate || !formik.dirty} variant="contained" color="primary" type="submit">Update</Button>}
+        </Box>
+    </form>
 };

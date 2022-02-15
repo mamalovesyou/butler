@@ -5,7 +5,7 @@ import {DashboardLayout} from "../components/dashboard/dashboard-layout";
 import WorkspaceDetail from "../pages/dashboard/organization/workspace-detail";
 
 import {
-    ACCOUNT_ROOT_PATH, ACCOUNT_SETTINGS_PATH, ANALYTICS_ROOT_PATH, CAMPAIGNS_ROOT_PATH, CONNECTORS_DETAIL_PATH,
+    ACCOUNT_ROOT_PATH, ACCOUNT_SETTINGS_PATH, ANALYTICS_ROOT_PATH, UTMS_ROOT_PATH, CONNECTORS_DETAIL_PATH,
     DASHBOARD_ROOT_PATH,
     DATA_SOURCES_ROOT_PATH, ERROR_ROOT_PATH, JOIN_ROOT_PATH,
     LOGIN_ROUTE_PATH,
@@ -108,10 +108,7 @@ export const AppRoutes: React.FC = () => {
                     { path: DATA_SOURCES_ROOT_PATH, element: <DataSources/> },
                     {path: CONNECTORS_DETAIL_PATH, element: <DataSourceDetail/>},
                     {
-                        path: CAMPAIGNS_ROOT_PATH, element: <UTMAutomation/>,
-                        // children: [
-                        //     { path: "", element: <Campaigns />},
-                        // ]
+                        path: UTMS_ROOT_PATH, element: <UTMAutomation/>,
                     }
                 ],
             },

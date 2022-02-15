@@ -1,10 +1,12 @@
-package sources
+package catalog
 
 import (
 	"context"
 	"errors"
 	"fmt"
 	"sync"
+
+	"github.com/butlerhq/butler/internal/airbyte/sources"
 
 	google_ads "github.com/butlerhq/butler/internal/airbyte/sources/google-ads"
 
@@ -26,7 +28,7 @@ import (
 
 type DataSource interface {
 	GetName() string
-	GetAuthScheme() AuthScheme
+	GetAuthScheme() sources.AuthScheme
 	GetAirbyteConfig(config, secrets []byte) (interface{}, error)
 	ValidateAndFormatConfig(config map[string]interface{}) (map[string]interface{}, error)
 	BindAirbyteSource(sourceID string, icon string)
@@ -140,11 +142,11 @@ func (catalog *Catalog) ExchangeOAuthCode(ctx context.Context, airbyteSOurceID, 
 	catalog.mu.Unlock()
 
 	// Verify this is an oauth2 source
-	if source.GetAuthScheme() != OAUTH2 {
+	if source.GetAuthScheme() != sources.OAUTH2 {
 		return nil, errors.New(fmt.Sprintf("This source dosen't support oauth 2 auth: %s", source.GetName()))
 	}
 
-	token, err := source.(OAuthSource).ExchangeCode(ctx, code)
+	token, err := source.(sources.OAuthSource).ExchangeCode(ctx, code)
 	if err != nil {
 		logger.Error(ctx, "Unable to exchange oauth code", zap.Error(err), zap.String("provider", source.GetName()))
 		return nil, status.Errorf(codes.InvalidArgument, "Unable to exchange oauth code")

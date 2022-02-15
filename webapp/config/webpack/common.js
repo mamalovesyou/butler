@@ -10,9 +10,7 @@ module.exports = {
   target: 'web',
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx"],
-    fallback: {
-      buffer: require.resolve('buffer'),
-    },
+    fallback: {},
   },
   context: resolve(__dirname, "../../src"),
   module: {
@@ -45,9 +43,6 @@ module.exports = {
     ],
   },
   plugins: [
-    new webpack.ProvidePlugin({
-      Buffer: ['buffer', 'Buffer'],
-    }),
     new Dotenv({
       systemvars: true,
     }),

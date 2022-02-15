@@ -3,6 +3,8 @@ package workspace
 import (
 	"fmt"
 
+	"github.com/butlerhq/butler/internal/airbyte/destinations"
+
 	"github.com/butlerhq/butler/services/users/repositories"
 	"github.com/butlerhq/butler/services/users/sendgrid"
 	"gorm.io/gorm"
@@ -16,9 +18,10 @@ type WorkspaceUsecase struct {
 	DB               *gorm.DB
 	WebAppBaseURL    string
 	AirbyteServerURL string
+	Catalog          *destinations.DestinationCatalog
 }
 
-func NewWorkspaceUsecase(db *gorm.DB, sendgridAPIKey, webAppBaseURL, airbyteServerUrl string) *WorkspaceUsecase {
+func NewWorkspaceUsecase(db *gorm.DB, sendgridAPIKey, webAppBaseURL, airbyteServerUrl string, catalog *destinations.DestinationCatalog) *WorkspaceUsecase {
 	return &WorkspaceUsecase{
 		OrganizationRepo: repositories.NewOrganizationRepo(db),
 		WorkspaceRepo:    repositories.NewWorkspaceRepo(db),
@@ -27,6 +30,7 @@ func NewWorkspaceUsecase(db *gorm.DB, sendgridAPIKey, webAppBaseURL, airbyteServ
 		DB:               db,
 		WebAppBaseURL:    webAppBaseURL,
 		AirbyteServerURL: airbyteServerUrl,
+		Catalog:          catalog,
 	}
 }
 

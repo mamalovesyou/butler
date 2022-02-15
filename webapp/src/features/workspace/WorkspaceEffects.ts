@@ -22,8 +22,6 @@ export function* onCreateOrganizationRequest() {
         const response: AxiosResponse<V1OrganizationResponse> =
           yield Api.v1.usersServiceCreateOrganization(payload);
         yield put(Actions.createOrganizationSuccess(response.data));
-
-
       } catch (error) {
         console.log(error)
         const rpcError: GoogleRpcStatus = error.response.data;
@@ -59,6 +57,15 @@ export function* onListOrganizationsRequest() {
   });
 }
 
+// Redirect to onboarding if there is no organizations listed
+export function* onListOrganizationsSuccess() {
+    yield takeEvery(ActionTypes.LIST_ORGANIZATIONS_SUCCESS, function* ({ payload }: ActionTypes.IListOrganizationsSuccess) {
+       if (payload.organizations.length == 0) {
+           yield put(push(ONBOARDING_ROOT_PATH));
+       }
+    });
+}
+
 export function* onCreateWorkspaceRequest() {
   yield takeEvery(
     ActionTypes.CREATE_WORKSPACE_REQUEST,
@@ -67,14 +74,13 @@ export function* onCreateWorkspaceRequest() {
         const response: AxiosResponse<V1WorkspaceResponse> =
           yield Api.v1.usersServiceCreateWorkspace(payload);
         yield put(Actions.createWorkspaceSuccess(response.data));
-
         // Next step if this is onboarding page
         const location: Location = yield select(useLocation);
         if (location.pathname === ONBOARDING_ROOT_PATH) {
           yield put(setOnboardingStep(OnboardingStep.CONNECT_DATA_SOURCE));
         }
       } catch (error) {
-        const rpcError: GoogleRpcStatus = error.response.data;
+        const rpcError: GoogleRpcStatus = error?.response?.data;
         yield put(Actions.createWorkspaceFailure(rpcError));
       }
     }
@@ -127,6 +133,7 @@ export const workspaceEffects = [
   fork(onCreateOrganizationSuccess),
   fork(onCreateWorkspaceSuccess),
   fork(onListOrganizationsRequest),
+  fork(onListOrganizationsSuccess),
   fork(onCreateWorkspaceRequest),
 ];
 

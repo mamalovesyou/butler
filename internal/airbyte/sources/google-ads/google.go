@@ -1,10 +1,12 @@
-package sources
+package google_ads
 
 import (
 	"context"
 	"errors"
 	"fmt"
 	"strconv"
+
+	"github.com/butlerhq/butler/internal/airbyte/sources"
 
 	"github.com/butlerhq/butler/api/services/octopus/v1"
 	"github.com/butlerhq/butler/services/octopus/config"
@@ -14,31 +16,9 @@ import (
 )
 
 const GOOGLE_ADS_AIRBYTE_NAME = "Google Ads"
-const GOOGLE_ADS_CONFIG_INPUT_JSON_SCHEMA = `{
-	  "$id": "https://example.com/person.schema.json",
-	  "$schema": "https://json-schema.org/draft/2020-12/schema",
-	  "title": "GoogleAdwordsSource",
-	  "type": "object",
-      "required": [ "developer_token", "customer_id", "start_date"],
-	  "properties": {
-		"developer_token": {
-		  "type": "string",
-		  "description": "Developer token granted by Google to use their APIs."
-		},
-		"customer_id": {
-		  "type": "string",
-		  "description": "Customer ID must be specified as a 10-digit number without dashes"
-		},
-		"start_date": {
-		  "description": "UTC date and time in the format 2017-01-25. Any data before this date will not be replicated.",
-		  "type": "string",
-          "format": "date"
-		}
-	  }
-	}`
 
 type GoogleAdWordsSource struct {
-	OAuth2DataSource
+	sources.OAuth2DataSource
 }
 
 func NewGoogleAdWordsSource(cfg config.OAuthSourceConfig, redirectURL string) *GoogleAdWordsSource {
@@ -53,11 +33,12 @@ func NewGoogleAdWordsSource(cfg config.OAuthSourceConfig, redirectURL string) *G
 		RedirectURL: redirectURL,
 	}
 	return &GoogleAdWordsSource{
-		OAuth2DataSource{
-			BaseDataSource: BaseDataSource{
+		sources.OAuth2DataSource{
+			BaseDataSource: sources.BaseDataSource{
 				Name:                  GOOGLE_ADS_AIRBYTE_NAME,
 				ConfigInputJSONSchema: GOOGLE_ADS_CONFIG_INPUT_JSON_SCHEMA,
-				AuthScheme:            OAUTH2,
+				SyncCatalogJSON:       GOOGLE_ADS_STREAMS_CATALOG,
+				AuthScheme:            sources.OAUTH2,
 			},
 			OauthConfig: oauthCfg,
 			AuthURL:     oauthCfg.AuthCodeURL("", oauth2.AccessTypeOffline, oauth2.ApprovalForce),
@@ -96,10 +77,8 @@ func (gc *GoogleAdWordsSource) ValidateAndFormatConfig(config map[string]interfa
 	return formattedConfig, nil
 }
 
-func (lc *GoogleAdWordsSource) GetStreamCatalog() *SyncCatalog {
-	return &SyncCatalog{
-		Streams: []map[string]interface{}{},
-	}
+func (gc *GoogleAdWordsSource) GetStreamCatalog() string {
+	return gc.SyncCatalogJSON
 }
 
 func (gc *GoogleAdWordsSource) GetConfig() *oauth2.Config {

@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 
-	"github.com/butlerhq/butler/services/octopus/sources"
+	"github.com/butlerhq/butler/internal/airbyte/sources"
 
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/services/octopus/models"

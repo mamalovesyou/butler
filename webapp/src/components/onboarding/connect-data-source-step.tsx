@@ -1,16 +1,12 @@
 import type {FC} from 'react';
 import {
-    Avatar,
     Box,
     Button,
-    Card,
-    CardContent,
-    Grid,
     Typography
 } from '@mui/material';
 import {useDispatch} from 'react-redux';
 import {push} from 'redux-first-history';
-import {DASHBOARD_ROOT_PATH} from '../../routes';
+import {DASHBOARD_ROOT_PATH, DATA_SOURCES_ROOT_PATH} from '../../routes';
 import {completeOnboardingRequest} from "../../features/onboarding";
 import {useWorkspace} from "../../hooks/use-workspace";
 
@@ -19,7 +15,13 @@ export const ConnectDataSourceStep: FC = (props) => {
     const dispatch = useDispatch();
 
     const { organizationId } = useWorkspace();
-    const handleComplete = () => {
+
+    const handleCreateSource = () => {
+        dispatch(completeOnboardingRequest(organizationId));
+        dispatch(push(DATA_SOURCES_ROOT_PATH));
+    };
+
+    const handleSkip = () => {
         dispatch(completeOnboardingRequest(organizationId));
         dispatch(push(DASHBOARD_ROOT_PATH));
     };
@@ -30,9 +32,12 @@ export const ConnectDataSourceStep: FC = (props) => {
             <Typography color="textSecondary" sx={{mt: 2}} variant="body2">
                 You can think of data sources as channels
             </Typography>
-            <Box sx={{pt: 2}}>
-                <Button variant="contained" onClick={handleComplete}>
-                    {Object.keys(dataSources).length > 0 ? "Complete" : "Skip for now"}
+            <Box sx={{pt: 2, display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                <Button variant="contained" color="primary" onClick={handleCreateSource}>
+                    Connect source
+                </Button>
+                <Button variant="outlined" color="secondary" onClick={handleSkip}>
+                    Skip
                 </Button>
             </Box>
         </div>

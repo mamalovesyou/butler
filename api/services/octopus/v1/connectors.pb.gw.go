@@ -270,7 +270,7 @@ func RegisterConnectorsServiceHandlerServer(ctx context.Context, mux *runtime.Se
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.ConnectorsService/CreateConnector", runtime.WithHTTPPathPattern("/v1/connectors"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.ConnectorsService/CreateConnector", runtime.WithHTTPPathPattern("/v1/connectors/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -287,13 +287,13 @@ func RegisterConnectorsServiceHandlerServer(ctx context.Context, mux *runtime.Se
 
 	})
 
-	mux.Handle("PUT", pattern_ConnectorsService_MutateConnector_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ConnectorsService_MutateConnector_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.ConnectorsService/MutateConnector", runtime.WithHTTPPathPattern("/v1/connectors"))
+		rctx, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.ConnectorsService/MutateConnector", runtime.WithHTTPPathPattern("/v1/connectors/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -444,7 +444,7 @@ func RegisterConnectorsServiceHandlerClient(ctx context.Context, mux *runtime.Se
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/v1.ConnectorsService/CreateConnector", runtime.WithHTTPPathPattern("/v1/connectors"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/v1.ConnectorsService/CreateConnector", runtime.WithHTTPPathPattern("/v1/connectors/create"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -460,11 +460,11 @@ func RegisterConnectorsServiceHandlerClient(ctx context.Context, mux *runtime.Se
 
 	})
 
-	mux.Handle("PUT", pattern_ConnectorsService_MutateConnector_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+	mux.Handle("POST", pattern_ConnectorsService_MutateConnector_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/v1.ConnectorsService/MutateConnector", runtime.WithHTTPPathPattern("/v1/connectors"))
+		rctx, err := runtime.AnnotateContext(ctx, mux, req, "/v1.ConnectorsService/MutateConnector", runtime.WithHTTPPathPattern("/v1/connectors/update"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -546,9 +546,9 @@ func RegisterConnectorsServiceHandlerClient(ctx context.Context, mux *runtime.Se
 var (
 	pattern_ConnectorsService_ListConnectors_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "connectors", "list"}, ""))
 
-	pattern_ConnectorsService_CreateConnector_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "connectors"}, ""))
+	pattern_ConnectorsService_CreateConnector_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "connectors", "create"}, ""))
 
-	pattern_ConnectorsService_MutateConnector_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1}, []string{"v1", "connectors"}, ""))
+	pattern_ConnectorsService_MutateConnector_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "connectors", "update"}, ""))
 
 	pattern_ConnectorsService_GetConnector_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"v1", "connectors", "get"}, ""))
 

@@ -87,11 +87,51 @@ func (svc *AirbyteService) CheckConnection(ctx context.Context, req *airbyte.Exe
 		logger.Error(ctx, "Unable to create airbyte client", zap.Error(err))
 		return &airbyte.CheckConnectionRead{}, errors.ErrInternal
 	}
-
+	logger.Debug(ctx, "With config", zap.Any("config", req.ConnectionConfiguration))
 	resp, err := client.ExecuteSourceCheckConnectionWithResponse(ctx, *req)
 	if err != nil {
 		logger.Error(ctx, "Unable to check connection source on airbyte", zap.Error(err))
 		return &airbyte.CheckConnectionRead{}, errors.ErrInternal
+	}
+
+	if resp.JSON422 != nil {
+		return nil, errors.ErrInvalidArguments
+	}
+
+	return resp.JSON200, nil
+}
+
+func (svc *AirbyteService) CreateConnection(ctx context.Context, req *airbyte.CreateConnectionJSONRequestBody) (*airbyte.ConnectionRead, error) {
+	logger.Info(ctx, "Airbyte create connection...")
+	client, err := airbyte.NewClientWithResponses(svc.AirbyteURL)
+	if err != nil {
+		logger.Error(ctx, "Unable to create airbyte client", zap.Error(err))
+		return nil, errors.ErrInternal
+	}
+	resp, err := client.CreateConnectionWithResponse(ctx, *req)
+	if err != nil {
+		logger.Error(ctx, "Unable to create connection source on airbyte", zap.Error(err))
+		return nil, errors.ErrInternal
+	}
+
+	if resp.JSON422 != nil {
+		return nil, errors.ErrInvalidArguments
+	}
+
+	return resp.JSON200, nil
+}
+
+func (svc *AirbyteService) UpdateConnection(ctx context.Context, req *airbyte.UpdateConnectionJSONRequestBody) (*airbyte.ConnectionRead, error) {
+	logger.Info(ctx, "Airbyte update connection...")
+	client, err := airbyte.NewClientWithResponses(svc.AirbyteURL)
+	if err != nil {
+		logger.Error(ctx, "Unable to create airbyte client", zap.Error(err))
+		return nil, errors.ErrInternal
+	}
+	resp, err := client.UpdateConnectionWithResponse(ctx, *req)
+	if err != nil {
+		logger.Error(ctx, "Unable to update connection source on airbyte", zap.Error(err))
+		return nil, errors.ErrInternal
 	}
 
 	if resp.JSON422 != nil {
