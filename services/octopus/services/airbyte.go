@@ -115,7 +115,7 @@ func (svc *AirbyteService) CreateConnection(ctx context.Context, req *airbyte.Cr
 	}
 
 	if resp.JSON422 != nil {
-		return nil, errors.ErrInvalidArguments
+		return nil, errors.NewInvalidArgsError(err)
 	}
 
 	return resp.JSON200, nil

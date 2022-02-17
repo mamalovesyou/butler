@@ -1,22 +1,21 @@
-import PropTypes from "prop-types";
 import {styled} from "@mui/material/styles";
+import {useSettings} from "../hooks/use-settings";
 
 interface LogoProps {
-    variant?: "light" | "primary";
     height?: number;
     width?: number;
 }
 
 export const Logo = styled((props: LogoProps) => {
-    const {variant, ...other} = props;
+    const { settings } = useSettings();
 
-    const color = variant === "light" ? "#000000" : "#ffffff";
+    const color = settings.theme === "light" ? "#000000" : "#ffffff";
 
     return (
         <svg version="1.0" width="92.333333pt" height="110.825301pt"
              viewBox="0 0 92.333333 110.825301" preserveAspectRatio="xMidYMid meet"
              xmlns="http://www.w3.org/2000/svg"
-             {...other}>
+             {...props}>
             <metadata>
                 Created by potrace 1.12, written by Peter Selinger 2001-2015
             </metadata>
@@ -29,12 +28,3 @@ export const Logo = styled((props: LogoProps) => {
         </svg>
     );
 })``;
-
-Logo.defaultProps = {
-    variant: "primary",
-};
-
-Logo.propTypes = {
-    variant: PropTypes.oneOf(["light", "primary"]),
-
-};

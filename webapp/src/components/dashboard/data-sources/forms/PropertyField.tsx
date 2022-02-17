@@ -25,6 +25,7 @@ const getInputType = (type: string): string => {
 }
 
 interface PropertyFieldProps {
+    isSecret?: boolean;
     form: FormikProps<object>;
     label: string;
     name: string;
@@ -36,7 +37,7 @@ interface PropertyFieldProps {
 }
 
 export const PropertyField = (props: PropertyFieldProps) => {
-    const { form, jsonProps, name, label, value, error, onBlur} = props;
+    const { isSecret, form, jsonProps, name, label, value, error, onBlur} = props;
     const {description, type, format} = props.jsonProps;
 
     const handleChange = (value) => {
@@ -52,7 +53,7 @@ export const PropertyField = (props: PropertyFieldProps) => {
                                    name={name}
                                    label={label}
                                    helperText={description}
-                                   type={getInputType(property.items?.type)}
+                                   type={isSecret ? "password" : getInputType(property.items?.type)}
                                    onChange={handleChange}
                                    onBlur={onBlur}
                 />
@@ -62,8 +63,9 @@ export const PropertyField = (props: PropertyFieldProps) => {
             default:
                 return <TextField
                     error={error}
-                    type={getInputType(type)}
+                    type={isSecret ? "password" : getInputType(type)}
                     fullWidth
+                    placeholder={isSecret ? "**************" : ""}
                     helperText={jsonProps.description}
                     label={label}
                     margin="normal"

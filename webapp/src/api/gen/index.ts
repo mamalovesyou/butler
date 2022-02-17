@@ -208,8 +208,7 @@ export interface V1CreateConnectorRequest {
   workspaceId?: string;
   airbyteWorkspaceId?: string;
   airbyteSourceDefinitionId?: string;
-  secrets?: object;
-  config?: object;
+  airbyteDestinationId?: string;
 }
 
 export interface V1CreateOrganizationRequest {
@@ -232,7 +231,8 @@ export interface V1DataSource {
   iconSvg?: string;
   authType?: V1AuthType;
   authUrl?: string;
-  configurationInputJSONSchema?: string;
+  configInputJSONSchema?: string;
+  secretsInputJSONSchema?: string;
   airbyteSourceDefinitionId?: string;
 }
 
@@ -280,6 +280,12 @@ export interface V1MutateConnectorRequest {
   connectorId?: string;
   secrets?: object;
   config?: object;
+}
+
+export interface V1MutateConnectorResponse {
+  status?: string;
+  message?: string;
+  logs?: string[];
 }
 
 export interface V1Organization {
@@ -348,18 +354,6 @@ export interface V1SignUpWithInvitationRequest {
   password?: string;
   invitationId?: string;
   token?: string;
-}
-
-export interface V1TestConnectionRequest {
-  connectorId?: string;
-  destinationId?: string;
-  config?: object;
-}
-
-export interface V1TestConnectionResponse {
-  status?: string;
-  message?: string;
-  logs?: string[];
 }
 
 export interface V1User {
@@ -667,28 +661,11 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags ConnectorsService
-     * @name ConnectorsServiceTestConnection
-     * @request POST:/v1/connectors/test
-     */
-    connectorsServiceTestConnection: (body: V1TestConnectionRequest, params: RequestParams = {}) =>
-      this.request<V1TestConnectionResponse, GoogleRpcStatus>({
-        path: `/v1/connectors/test`,
-        method: "POST",
-        body: body,
-        type: ContentType.Json,
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags ConnectorsService
      * @name ConnectorsServiceMutateConnector
      * @request POST:/v1/connectors/update
      */
     connectorsServiceMutateConnector: (body: V1MutateConnectorRequest, params: RequestParams = {}) =>
-      this.request<V1Connector, GoogleRpcStatus>({
+      this.request<V1MutateConnectorResponse, GoogleRpcStatus>({
         path: `/v1/connectors/update`,
         method: "POST",
         body: body,

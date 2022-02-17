@@ -64,7 +64,9 @@ export const ConnectorDetailsEdit = ({connector}: ConnectorDetailsEditProps) => 
                 <Typography variant="h6">Configuration</Typography>
                 <ConfigInputForm connectorId={connector.id}
                                  initialValues={connector.config}
-                                 inputJSONSchema={connector.source.configurationInputJSONSchema} />
+                                 configJSONSchema={connector.source.configInputJSONSchema}
+                                 secretsJSONSchema={connector.source.secretsInputJSONSchema}
+                />
             </Paper>
         </>
 

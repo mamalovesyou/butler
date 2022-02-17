@@ -5,10 +5,12 @@ import "golang.org/x/oauth2"
 const OAUTH_METHOD = "oAuth2.0"
 
 type Credentials struct {
-	AuthMethod   string `json:"auth_method"`
-	ClientID     string `json:"client_id"`
-	ClientSecret string `json:"client_secret"`
-	RefreshToken string `json:"refresh_token"`
+	AuthMethod     string `json:"auth_method,omitempty"`
+	ClientID       string `json:"client_id,omitempty"`
+	ClientSecret   string `json:"client_secret,omitempty"`
+	AccessToken    string `json:"access_token,omitempty"`
+	RefreshToken   string `json:"refresh_token,omitempty"`
+	DeveloperToken string `json:"developer_token,omitempty"`
 }
 
 func NewCredentialsFromOAuth(cfg *oauth2.Config, token *oauth2.Token) *Credentials {
@@ -17,5 +19,6 @@ func NewCredentialsFromOAuth(cfg *oauth2.Config, token *oauth2.Token) *Credentia
 		ClientID:     cfg.ClientID,
 		ClientSecret: cfg.ClientSecret,
 		RefreshToken: token.RefreshToken,
+		AccessToken:  token.AccessToken,
 	}
 }

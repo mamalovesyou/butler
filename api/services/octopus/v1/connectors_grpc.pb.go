@@ -20,10 +20,9 @@ const _ = grpc.SupportPackageIsVersion7
 type ConnectorsServiceClient interface {
 	ListConnectors(ctx context.Context, in *ListConnectorsRequest, opts ...grpc.CallOption) (*ConnectorList, error)
 	CreateConnector(ctx context.Context, in *CreateConnectorRequest, opts ...grpc.CallOption) (*Connector, error)
-	MutateConnector(ctx context.Context, in *MutateConnectorRequest, opts ...grpc.CallOption) (*Connector, error)
+	MutateConnector(ctx context.Context, in *MutateConnectorRequest, opts ...grpc.CallOption) (*MutateConnectorResponse, error)
 	GetConnector(ctx context.Context, in *GetConnectorRequest, opts ...grpc.CallOption) (*Connector, error)
 	AuthenticateOAuthConnector(ctx context.Context, in *AuthenticateConnectorRequest, opts ...grpc.CallOption) (*Connector, error)
-	TestConnection(ctx context.Context, in *TestConnectionRequest, opts ...grpc.CallOption) (*TestConnectionResponse, error)
 }
 
 type connectorsServiceClient struct {
@@ -52,8 +51,8 @@ func (c *connectorsServiceClient) CreateConnector(ctx context.Context, in *Creat
 	return out, nil
 }
 
-func (c *connectorsServiceClient) MutateConnector(ctx context.Context, in *MutateConnectorRequest, opts ...grpc.CallOption) (*Connector, error) {
-	out := new(Connector)
+func (c *connectorsServiceClient) MutateConnector(ctx context.Context, in *MutateConnectorRequest, opts ...grpc.CallOption) (*MutateConnectorResponse, error) {
+	out := new(MutateConnectorResponse)
 	err := c.cc.Invoke(ctx, "/v1.ConnectorsService/MutateConnector", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -79,25 +78,15 @@ func (c *connectorsServiceClient) AuthenticateOAuthConnector(ctx context.Context
 	return out, nil
 }
 
-func (c *connectorsServiceClient) TestConnection(ctx context.Context, in *TestConnectionRequest, opts ...grpc.CallOption) (*TestConnectionResponse, error) {
-	out := new(TestConnectionResponse)
-	err := c.cc.Invoke(ctx, "/v1.ConnectorsService/TestConnection", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
 // ConnectorsServiceServer is the server API for ConnectorsService service.
 // All implementations must embed UnimplementedConnectorsServiceServer
 // for forward compatibility
 type ConnectorsServiceServer interface {
 	ListConnectors(context.Context, *ListConnectorsRequest) (*ConnectorList, error)
 	CreateConnector(context.Context, *CreateConnectorRequest) (*Connector, error)
-	MutateConnector(context.Context, *MutateConnectorRequest) (*Connector, error)
+	MutateConnector(context.Context, *MutateConnectorRequest) (*MutateConnectorResponse, error)
 	GetConnector(context.Context, *GetConnectorRequest) (*Connector, error)
 	AuthenticateOAuthConnector(context.Context, *AuthenticateConnectorRequest) (*Connector, error)
-	TestConnection(context.Context, *TestConnectionRequest) (*TestConnectionResponse, error)
 	mustEmbedUnimplementedConnectorsServiceServer()
 }
 
@@ -111,7 +100,7 @@ func (UnimplementedConnectorsServiceServer) ListConnectors(context.Context, *Lis
 func (UnimplementedConnectorsServiceServer) CreateConnector(context.Context, *CreateConnectorRequest) (*Connector, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateConnector not implemented")
 }
-func (UnimplementedConnectorsServiceServer) MutateConnector(context.Context, *MutateConnectorRequest) (*Connector, error) {
+func (UnimplementedConnectorsServiceServer) MutateConnector(context.Context, *MutateConnectorRequest) (*MutateConnectorResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MutateConnector not implemented")
 }
 func (UnimplementedConnectorsServiceServer) GetConnector(context.Context, *GetConnectorRequest) (*Connector, error) {
@@ -119,9 +108,6 @@ func (UnimplementedConnectorsServiceServer) GetConnector(context.Context, *GetCo
 }
 func (UnimplementedConnectorsServiceServer) AuthenticateOAuthConnector(context.Context, *AuthenticateConnectorRequest) (*Connector, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AuthenticateOAuthConnector not implemented")
-}
-func (UnimplementedConnectorsServiceServer) TestConnection(context.Context, *TestConnectionRequest) (*TestConnectionResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method TestConnection not implemented")
 }
 func (UnimplementedConnectorsServiceServer) mustEmbedUnimplementedConnectorsServiceServer() {}
 
@@ -226,24 +212,6 @@ func _ConnectorsService_AuthenticateOAuthConnector_Handler(srv interface{}, ctx 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _ConnectorsService_TestConnection_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(TestConnectionRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(ConnectorsServiceServer).TestConnection(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/v1.ConnectorsService/TestConnection",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ConnectorsServiceServer).TestConnection(ctx, req.(*TestConnectionRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
 // ConnectorsService_ServiceDesc is the grpc.ServiceDesc for ConnectorsService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -270,10 +238,6 @@ var ConnectorsService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AuthenticateOAuthConnector",
 			Handler:    _ConnectorsService_AuthenticateOAuthConnector_Handler,
-		},
-		{
-			MethodName: "TestConnection",
-			Handler:    _ConnectorsService_TestConnection_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -29,8 +29,7 @@ import (
 type DataSource interface {
 	GetName() string
 	GetAuthScheme() sources.AuthScheme
-	GetAirbyteConfig(config, secrets []byte) (interface{}, error)
-	ValidateAndFormatConfig(config map[string]interface{}) (map[string]interface{}, error)
+	GetAirbyteConfig(config, secrets map[string]interface{}) (interface{}, error)
 	BindAirbyteSource(sourceID string, icon string)
 	GetStreamCatalog() string
 	ToPb() *octopus.DataSource
@@ -57,7 +56,7 @@ type Catalog struct {
 
 func NewCatalog(cfg *config.SourcesConfig, airbyteURL string) *Catalog {
 	// Init data-sources
-	googleSource := google_ads.NewGoogleAdWordsSource(cfg.Google, cfg.RedirectURL)
+	googleSource := google_ads.NewGoogleAdsSource(cfg.Google, cfg.RedirectURL)
 	linkedinSource := linkedin_ads.NewLinkedinAdsSource(cfg.Linkedin, cfg.RedirectURL)
 
 	return &Catalog{

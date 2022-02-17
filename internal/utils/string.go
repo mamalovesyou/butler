@@ -20,3 +20,11 @@ func EnvToViperKey(str string) string {
 	dot := strings.ReplaceAll(str, "_", ".")
 	return strings.ToLower(dot)
 }
+
+// DerefString takes a pointer to string and the corresponding value or empty string if pointer is nil
+func DerefString(s *string) string {
+	if s != nil {
+		return *s
+	}
+	return ""
+}

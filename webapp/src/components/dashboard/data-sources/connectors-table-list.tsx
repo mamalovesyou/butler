@@ -40,6 +40,7 @@ export const ConnectorsTableList = (props: ConnectorsTableListProps) => {
     }, [sources, connectors]);
 
     const goToConnectorDetails = (connectorId: string) => {
+        console.log("click: ", connectorId)
         dispatch(push(DATA_SOURCES_ROOT_PATH + '/' + connectorId))
     }
 
@@ -47,7 +48,8 @@ export const ConnectorsTableList = (props: ConnectorsTableListProps) => {
         <List dense sx={{width: '100%', p: 0, bgcolor: 'background.paper'}}>
             {enhancedConnectors.map((connector: ConnectorWithSource, index) => {
                 return (
-                    <Box key={connector.id}>
+                    <Box key={connector.id}
+                         onClick={() => goToConnectorDetails(connector.id)}>
                         <ListItem
                             secondaryAction={!connector.isActive ?
                                 <Chip color="error" label="INACTIVE"/>

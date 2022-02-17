@@ -3,6 +3,8 @@ package models
 import (
 	"encoding/json"
 
+	"github.com/butlerhq/butler/internal/utils"
+
 	"google.golang.org/protobuf/types/known/structpb"
 
 	"github.com/butlerhq/butler/api/services/octopus/v1"
@@ -35,4 +37,15 @@ func (c *ConnectorSecret) ToPb() *octopus.ConnectorSecret {
 		panic(err)
 	}
 	return &octopus.ConnectorSecret{Value: result}
+}
+
+// MergeNewValues will override existing values with values passed and return the resulting map
+func (c *ConnectorSecret) MergeNewValues(values map[string]interface{}) map[string]interface{} {
+	existing := make(map[string]interface{})
+	err := json.Unmarshal([]byte(c.Value), &existing)
+	if err != nil {
+		panic(err)
+	}
+	// MergeMaps override values with latest map by default
+	return utils.MergeMaps(existing, values)
 }

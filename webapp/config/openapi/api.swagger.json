@@ -217,38 +217,6 @@
         ]
       }
     },
-    "/v1/connectors/test": {
-      "post": {
-        "operationId": "ConnectorsService_TestConnection",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1.TestConnectionResponse"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/google.rpc.Status"
-            }
-          }
-        },
-        "parameters": [
-          {
-            "name": "body",
-            "in": "body",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/v1.TestConnectionRequest"
-            }
-          }
-        ],
-        "tags": [
-          "ConnectorsService"
-        ]
-      }
-    },
     "/v1/connectors/update": {
       "post": {
         "operationId": "ConnectorsService_MutateConnector",
@@ -256,7 +224,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1.Connector"
+              "$ref": "#/definitions/v1.MutateConnectorResponse"
             }
           },
           "default": {
@@ -932,11 +900,8 @@
         "airbyteSourceDefinitionId": {
           "type": "string"
         },
-        "secrets": {
-          "type": "object"
-        },
-        "config": {
-          "type": "object"
+        "airbyteDestinationId": {
+          "type": "string"
         }
       }
     },
@@ -988,7 +953,10 @@
         "authUrl": {
           "type": "string"
         },
-        "configurationInputJSONSchema": {
+        "configInputJSONSchema": {
+          "type": "string"
+        },
+        "secretsInputJSONSchema": {
           "type": "string"
         },
         "airbyteSourceDefinitionId": {
@@ -1096,6 +1064,23 @@
         },
         "config": {
           "type": "object"
+        }
+      }
+    },
+    "v1.MutateConnectorResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "logs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
         }
       }
     },
@@ -1262,37 +1247,6 @@
         },
         "token": {
           "type": "string"
-        }
-      }
-    },
-    "v1.TestConnectionRequest": {
-      "type": "object",
-      "properties": {
-        "connectorId": {
-          "type": "string"
-        },
-        "destinationId": {
-          "type": "string"
-        },
-        "config": {
-          "type": "object"
-        }
-      }
-    },
-    "v1.TestConnectionResponse": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "string"
-        },
-        "message": {
-          "type": "string"
-        },
-        "logs": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
         }
       }
     },

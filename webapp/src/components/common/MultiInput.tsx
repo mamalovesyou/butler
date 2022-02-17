@@ -1,6 +1,7 @@
 import {Autocomplete, Box, Chip, TextField} from "@mui/material";
 import {useEffect, useState} from "react";
 import * as React from "react";
+import isEqual from "lodash/isEqual";
 
 interface MultiInputProps {
     name: string;
@@ -19,8 +20,7 @@ export const ChipInput = (props: MultiInputProps) => {
     const [receivers, setReceivers] = useState<string[]>(values.map(String));
 
     useEffect(() => {
-        if (onChange) {
-            console.log('onchange', receivers)
+        if (!isEqual(values, receivers) && onChange) {
             if (type === "number"){ onChange(receivers.map(Number)) }
             else { onChange(receivers) }
         }

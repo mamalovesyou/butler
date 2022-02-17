@@ -48,10 +48,6 @@ func (svc *WorkspaceUsecase) CreateWorkspace(ctx context.Context, organizationID
 			return err
 		}
 		butlerWorkspace.AirbyteWorkspaceID = wsResponse.JSON200.WorkspaceId
-		if err = tx.Create(&butlerWorkspace).Error; err != nil {
-			logger.Error(ctx, "Unable to create butler workspace", zap.Error(err))
-			return err
-		}
 
 		// Create s3 destination
 		destination, ok := svc.Catalog.GetByName("S3")
@@ -76,6 +72,13 @@ func (svc *WorkspaceUsecase) CreateWorkspace(ctx context.Context, organizationID
 		if err != nil || resp.JSON200 == nil {
 			logger.Error(ctx, "Unable to create airbyte s3 destination", zap.Error(err), zap.Any("airbyteErr", resp.JSON422))
 			return errors.ErrInternal
+		}
+
+		// Create workspace
+		butlerWorkspace.AirbyteDestinationID = resp.JSON200.DestinationId
+		if err = tx.Create(&butlerWorkspace).Error; err != nil {
+			logger.Error(ctx, "Unable to create butler workspace", zap.Error(err))
+			return err
 		}
 		return nil
 	})

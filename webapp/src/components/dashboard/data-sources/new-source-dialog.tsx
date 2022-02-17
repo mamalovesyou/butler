@@ -49,6 +49,7 @@ const NewSourceStepper = (props: NewSourceStepperProps) => {
             workspaceId: workspace.id,
             airbyteWorkspaceId: workspace.airbyteWorkspaceId,
             airbyteSourceDefinitionId: source.airbyteSourceDefinitionId,
+            airbyteDestinationId: workspace.airbyteDestinationId,
         }).then((response) => {
             setConnector(response.data);
             setActiveStep(1);
@@ -106,25 +107,23 @@ const NewSourceStepper = (props: NewSourceStepperProps) => {
                     </Button>
                 </Box>
             </Box> : null}
-        {activeStep === 1 ? <Box sx={{display: 'flex', flexDirection: 'column', py: 5, px: 10, alignItems: 'center', width: '100%'}}>
-            {source?.authType === V1AuthType.OAUTH2 ?
-                <OAuthPopup onCode={onOAuthConnect}
-                            title={"OAuth 2"}
-                            url={source?.authUrl}>
-                    <Button variant="contained" size="large">
-                        Authenticate
-                    </Button>
-                </OAuthPopup> : <Typography>Not supported</Typography>}
-        </Box> : null}
+        {activeStep === 1 ?
+            <Box sx={{display: 'flex', flexDirection: 'column', py: 5, px: 10, alignItems: 'center', width: '100%'}}>
+                {source?.authType === V1AuthType.OAUTH2 ?
+                    <OAuthPopup onCode={onOAuthConnect}
+                                title={"OAuth 2"}
+                                url={source?.authUrl}>
+                        <Button variant="contained" size="large">
+                            Authenticate
+                        </Button>
+                    </OAuthPopup> : <Typography>Not supported</Typography>}
+            </Box> : null}
         {(activeStep === 2 && connector) ? <Box>
-            <ConfigInputForm
-            initialValues={{}}
-            inputJSONSchema={source.configurationInputJSONSchema}
-            onChange={(values) => console.log("new values", values)}
-        />
-            <Button variant="contained" size="large">
-                Set up
-            </Button>
+            <ConfigInputForm connectorId={connector.id}
+                             initialValues={connector.config}
+                             configJSONSchema={source.configInputJSONSchema}
+                             secretsJSONSchema={source.secretsInputJSONSchema}
+            />
         </Box> : null}
     </>
 }
@@ -188,14 +187,14 @@ export const NewSourceDialog = (props: NewSourceDialogProps) => {
                 <Divider/>
                 <DialogContent>
                     {(!loading && error !== "") ? <Box sx={{width: '100%', p: 4}}>
-                        <Alert severity="error">
-                            <AlertTitle>Error</AlertTitle>
-                            {error}
-                        </Alert>
-                    </Box> :
-                    <Box sx={{width: '100%'}}>
-                        <NewSourceStepper sources={sourcesById}/>
-                    </Box> }
+                            <Alert severity="error">
+                                <AlertTitle>Error</AlertTitle>
+                                {error}
+                            </Alert>
+                        </Box> :
+                        <Box sx={{width: '100%'}}>
+                            <NewSourceStepper sources={sourcesById}/>
+                        </Box>}
                 </DialogContent>
             </Dialog> : null}
         </>

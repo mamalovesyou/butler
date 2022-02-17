@@ -16,17 +16,21 @@ message ListConnectorsRequest {
 
 message CreateConnectorRequest {
   string workspaceId = 1;
-
   string airbyteWorkspaceId = 2;
   string airbyteSourceDefinitionId = 3;
-  google.protobuf.Struct secrets = 4;
-  google.protobuf.Struct config = 5;
+  string airbyteDestinationId = 4;
 }
 
 message MutateConnectorRequest {
   string connectorId = 1;
   google.protobuf.Struct secrets = 2;
   google.protobuf.Struct config = 3;
+}
+
+message MutateConnectorResponse {
+  string status = 2;
+  string message = 3;
+  repeated string logs = 4;
 }
 
 message GetConnectorRequest {
@@ -36,12 +40,6 @@ message GetConnectorRequest {
 message AuthenticateConnectorRequest {
   string connectorId = 1;
   string code = 3;
-}
-
-message TestConnectionRequest {
-  string connectorId = 1;
-  string destinationId = 2;
-  google.protobuf.Struct config = 3;
 }
 
 message TestConnectionResponse {
@@ -87,7 +85,7 @@ service ConnectorsService {
     };
   }
 
-  rpc MutateConnector(MutateConnectorRequest) returns (Connector) {
+  rpc MutateConnector(MutateConnectorRequest) returns (MutateConnectorResponse) {
     option (google.api.http) = {
       post: "/v1/connectors/update",
       body: "*"
@@ -104,13 +102,6 @@ service ConnectorsService {
   rpc AuthenticateOAuthConnector(AuthenticateConnectorRequest) returns (Connector) {
     option (google.api.http) = {
       post: "/v1/connectors/oauth",
-      body: "*"
-    };
-  }
-
-  rpc TestConnection(TestConnectionRequest) returns (TestConnectionResponse) {
-    option (google.api.http) = {
-      post: "/v1/connectors/test",
       body: "*"
     };
   }

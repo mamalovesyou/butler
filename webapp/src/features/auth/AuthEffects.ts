@@ -127,7 +127,7 @@ export function* onLogout() {
     yield takeEvery(ActionTypes.LOGOUT, function* () {
         // Purge persisted redux store and redirect to login
         yield call(persistor.purge);
-        yield put(push(LOGIN_ROUTE_PATH));
+        // yield put(push(LOGIN_ROUTE_PATH));
     });
 }
 

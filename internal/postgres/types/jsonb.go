@@ -30,7 +30,10 @@ func (j *JSONB) ToPbStruct() *structpb.Struct {
 	return result
 }
 
-func (j *JSONB) AsBytes() ([]byte, error) {
+func (j *JSONB) AsBytes() []byte {
 	valueBytes, err := json.Marshal(j)
-	return valueBytes, err
+	if err != nil {
+		panic(err)
+	}
+	return valueBytes
 }

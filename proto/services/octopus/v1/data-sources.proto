@@ -13,8 +13,9 @@ message DataSource {
   string iconSvg = 2;
   AuthType authType = 3;
   string authUrl = 4;
-  string configurationInputJSONSchema = 5;
-  string airbyteSourceDefinitionId = 6;
+  string configInputJSONSchema = 5;
+  string secretsInputJSONSchema = 6;
+  string airbyteSourceDefinitionId = 7;
 }
 
 message DataSourceList {

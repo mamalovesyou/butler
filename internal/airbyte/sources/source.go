@@ -19,6 +19,7 @@ type BaseDataSource struct {
 	Icon                      string
 	AirbyteSourceDefinitionID string
 	ConfigInputJSONSchema     string
+	SecretsInputJSONSchema    string
 	SyncCatalogJSON           string
 }
 
@@ -35,18 +36,19 @@ func (src *BaseDataSource) BindAirbyteSource(sourceDefinitionID, icon string) {
 	src.Icon = icon
 }
 
-func (src *BaseDataSource) GetAirbyteConfig(config, secrets []byte) (interface{}, error) {
+func (src *BaseDataSource) GetAirbyteConfig(config, secrets map[string]interface{}) (interface{}, error) {
 	return nil, errors.New(fmt.Sprintf("%s doesn't implement GetAirbyteConfig", src.Name))
 }
 
 func (src *BaseDataSource) ToPb() *octopus.DataSource {
 	authTypeInt := octopus.AuthType_value[string(src.AuthScheme)]
 	return &octopus.DataSource{
-		Name:                         src.Name,
-		AuthType:                     octopus.AuthType(authTypeInt),
-		IconSvg:                      src.Icon,
-		ConfigurationInputJSONSchema: src.ConfigInputJSONSchema,
-		AirbyteSourceDefinitionId:    src.AirbyteSourceDefinitionID,
+		Name:                      src.Name,
+		AuthType:                  octopus.AuthType(authTypeInt),
+		IconSvg:                   src.Icon,
+		ConfigInputJSONSchema:     src.ConfigInputJSONSchema,
+		SecretsInputJSONSchema:    src.SecretsInputJSONSchema,
+		AirbyteSourceDefinitionId: src.AirbyteSourceDefinitionID,
 	}
 }
 
