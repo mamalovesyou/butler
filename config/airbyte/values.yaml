@@ -1,0 +1,10 @@
+postgresql:
+  enabled: false
+
+externalDatabase:
+  host: butler-airbyte-prod.c0xpdoh6rtn4.us-east-2.rds.amazonaws.com
+  user: butler
+  database: airbyte-db
+  password: "7!YvVvdZz9$Jzkj7"
+
+

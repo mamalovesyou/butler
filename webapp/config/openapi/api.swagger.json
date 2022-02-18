@@ -9,7 +9,13 @@
       "name": "UsersService"
     },
     {
+      "name": "DataSourcesService"
+    },
+    {
       "name": "OctopusService"
+    },
+    {
+      "name": "ConnectorsService"
     }
   ],
   "consumes": [
@@ -51,28 +57,6 @@
         ]
       }
     },
-    "/v1/connector/catalog": {
-      "get": {
-        "operationId": "OctopusService_GetCatalogConnectors",
-        "responses": {
-          "200": {
-            "description": "A successful response.",
-            "schema": {
-              "$ref": "#/definitions/v1.CatalogConnectorList"
-            }
-          },
-          "default": {
-            "description": "An unexpected error response.",
-            "schema": {
-              "$ref": "#/definitions/google.rpc.Status"
-            }
-          }
-        },
-        "tags": [
-          "OctopusService"
-        ]
-      }
-    },
     "/v1/connector/connect/oauth": {
       "post": {
         "operationId": "OctopusService_ConnectWithCode",
@@ -105,14 +89,14 @@
         ]
       }
     },
-    "/v1/connectors/accounts": {
+    "/v1/connectors/create": {
       "post": {
-        "operationId": "OctopusService_ListAccounts",
+        "operationId": "ConnectorsService_CreateConnector",
         "responses": {
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1.ListAccountsResponse"
+              "$ref": "#/definitions/v1.Connector"
             }
           },
           "default": {
@@ -128,16 +112,166 @@
             "in": "body",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/v1.ListAccountsRequest"
+              "$ref": "#/definitions/v1.CreateConnectorRequest"
             }
           }
         ],
         "tags": [
-          "OctopusService"
+          "ConnectorsService"
         ]
       }
     },
-    "/v1/connectors/accounts/setup": {
+    "/v1/connectors/get": {
+      "post": {
+        "operationId": "ConnectorsService_GetConnector",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.Connector"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.GetConnectorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ConnectorsService"
+        ]
+      }
+    },
+    "/v1/connectors/list": {
+      "post": {
+        "operationId": "ConnectorsService_ListConnectors",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.ConnectorList"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.ListConnectorsRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ConnectorsService"
+        ]
+      }
+    },
+    "/v1/connectors/oauth": {
+      "post": {
+        "operationId": "ConnectorsService_AuthenticateOAuthConnector",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.Connector"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.AuthenticateConnectorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ConnectorsService"
+        ]
+      }
+    },
+    "/v1/connectors/update": {
+      "post": {
+        "operationId": "ConnectorsService_MutateConnector",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.MutateConnectorResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1.MutateConnectorRequest"
+            }
+          }
+        ],
+        "tags": [
+          "ConnectorsService"
+        ]
+      }
+    },
+    "/v1/data-sources": {
+      "get": {
+        "operationId": "DataSourcesService_ListAvailableSources",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1.DataSourceList"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/google.rpc.Status"
+            }
+          }
+        },
+        "tags": [
+          "DataSourcesService"
+        ]
+      }
+    },
+    "/v1/data-sources/accounts/setup": {
       "post": {
         "operationId": "OctopusService_SelectAccount",
         "responses": {
@@ -592,6 +726,14 @@
       "additionalProperties": {},
       "description": "`Any` contains an arbitrary serialized protocol buffer message along with a\nURL that describes the type of the serialized message.\n\nProtobuf library provides support to pack/unpack Any values in the form\nof utility functions or additional generated methods of the Any type.\n\nExample 1: Pack and unpack a message in C++.\n\n    Foo foo = ...;\n    Any any;\n    any.PackFrom(foo);\n    ...\n    if (any.UnpackTo(\u0026foo)) {\n      ...\n    }\n\nExample 2: Pack and unpack a message in Java.\n\n    Foo foo = ...;\n    Any any = Any.pack(foo);\n    ...\n    if (any.is(Foo.class)) {\n      foo = any.unpack(Foo.class);\n    }\n\n Example 3: Pack and unpack a message in Python.\n\n    foo = Foo(...)\n    any = Any()\n    any.Pack(foo)\n    ...\n    if any.Is(Foo.DESCRIPTOR):\n      any.Unpack(foo)\n      ...\n\n Example 4: Pack and unpack a message in Go\n\n     foo := \u0026pb.Foo{...}\n     any, err := anypb.New(foo)\n     if err != nil {\n       ...\n     }\n     ...\n     foo := \u0026pb.Foo{}\n     if err := any.UnmarshalTo(foo); err != nil {\n       ...\n     }\n\nThe pack methods provided by protobuf library will by default use\n'type.googleapis.com/full.type.name' as the type URL and the unpack\nmethods only use the fully qualified type name after the last '/'\nin the type URL, for example \"foo.bar.com/x/y.z\" will yield type\nname \"y.z\".\n\n\nJSON\n====\nThe JSON representation of an `Any` value uses the regular\nrepresentation of the deserialized, embedded message, with an\nadditional field `@type` which contains the type URL. Example:\n\n    package google.profile;\n    message Person {\n      string first_name = 1;\n      string last_name = 2;\n    }\n\n    {\n      \"@type\": \"type.googleapis.com/google.profile.Person\",\n      \"firstName\": \u003cstring\u003e,\n      \"lastName\": \u003cstring\u003e\n    }\n\nIf the embedded message type is well-known and has a custom JSON\nrepresentation, that representation will be embedded adding a field\n`value` which holds the custom JSON in addition to the `@type`\nfield. Example (for message [google.protobuf.Duration][]):\n\n    {\n      \"@type\": \"type.googleapis.com/google.protobuf.Duration\",\n      \"value\": \"1.212s\"\n    }"
     },
+    "google.protobuf.NullValue": {
+      "type": "string",
+      "enum": [
+        "NULL_VALUE"
+      ],
+      "default": "NULL_VALUE",
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\n The JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
+    },
     "google.rpc.Status": {
       "type": "object",
       "properties": {
@@ -617,6 +759,17 @@
         "API_KEY"
       ],
       "default": "OAUTH2"
+    },
+    "v1.AuthenticateConnectorRequest": {
+      "type": "object",
+      "properties": {
+        "connectorId": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        }
+      }
     },
     "v1.AuthenticatedUser": {
       "type": "object",
@@ -650,34 +803,6 @@
         }
       }
     },
-    "v1.CatalogConnector": {
-      "type": "object",
-      "properties": {
-        "name": {
-          "type": "string"
-        },
-        "iconSvg": {
-          "type": "string"
-        },
-        "authType": {
-          "$ref": "#/definitions/v1.AuthType"
-        },
-        "authUrl": {
-          "type": "string"
-        }
-      }
-    },
-    "v1.CatalogConnectorList": {
-      "type": "object",
-      "properties": {
-        "connectors": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1.CatalogConnector"
-          }
-        }
-      }
-    },
     "v1.CompleteOnboardingRequest": {
       "type": "object",
       "properties": {
@@ -695,8 +820,52 @@
         "provider": {
           "type": "string"
         },
+        "airbyteSourceId": {
+          "type": "string"
+        },
         "code": {
           "type": "string"
+        }
+      }
+    },
+    "v1.Connector": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "workspaceId": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "airbyteSourceDefinitionId": {
+          "type": "string"
+        },
+        "isActive": {
+          "type": "boolean"
+        },
+        "authScheme": {
+          "$ref": "#/definitions/v1.AuthType"
+        },
+        "config": {
+          "type": "object"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "v1.ConnectorList": {
+      "type": "object",
+      "properties": {
+        "connectors": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.Connector"
+          }
         }
       }
     },
@@ -704,10 +873,7 @@
       "type": "object",
       "properties": {
         "value": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "string"
-          }
+          "type": "object"
         }
       }
     },
@@ -719,6 +885,23 @@
         },
         "credentials": {
           "$ref": "#/definitions/v1.ConnectorSecret"
+        }
+      }
+    },
+    "v1.CreateConnectorRequest": {
+      "type": "object",
+      "properties": {
+        "workspaceId": {
+          "type": "string"
+        },
+        "airbyteWorkspaceId": {
+          "type": "string"
+        },
+        "airbyteSourceDefinitionId": {
+          "type": "string"
+        },
+        "airbyteDestinationId": {
+          "type": "string"
         }
       }
     },
@@ -751,6 +934,51 @@
           "type": "string"
         },
         "description": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.DataSource": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "iconSvg": {
+          "type": "string"
+        },
+        "authType": {
+          "$ref": "#/definitions/v1.AuthType"
+        },
+        "authUrl": {
+          "type": "string"
+        },
+        "configInputJSONSchema": {
+          "type": "string"
+        },
+        "secretsInputJSONSchema": {
+          "type": "string"
+        },
+        "airbyteSourceDefinitionId": {
+          "type": "string"
+        }
+      }
+    },
+    "v1.DataSourceList": {
+      "type": "object",
+      "properties": {
+        "sources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1.DataSource"
+          }
+        }
+      }
+    },
+    "v1.GetConnectorRequest": {
+      "type": "object",
+      "properties": {
+        "connectorId": {
           "type": "string"
         }
       }
@@ -817,24 +1045,41 @@
         }
       }
     },
-    "v1.ListAccountsRequest": {
+    "v1.ListConnectorsRequest": {
       "type": "object",
       "properties": {
         "workspaceId": {
           "type": "string"
-        },
-        "provider": {
-          "type": "string"
         }
       }
     },
-    "v1.ListAccountsResponse": {
+    "v1.MutateConnectorRequest": {
       "type": "object",
       "properties": {
-        "accounts": {
+        "connectorId": {
+          "type": "string"
+        },
+        "secrets": {
+          "type": "object"
+        },
+        "config": {
+          "type": "object"
+        }
+      }
+    },
+    "v1.MutateConnectorResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        },
+        "logs": {
           "type": "array",
           "items": {
-            "$ref": "#/definitions/v1.ProviderAccount"
+            "type": "string"
           }
         }
       }
@@ -1068,6 +1313,12 @@
           "type": "string"
         },
         "organizationId": {
+          "type": "string"
+        },
+        "airbyteWorkspaceId": {
+          "type": "string"
+        },
+        "airbyteDestinationId": {
           "type": "string"
         },
         "members": {

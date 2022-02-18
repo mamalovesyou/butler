@@ -7,7 +7,6 @@ import (
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
-	emptypb "google.golang.org/protobuf/types/known/emptypb"
 )
 
 // This is a compile-time assertion to ensure that this generated file
@@ -19,10 +18,8 @@ const _ = grpc.SupportPackageIsVersion7
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type OctopusServiceClient interface {
-	GetCatalogConnectors(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CatalogConnectorList, error)
 	ListWorkspaceConnectors(ctx context.Context, in *WorkspaceConnectorsRequest, opts ...grpc.CallOption) (*WorkspaceConnectorList, error)
 	ConnectWithCode(ctx context.Context, in *ConnectWithCodeRequest, opts ...grpc.CallOption) (*WorkspaceConnector, error)
-	ListAccounts(ctx context.Context, in *ListAccountsRequest, opts ...grpc.CallOption) (*ListAccountsResponse, error)
 	SelectAccount(ctx context.Context, in *SelectAccountRequest, opts ...grpc.CallOption) (*WorkspaceConnector, error)
 	GetConnectorSecret(ctx context.Context, in *GetConnectorSecretRequest, opts ...grpc.CallOption) (*ConnectorSecretPair, error)
 }
@@ -33,15 +30,6 @@ type octopusServiceClient struct {
 
 func NewOctopusServiceClient(cc grpc.ClientConnInterface) OctopusServiceClient {
 	return &octopusServiceClient{cc}
-}
-
-func (c *octopusServiceClient) GetCatalogConnectors(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CatalogConnectorList, error) {
-	out := new(CatalogConnectorList)
-	err := c.cc.Invoke(ctx, "/v1.OctopusService/GetCatalogConnectors", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
 }
 
 func (c *octopusServiceClient) ListWorkspaceConnectors(ctx context.Context, in *WorkspaceConnectorsRequest, opts ...grpc.CallOption) (*WorkspaceConnectorList, error) {
@@ -56,15 +44,6 @@ func (c *octopusServiceClient) ListWorkspaceConnectors(ctx context.Context, in *
 func (c *octopusServiceClient) ConnectWithCode(ctx context.Context, in *ConnectWithCodeRequest, opts ...grpc.CallOption) (*WorkspaceConnector, error) {
 	out := new(WorkspaceConnector)
 	err := c.cc.Invoke(ctx, "/v1.OctopusService/ConnectWithCode", in, out, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
-}
-
-func (c *octopusServiceClient) ListAccounts(ctx context.Context, in *ListAccountsRequest, opts ...grpc.CallOption) (*ListAccountsResponse, error) {
-	out := new(ListAccountsResponse)
-	err := c.cc.Invoke(ctx, "/v1.OctopusService/ListAccounts", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -93,10 +72,8 @@ func (c *octopusServiceClient) GetConnectorSecret(ctx context.Context, in *GetCo
 // All implementations must embed UnimplementedOctopusServiceServer
 // for forward compatibility
 type OctopusServiceServer interface {
-	GetCatalogConnectors(context.Context, *emptypb.Empty) (*CatalogConnectorList, error)
 	ListWorkspaceConnectors(context.Context, *WorkspaceConnectorsRequest) (*WorkspaceConnectorList, error)
 	ConnectWithCode(context.Context, *ConnectWithCodeRequest) (*WorkspaceConnector, error)
-	ListAccounts(context.Context, *ListAccountsRequest) (*ListAccountsResponse, error)
 	SelectAccount(context.Context, *SelectAccountRequest) (*WorkspaceConnector, error)
 	GetConnectorSecret(context.Context, *GetConnectorSecretRequest) (*ConnectorSecretPair, error)
 	mustEmbedUnimplementedOctopusServiceServer()
@@ -106,17 +83,11 @@ type OctopusServiceServer interface {
 type UnimplementedOctopusServiceServer struct {
 }
 
-func (UnimplementedOctopusServiceServer) GetCatalogConnectors(context.Context, *emptypb.Empty) (*CatalogConnectorList, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetCatalogConnectors not implemented")
-}
 func (UnimplementedOctopusServiceServer) ListWorkspaceConnectors(context.Context, *WorkspaceConnectorsRequest) (*WorkspaceConnectorList, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ListWorkspaceConnectors not implemented")
 }
 func (UnimplementedOctopusServiceServer) ConnectWithCode(context.Context, *ConnectWithCodeRequest) (*WorkspaceConnector, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ConnectWithCode not implemented")
-}
-func (UnimplementedOctopusServiceServer) ListAccounts(context.Context, *ListAccountsRequest) (*ListAccountsResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method ListAccounts not implemented")
 }
 func (UnimplementedOctopusServiceServer) SelectAccount(context.Context, *SelectAccountRequest) (*WorkspaceConnector, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SelectAccount not implemented")
@@ -135,24 +106,6 @@ type UnsafeOctopusServiceServer interface {
 
 func RegisterOctopusServiceServer(s grpc.ServiceRegistrar, srv OctopusServiceServer) {
 	s.RegisterService(&OctopusService_ServiceDesc, srv)
-}
-
-func _OctopusService_GetCatalogConnectors_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(emptypb.Empty)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(OctopusServiceServer).GetCatalogConnectors(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/v1.OctopusService/GetCatalogConnectors",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OctopusServiceServer).GetCatalogConnectors(ctx, req.(*emptypb.Empty))
-	}
-	return interceptor(ctx, in, info, handler)
 }
 
 func _OctopusService_ListWorkspaceConnectors_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -187,24 +140,6 @@ func _OctopusService_ConnectWithCode_Handler(srv interface{}, ctx context.Contex
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(OctopusServiceServer).ConnectWithCode(ctx, req.(*ConnectWithCodeRequest))
-	}
-	return interceptor(ctx, in, info, handler)
-}
-
-func _OctopusService_ListAccounts_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListAccountsRequest)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(OctopusServiceServer).ListAccounts(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/v1.OctopusService/ListAccounts",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(OctopusServiceServer).ListAccounts(ctx, req.(*ListAccountsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -253,20 +188,12 @@ var OctopusService_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*OctopusServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetCatalogConnectors",
-			Handler:    _OctopusService_GetCatalogConnectors_Handler,
-		},
-		{
 			MethodName: "ListWorkspaceConnectors",
 			Handler:    _OctopusService_ListWorkspaceConnectors_Handler,
 		},
 		{
 			MethodName: "ConnectWithCode",
 			Handler:    _OctopusService_ConnectWithCode_Handler,
-		},
-		{
-			MethodName: "ListAccounts",
-			Handler:    _OctopusService_ListAccounts_Handler,
 		},
 		{
 			MethodName: "SelectAccount",

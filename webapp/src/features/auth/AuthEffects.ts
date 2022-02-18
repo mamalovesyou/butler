@@ -1,4 +1,4 @@
-import {takeEvery, put, fork, call} from 'redux-saga/effects';
+import {takeEvery, put, fork, call, select} from 'redux-saga/effects';
 import * as ActionTypes from './AuthAction.types';
 import * as Actions from './AuthActions';
 import * as WorkspaceActions from '../workspace/WorkspaceActions';
@@ -11,11 +11,13 @@ import {AxiosResponse} from 'axios';
 import {persistor} from '../index';
 import {push} from 'redux-first-history';
 import {
+    ANALYTICS_ROOT_PATH,
     DASHBOARD_ROOT_PATH,
     LOGIN_ROUTE_PATH,
     ONBOARDING_ROOT_PATH
 } from '../../routes';
 import {Api} from '../configureEffects';
+import {notificationsActions} from "../notifications";
 
 
 // Called when a user try to login
@@ -28,15 +30,15 @@ export function* onLoginRequest() {
                     yield Api.v1.usersServiceSignIn(payload);
                 yield put(Actions.loginSuccess(response.data));
                 yield call(addAuthorization, response.data.accessToken);
-
                 // Load organizations
                 yield put(WorkspaceActions.listOrganizationsRequest());
-                yield put(push(DASHBOARD_ROOT_PATH));
+                yield put(push(ANALYTICS_ROOT_PATH));
             } catch (error) {
                 const rpcError: GoogleRpcStatus = error?.response?.data || {
                     code: 0,
                     message: error.message
                 };
+                yield put(notificationsActions.createAlert({type: "error", message: rpcError.message}));
                 yield put(Actions.loginFailure(rpcError));
             }
         }
@@ -58,6 +60,9 @@ export function* onRefreshTokenRequest() {
                 yield put(WorkspaceActions.listOrganizationsRequest());
 
             } catch (error) {
+                if (error.response.status === 401) {
+                    yield put(push(LOGIN_ROUTE_PATH));
+                }
                 const rpcError: GoogleRpcStatus = error?.response?.data || {
                     code: 0,
                     message: error.message
@@ -87,7 +92,11 @@ export function* onSignUpRequest() {
                 yield call(addAuthorization, response.data.accessToken);
                 yield put(push(ONBOARDING_ROOT_PATH));
             } catch (error) {
-                const rpcError: GoogleRpcStatus = error.response.data;
+                const rpcError: GoogleRpcStatus = error?.response?.data || {
+                    code: 0,
+                    message: error.message
+                };
+                yield put(notificationsActions.createAlert({type: "error", message: rpcError.message}));
                 yield put(Actions.signupFailure(rpcError));
             }
         }
@@ -118,7 +127,7 @@ export function* onLogout() {
     yield takeEvery(ActionTypes.LOGOUT, function* () {
         // Purge persisted redux store and redirect to login
         yield call(persistor.purge);
-        yield put(push(LOGIN_ROUTE_PATH));
+        // yield put(push(LOGIN_ROUTE_PATH));
     });
 }
 

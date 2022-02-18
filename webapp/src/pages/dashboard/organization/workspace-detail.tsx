@@ -1,7 +1,7 @@
 import {useState, FC, useEffect} from 'react';
 import {Box, CircularProgress, Container, Typography} from '@mui/material';
 import {useParams} from "react-router-dom";
-import {ACCOUNT_ROOT_PATH, DASHBOARD_ROOT_PATH} from "../../../routes";
+import {ORGANIZATION_ROOT_PATH} from "../../../routes";
 import {push} from "redux-first-history";
 import {useDispatch} from "react-redux";
 import {Api} from "../../../api";
@@ -17,32 +17,32 @@ const WorkspaceDetail: FC = () => {
     const [workspace, setWorkspace] = useState(null);
 
     const [organizationMembers, setOrganizationMembers] = useState([]);
-    const {organizationId, organizations} = useWorkspace();
+    const {organization} = useWorkspace();
 
     useEffect(() => {
-        if (organizationId) {
-            setOrganizationMembers(organizations[organizationId].members);
-        }
-    }, [organizationId]);
-
-    useEffect(() => {
-        if (workspaceId) {
+        (async function() {
             try {
-                Api.v1.usersServiceGetWorkspace({workspaceId}).then((response) => {
-                    setWorkspace(response.data.workspace);
-                    setLoading(false);
-                });
-            } catch (err) {
+                const response = await Api.v1.usersServiceGetWorkspace({ workspaceId });
+                setWorkspace(response.data.workspace);
+                setLoading(false);
+            } catch (e) {
+                console.error(e);
                 dispatch(
                     notificationsActions.createAlert({
-                        message: err.response?.message || String(err),
+                        message: e.response?.message || String(e),
                         type: "error",
                     })
                 );
-                dispatch(push(`/${ACCOUNT_ROOT_PATH}`));
+                dispatch(push(ORGANIZATION_ROOT_PATH));
             }
+        })();
+    }, [])
+
+    useEffect(() => {
+        if (organization) {
+            setOrganizationMembers(organization.members);
         }
-    }, [workspaceId]);
+    }, [organization]);
 
 
     return (

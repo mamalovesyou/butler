@@ -1,0 +1,31 @@
+syntax = "proto3";
+option go_package = "github.com/butlerhq/butler/api/services/octopus/v1;octopus";
+package v1;
+
+import "google/protobuf/empty.proto";
+import "google/api/annotations.proto";
+import "services/octopus/v1/requests.proto";
+import "services/octopus/v1/responses.proto";
+
+
+message DataSource {
+  string name = 1;
+  string iconSvg = 2;
+  AuthType authType = 3;
+  string authUrl = 4;
+  string configInputJSONSchema = 5;
+  string secretsInputJSONSchema = 6;
+  string airbyteSourceDefinitionId = 7;
+}
+
+message DataSourceList {
+  repeated DataSource sources = 1;
+}
+
+service DataSourcesService {
+  rpc ListAvailableSources(google.protobuf.Empty) returns (DataSourceList) {
+    option (google.api.http) = {
+      get: "/v1/data-sources"
+    };
+  }
+}

@@ -7,6 +7,7 @@ import workspaceReducer from "./workspace/WorkspaceReducer";
 import connectorReducer from "./connectors/ConnectorsReducer";
 import onboardingReducer from "./onboarding/OnboardingReducer";
 import AlertSlice from "./notifications/AlertSlice";
+import dataSourceReducer from "./data-sources/DataSourceReducer";
 
 // Persist config
 // Using a white list to only
@@ -27,6 +28,7 @@ const createRootReducer = (routerReducer: Reducer<RouterState>) =>
       workspace: workspaceReducer,
       onboarding: onboardingReducer,
       connectors: connectorReducer,
+      dataSources: dataSourceReducer
     })
   );
 

@@ -27,9 +27,6 @@ func (repo *WorkspaceRepo) CreateOne(orga *models.Workspace) (*models.Workspace,
 	if err := repo.db.Create(orga).Error; err != nil {
 		return &models.Workspace{}, err
 	}
-	if err := repo.db.Save(orga).Error; err != nil {
-		return &models.Workspace{}, err
-	}
 	return orga, nil
 }
 

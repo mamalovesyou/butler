@@ -1,0 +1,8 @@
+kind: Service
+apiVersion: v1
+metadata:
+  namespace: airbyte
+  name: airbyte-db-svc
+spec:
+  type: ExternalName
+  externalName: butler-airbyte-prod.c0xpdoh6rtn4.us-east-2.rds.amazonaws.com

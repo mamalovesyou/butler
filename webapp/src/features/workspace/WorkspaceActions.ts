@@ -7,9 +7,8 @@ import {
   V1AuthenticatedUser,
   V1WorkspaceResponse,
   V1CreateWorkspaceRequest,
-  V1BulkInviteWorkspaceMemberRequest,
   V1GetOrganizationRequest,
-  V1Organization
+  V1Organization, V1BatchInviteMemberRequest
 } from '../../api';
 
 export const createOrganizationRequest = (
@@ -109,7 +108,7 @@ export const createWorkspaceFailure = (
 });
 
 export const addWorkspaceMembersRequest = (
-  payload: V1BulkInviteWorkspaceMemberRequest
+  payload: V1BatchInviteMemberRequest
 ): ActionTypes.WorkspaceActionType => ({
   type: ActionTypes.ADD_WORKSPACE_MEMBER_REQUEST,
   payload

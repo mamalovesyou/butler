@@ -2,7 +2,7 @@ package octopus
 
 import (
 	api_ocotpus "github.com/butlerhq/butler/api/services/octopus/v1"
-	"github.com/butlerhq/butler/services/octopus/usecase/catalog"
+	"github.com/butlerhq/butler/internal/airbyte/sources/catalog"
 	"github.com/butlerhq/butler/services/octopus/usecase/connector"
 	"google.golang.org/grpc"
 	"gorm.io/gorm"
@@ -10,17 +10,14 @@ import (
 
 // OctopusService has router and db instances
 type OctopusService struct {
-	CatalogUsecase   *catalog.CatalogUsecase
 	ConnectorUsecase *connector.ConnectorUsecase
-
 	api_ocotpus.UnimplementedOctopusServiceServer
 }
 
 // NewOctopusService initialize with predefined configuration
-func NewOctopusService(cfg *ServiceConfig, db *gorm.DB) *OctopusService {
+func NewOctopusService(db *gorm.DB, catalog *catalog.Catalog) *OctopusService {
 	return &OctopusService{
-		CatalogUsecase:   catalog.NewCatalogUsecase(&cfg.Connectors),
-		ConnectorUsecase: connector.NewConnectorUsecase(&cfg.Connectors, db),
+		ConnectorUsecase: connector.NewConnectorUsecase(db, catalog),
 	}
 }
 

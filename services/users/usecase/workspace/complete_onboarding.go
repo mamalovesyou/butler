@@ -19,7 +19,9 @@ func (svc *WorkspaceUsecase) CompleteOnboarding(ctx context.Context, organizatio
 	//	return nil, errors.ErrInvalidGrant
 	//}
 
-	org, err := svc.OrganizationRepo.UpdateOne(organizationID, models.Organization{Onboarded: true})
+	updates := make(map[string]interface{})
+	updates["onboarded"] = true
+	org, err := svc.OrganizationRepo.UpdateOne(organizationID, updates)
 	if err != nil {
 		logger.Error(ctx, "Unable to update organization", zap.Error(err))
 		return nil, err

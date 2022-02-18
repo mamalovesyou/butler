@@ -9,8 +9,130 @@
  * ---------------------------------------------------------------
  */
 
+/**
+* `Any` contains an arbitrary serialized protocol buffer message along with a
+URL that describes the type of the serialized message.
+
+Protobuf library provides support to pack/unpack Any values in the form
+of utility functions or additional generated methods of the Any type.
+
+Example 1: Pack and unpack a message in C++.
+
+    Foo foo = ...;
+    Any any;
+    any.PackFrom(foo);
+    ...
+    if (any.UnpackTo(&foo)) {
+      ...
+    }
+
+Example 2: Pack and unpack a message in Java.
+
+    Foo foo = ...;
+    Any any = Any.pack(foo);
+    ...
+    if (any.is(Foo.class)) {
+      foo = any.unpack(Foo.class);
+    }
+
+ Example 3: Pack and unpack a message in Python.
+
+    foo = Foo(...)
+    any = Any()
+    any.Pack(foo)
+    ...
+    if any.Is(Foo.DESCRIPTOR):
+      any.Unpack(foo)
+      ...
+
+ Example 4: Pack and unpack a message in Go
+
+     foo := &pb.Foo{...}
+     any, err := anypb.New(foo)
+     if err != nil {
+       ...
+     }
+     ...
+     foo := &pb.Foo{}
+     if err := any.UnmarshalTo(foo); err != nil {
+       ...
+     }
+
+The pack methods provided by protobuf library will by default use
+'type.googleapis.com/full.type.name' as the type URL and the unpack
+methods only use the fully qualified type name after the last '/'
+in the type URL, for example "foo.bar.com/x/y.z" will yield type
+name "y.z".
+
+
+JSON
+====
+The JSON representation of an `Any` value uses the regular
+representation of the deserialized, embedded message, with an
+additional field `@type` which contains the type URL. Example:
+
+    package google.profile;
+    message Person {
+      string first_name = 1;
+      string last_name = 2;
+    }
+
+    {
+      "@type": "type.googleapis.com/google.profile.Person",
+      "firstName": <string>,
+      "lastName": <string>
+    }
+
+If the embedded message type is well-known and has a custom JSON
+representation, that representation will be embedded adding a field
+`value` which holds the custom JSON in addition to the `@type`
+field. Example (for message [google.protobuf.Duration][]):
+
+    {
+      "@type": "type.googleapis.com/google.protobuf.Duration",
+      "value": "1.212s"
+    }
+*/
 export interface GoogleProtobufAny {
+  /**
+   * A URL/resource name that uniquely identifies the type of the serialized
+   * protocol buffer message. This string must contain at least
+   * one "/" character. The last segment of the URL's path must represent
+   * the fully qualified name of the type (as in
+   * `path/google.protobuf.Duration`). The name should be in a canonical form
+   * (e.g., leading "." is not accepted).
+   *
+   * In practice, teams usually precompile into the binary all types that they
+   * expect it to use in the context of Any. However, for URLs which use the
+   * scheme `http`, `https`, or no scheme, one can optionally set up a type
+   * server that maps type URLs to message definitions as follows:
+   * * If no scheme is provided, `https` is assumed.
+   * * An HTTP GET on the URL must yield a [google.protobuf.Type][]
+   *   value in binary format, or produce an error.
+   * * Applications are allowed to cache lookup results based on the
+   *   URL, or have them precompiled into a binary to avoid any
+   *   lookup. Therefore, binary compatibility needs to be preserved
+   *   on changes to types. (Use versioned type names to manage
+   *   breaking changes.)
+   * Note: this functionality is not currently available in the official
+   * protobuf release, and it is not used for type URLs beginning with
+   * type.googleapis.com.
+   * Schemes other than `http`, `https` (or the empty scheme) might be
+   * used with implementation specific semantics.
+   */
   "@type"?: string;
+}
+
+/**
+* `NullValue` is a singleton enumeration to represent the null value for the
+`Value` type union.
+
+ The JSON representation for `NullValue` is JSON `null`.
+
+ - NULL_VALUE: Null value.
+*/
+export enum GoogleProtobufNullValue {
+  NULL_VALUE = "NULL_VALUE",
 }
 
 export interface GoogleRpcStatus {
@@ -23,6 +145,11 @@ export interface GoogleRpcStatus {
 export enum V1AuthType {
   OAUTH2 = "OAUTH2",
   API_KEY = "API_KEY",
+}
+
+export interface V1AuthenticateConnectorRequest {
+  connectorId?: string;
+  code?: string;
 }
 
 /**
@@ -40,17 +167,6 @@ export interface V1BatchInviteMemberRequest {
   workspaceId?: string;
 }
 
-export interface V1CatalogConnector {
-  name?: string;
-  iconSvg?: string;
-  authType?: V1AuthType;
-  authUrl?: string;
-}
-
-export interface V1CatalogConnectorList {
-  connectors?: V1CatalogConnector[];
-}
-
 export interface V1CompleteOnboardingRequest {
   organizationId?: string;
 }
@@ -58,16 +174,41 @@ export interface V1CompleteOnboardingRequest {
 export interface V1ConnectWithCodeRequest {
   workspaceId?: string;
   provider?: string;
+  airbyteSourceId?: string;
   code?: string;
 }
 
+export interface V1Connector {
+  id?: string;
+  workspaceId?: string;
+  name?: string;
+  airbyteSourceDefinitionId?: string;
+  isActive?: boolean;
+  authScheme?: V1AuthType;
+  config?: object;
+
+  /** @format date-time */
+  updatedAt?: string;
+}
+
+export interface V1ConnectorList {
+  connectors?: V1Connector[];
+}
+
 export interface V1ConnectorSecret {
-  value?: Record<string, string>;
+  value?: object;
 }
 
 export interface V1ConnectorSecretPair {
   connector?: V1WorkspaceConnector;
   credentials?: V1ConnectorSecret;
+}
+
+export interface V1CreateConnectorRequest {
+  workspaceId?: string;
+  airbyteWorkspaceId?: string;
+  airbyteSourceDefinitionId?: string;
+  airbyteDestinationId?: string;
 }
 
 export interface V1CreateOrganizationRequest {
@@ -83,6 +224,24 @@ export interface V1CreateWorkspaceRequest {
 export interface V1CreateWorkspaceRequestWorkspaceInfo {
   name?: string;
   description?: string;
+}
+
+export interface V1DataSource {
+  name?: string;
+  iconSvg?: string;
+  authType?: V1AuthType;
+  authUrl?: string;
+  configInputJSONSchema?: string;
+  secretsInputJSONSchema?: string;
+  airbyteSourceDefinitionId?: string;
+}
+
+export interface V1DataSourceList {
+  sources?: V1DataSource[];
+}
+
+export interface V1GetConnectorRequest {
+  connectorId?: string;
 }
 
 export interface V1GetInvitationRequest {
@@ -113,13 +272,20 @@ export interface V1InvitationListResponse {
   invitations?: V1Invitation[];
 }
 
-export interface V1ListAccountsRequest {
+export interface V1ListConnectorsRequest {
   workspaceId?: string;
-  provider?: string;
 }
 
-export interface V1ListAccountsResponse {
-  accounts?: V1ProviderAccount[];
+export interface V1MutateConnectorRequest {
+  connectorId?: string;
+  secrets?: object;
+  config?: object;
+}
+
+export interface V1MutateConnectorResponse {
+  status?: string;
+  message?: string;
+  logs?: string[];
 }
 
 export interface V1Organization {
@@ -221,6 +387,8 @@ export interface V1Workspace {
   name?: string;
   description?: string;
   organizationId?: string;
+  airbyteWorkspaceId?: string;
+  airbyteDestinationId?: string;
   members?: V1UserMember[];
   invitations?: V1Invitation[];
 
@@ -408,21 +576,6 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
      * No description
      *
      * @tags OctopusService
-     * @name OctopusServiceGetCatalogConnectors
-     * @request GET:/v1/connector/catalog
-     */
-    octopusServiceGetCatalogConnectors: (params: RequestParams = {}) =>
-      this.request<V1CatalogConnectorList, GoogleRpcStatus>({
-        path: `/v1/connector/catalog`,
-        method: "GET",
-        format: "json",
-        ...params,
-      }),
-
-    /**
-     * No description
-     *
-     * @tags OctopusService
      * @name OctopusServiceConnectWithCode
      * @request POST:/v1/connector/connect/oauth
      */
@@ -439,13 +592,13 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
-     * @tags OctopusService
-     * @name OctopusServiceListAccounts
-     * @request POST:/v1/connectors/accounts
+     * @tags ConnectorsService
+     * @name ConnectorsServiceCreateConnector
+     * @request POST:/v1/connectors/create
      */
-    octopusServiceListAccounts: (body: V1ListAccountsRequest, params: RequestParams = {}) =>
-      this.request<V1ListAccountsResponse, GoogleRpcStatus>({
-        path: `/v1/connectors/accounts`,
+    connectorsServiceCreateConnector: (body: V1CreateConnectorRequest, params: RequestParams = {}) =>
+      this.request<V1Connector, GoogleRpcStatus>({
+        path: `/v1/connectors/create`,
         method: "POST",
         body: body,
         type: ContentType.Json,
@@ -456,13 +609,96 @@ export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDa
     /**
      * No description
      *
+     * @tags ConnectorsService
+     * @name ConnectorsServiceGetConnector
+     * @request POST:/v1/connectors/get
+     */
+    connectorsServiceGetConnector: (body: V1GetConnectorRequest, params: RequestParams = {}) =>
+      this.request<V1Connector, GoogleRpcStatus>({
+        path: `/v1/connectors/get`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ConnectorsService
+     * @name ConnectorsServiceListConnectors
+     * @request POST:/v1/connectors/list
+     */
+    connectorsServiceListConnectors: (body: V1ListConnectorsRequest, params: RequestParams = {}) =>
+      this.request<V1ConnectorList, GoogleRpcStatus>({
+        path: `/v1/connectors/list`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ConnectorsService
+     * @name ConnectorsServiceAuthenticateOAuthConnector
+     * @request POST:/v1/connectors/oauth
+     */
+    connectorsServiceAuthenticateOAuthConnector: (body: V1AuthenticateConnectorRequest, params: RequestParams = {}) =>
+      this.request<V1Connector, GoogleRpcStatus>({
+        path: `/v1/connectors/oauth`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags ConnectorsService
+     * @name ConnectorsServiceMutateConnector
+     * @request POST:/v1/connectors/update
+     */
+    connectorsServiceMutateConnector: (body: V1MutateConnectorRequest, params: RequestParams = {}) =>
+      this.request<V1MutateConnectorResponse, GoogleRpcStatus>({
+        path: `/v1/connectors/update`,
+        method: "POST",
+        body: body,
+        type: ContentType.Json,
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
+     * @tags DataSourcesService
+     * @name DataSourcesServiceListAvailableSources
+     * @request GET:/v1/data-sources
+     */
+    dataSourcesServiceListAvailableSources: (params: RequestParams = {}) =>
+      this.request<V1DataSourceList, GoogleRpcStatus>({
+        path: `/v1/data-sources`,
+        method: "GET",
+        format: "json",
+        ...params,
+      }),
+
+    /**
+     * No description
+     *
      * @tags OctopusService
      * @name OctopusServiceSelectAccount
-     * @request POST:/v1/connectors/accounts/setup
+     * @request POST:/v1/data-sources/accounts/setup
      */
     octopusServiceSelectAccount: (body: V1SelectAccountRequest, params: RequestParams = {}) =>
       this.request<V1WorkspaceConnector, GoogleRpcStatus>({
-        path: `/v1/connectors/accounts/setup`,
+        path: `/v1/data-sources/accounts/setup`,
         method: "POST",
         body: body,
         type: ContentType.Json,

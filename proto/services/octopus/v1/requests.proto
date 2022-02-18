@@ -12,12 +12,8 @@ message WorkspaceConnectorsRequest {
 message ConnectWithCodeRequest {
   string workspaceId = 1;
   string provider = 2;
-  string code = 3;
-}
-
-message ListAccountsRequest {
-  string workspaceId = 1;
-  string provider = 2;
+  string airbyteSourceId = 3;
+  string code = 4;
 }
 
 message SelectAccountRequest {

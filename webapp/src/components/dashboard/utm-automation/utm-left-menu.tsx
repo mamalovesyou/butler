@@ -1,18 +1,19 @@
-import type { FC } from 'react';
-import { Box, List, ListItemButton } from '@mui/material';
-import { V1WorkspaceConnector } from "../../../api";
-import { ConnectorIcon } from "../../connector-icon";
-import { useEffect, useState } from "react";
+import type {FC} from 'react';
+import {Box, Divider, List, ListItemButton} from '@mui/material';
+import {V1Connector, V1WorkspaceConnector} from "../../../api";
+import {ConnectorIcon} from "../../connector-icon";
+import {useEffect, useState} from "react";
 
 interface UTMLeftMenuProps {
     onClickConnector?: (connectorId: string) => void;
-    connectors: V1WorkspaceConnector[];
+    onSelectConnector?: (connector: V1Connector) => void;
+    connectors: V1Connector[];
 }
 
 export const UTMLeftMenu = (props: UTMLeftMenuProps) => {
 
     const [selectedConnectorId, setSelectedConnectorId] = useState("")
-    const { connectors, onClickConnector } = props;
+    const {connectors, onClickConnector, onSelectConnector} = props;
 
     useEffect(() => {
         if (connectors.length) {
@@ -22,6 +23,7 @@ export const UTMLeftMenu = (props: UTMLeftMenuProps) => {
 
     const selectConnector = (connectorId: string) => {
         setSelectedConnectorId(connectorId);
+        onSelectConnector ? onSelectConnector(connectors[connectorId]) : null;
         onClickConnector ? onClickConnector(connectorId) : null;
     }
 
@@ -45,11 +47,14 @@ export const UTMLeftMenu = (props: UTMLeftMenuProps) => {
                 p: 0
             }}>
                 {connectors.map((connector: V1WorkspaceConnector) => (
-                    <ListItemButton key={connector.id} sx={{ height: 75, width: 75 }}
-                        onClick={() => selectConnector(connector.id)}
-                        selected={connector.id === selectedConnectorId}>
-                        <ConnectorIcon name={connector.name} height={75} width={75} />
-                    </ListItemButton>
+                    <div key={connector.id}>
+                        <ListItemButton sx={{height: 75, width: 75}}
+                                        onClick={() => selectConnector(connector.id)}
+                                        selected={connector.id === selectedConnectorId}>
+                            <ConnectorIcon name={connector.name} height={75} width={75}/>
+                        </ListItemButton>
+                        <Divider/>
+                    </div>
                 ))}
             </List>
         </Box>

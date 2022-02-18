@@ -21,7 +21,7 @@ export const JWTRegister: FC = (props) => {
       lastName: '',
       firstName: '',
       password: '',
-      policy: false,
+      // policy: false,
       submit: null
     },
     validationSchema: Yup.object({
@@ -32,7 +32,7 @@ export const JWTRegister: FC = (props) => {
         .max(255)
         .required('Email is required'),
       password: Yup.string().min(7).max(255).required('Password is required'),
-      policy: Yup.boolean().oneOf([true], 'This field must be checked')
+      // policy: Yup.boolean().oneOf([true], 'This field must be checked')
     }),
     onSubmit: async (values, helpers): Promise<void> => {
       dispatch(
@@ -96,29 +96,29 @@ export const JWTRegister: FC = (props) => {
         type="password"
         value={formik.values.password}
       />
-      <Box
-        sx={{
-          alignItems: 'center',
-          display: 'flex',
-          ml: -1,
-          mt: 2
-        }}
-      >
-        <Checkbox
-          checked={formik.values.policy}
-          name="policy"
-          onChange={formik.handleChange}
-        />
-        <Typography color="textSecondary" variant="body2">
-          I have read the{' '}
-          <Link component="a" href="#">
-            Terms and Conditions
-          </Link>
-        </Typography>
-      </Box>
-      {Boolean(formik.touched.policy && formik.errors.policy) && (
-        <FormHelperText error>{formik.errors.policy}</FormHelperText>
-      )}
+      {/*<Box*/}
+      {/*  sx={{*/}
+      {/*    alignItems: 'center',*/}
+      {/*    display: 'flex',*/}
+      {/*    ml: -1,*/}
+      {/*    mt: 2*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  <Checkbox*/}
+      {/*    checked={formik.values.policy}*/}
+      {/*    name="policy"*/}
+      {/*    onChange={formik.handleChange}*/}
+      {/*  />*/}
+      {/*  <Typography color="textSecondary" variant="body2">*/}
+      {/*    I have read the{' '}*/}
+      {/*    <Link component="a" href="#">*/}
+      {/*      Terms and Conditions*/}
+      {/*    </Link>*/}
+      {/*  </Typography>*/}
+      {/*</Box>*/}
+      {/*{Boolean(formik.touched.policy && formik.errors.policy) && (*/}
+      {/*  <FormHelperText error>{formik.errors.policy}</FormHelperText>*/}
+      {/*)}*/}
       {formik.errors.submit && (
         <Box sx={{ mt: 3 }}>
           <FormHelperText error>{formik.errors.submit}</FormHelperText>
@@ -126,7 +126,7 @@ export const JWTRegister: FC = (props) => {
       )}
       <Box sx={{ mt: 2 }}>
         <Button
-          disabled={formik.isSubmitting || !formik.values.policy}
+          disabled={formik.isSubmitting || !formik.isValid || !formik.dirty}
           fullWidth
           size="large"
           type="submit"

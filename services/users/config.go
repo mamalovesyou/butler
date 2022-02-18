@@ -1,6 +1,7 @@
 package users
 
 import (
+	"github.com/butlerhq/butler/internal/airbyte"
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/internal/postgres"
 	"github.com/butlerhq/butler/internal/redis"
@@ -16,6 +17,7 @@ var DefaultServiceConfig = ServiceConfig{
 	Logger:         logger.DefaultLoggerConfig,
 	Jaeger:         logger.DefaultJaegerConfig,
 	WebappBaseURL:  "http://localhost:3000",
+	Airbyte:        airbyte.DefaultAirbyteConfig,
 }
 
 type ServiceConfig struct {
@@ -28,4 +30,5 @@ type ServiceConfig struct {
 	Jaeger         logger.JaegerConfig
 	Logger         logger.LoggerConfig
 	WebappBaseURL  string `mapstructure:"webAppBaseURL" env:"WEBAPP_BASE_URL"`
+	Airbyte        airbyte.Config
 }

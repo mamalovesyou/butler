@@ -1,4 +1,4 @@
-// development config
+// development.yaml config
 const { merge } = require("webpack-merge");
 const commonConfig = require("./common");
 

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/butlerhq/butler/services/octopus"
+	config2 "github.com/butlerhq/butler/services/octopus/config"
 
 	"github.com/butlerhq/butler/internal/config"
 	"github.com/butlerhq/butler/internal/logger"
@@ -19,7 +19,7 @@ var (
 	cfgFilePath string
 	cfgKey      string
 
-	cfgService = octopus.DefaultServiceConfig
+	cfgService = config2.DefaultServiceConfig
 
 	rootCmd = &cobra.Command{
 		Use:   "butler-octopus",

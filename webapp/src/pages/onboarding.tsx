@@ -19,9 +19,9 @@ import { Check as CheckIcon } from "../icons/check";
 import { useAuth } from "../hooks/use-auth";
 import { OnboardingStep, setOnboardingStep } from "../features/onboarding";
 import { ConnectDataSourceStep } from "../components/onboarding/connect-data-source-step";
-import { listCatalogConnectorsRequest, listWorkspaceConnectorsRequest } from "../features/connectors";
-import {push} from "redux-first-history";
-import {DASHBOARD_ROOT_PATH, ONBOARDING_ROOT_PATH} from "../routes";
+import { listWorkspaceConnectorsRequest } from "../features/connectors";
+import OnboardingLeftPannel from "../components/onboarding/onboarding-left-pannel";
+import {listAvailableSourcesRequest} from "../features/data-sources";
 
 const StepIcon: React.FC<StepIconProps> = (props) => {
   const { active, completed, icon } = props;
@@ -47,20 +47,14 @@ const Onboarding: React.FC = () => {
   const { activeStep } = useOnboarding();
   const { user } = useAuth();
   const dispatch = useDispatch();
-  const { workspaceId, organizationId, organizations } = useWorkspace();
+  const { workspaceId, organizationId } = useWorkspace();
 
   useEffect(() => {
+      console.log(organizationId, workspaceId, activeStep)
     if (organizationId) {
-      const currentOrga = organizations[organizationId];
-
-      // If onboarding complete, redirect to dashboard
-      if (currentOrga.onboarded) {
-          dispatch(push(DASHBOARD_ROOT_PATH));
-      }
-
-      else if (workspaceId) {
+      if (workspaceId) {
+        dispatch(listAvailableSourcesRequest());
         dispatch(listWorkspaceConnectorsRequest({ workspaceId }));
-        dispatch(listCatalogConnectorsRequest());
         dispatch(setOnboardingStep(OnboardingStep.CONNECT_DATA_SOURCE));
       } else {
         dispatch(setOnboardingStep(OnboardingStep.CREATE_WORKSPACE));
@@ -103,20 +97,13 @@ const Onboarding: React.FC = () => {
           sx={{
             display: "flex",
             flexGrow: 1,
-            backgroundColor: "red",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
             alignContent: "center",
           }}
         >
-          <Typography variant="h2" textAlign="center" sx={{ py: 3 }}>
-            Hey Butler
-          </Typography>
-          <Typography variant="h6" textAlign="center">
-            Welcome to the butler family. We&apos;re here to guide you through
-            this incredible journey.
-          </Typography>
+            <OnboardingLeftPannel />
         </Grid>
         <Grid
           item

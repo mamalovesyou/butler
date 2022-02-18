@@ -56,5 +56,19 @@ func (gw *RESTGatewayService) RegisterGRPCServices() error {
 		return err
 	}
 
+	// Register data-sources service
+	err = octopus.RegisterDataSourcesServiceHandlerFromEndpoint(ctx, gw.Mux, gw.Config.OctopusServiceAddr, gw.GRPCDialOptions)
+	if err != nil {
+		logger.Fatal(ctx, "Unable to register data-sources service", zap.Error(err))
+		return err
+	}
+
+	// Register connectors service
+	err = octopus.RegisterConnectorsServiceHandlerFromEndpoint(ctx, gw.Mux, gw.Config.OctopusServiceAddr, gw.GRPCDialOptions)
+	if err != nil {
+		logger.Fatal(ctx, "Unable to register connectors service", zap.Error(err))
+		return err
+	}
+
 	return nil
 }

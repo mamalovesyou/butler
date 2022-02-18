@@ -4,6 +4,8 @@ import (
 	"context"
 	"time"
 
+	"github.com/butlerhq/butler/internal/airbyte/destinations"
+
 	"github.com/butlerhq/butler/services/users"
 
 	"github.com/butlerhq/butler/internal/postgres"
@@ -45,10 +47,26 @@ var (
 			// Initialize redis
 			rdb := redis.NewRedisClient(&usersConfig.Redis)
 
+			// Catalog
+			abCfg := &usersConfig.Airbyte
+			s3AirbyteConfig := destinations.NewS3DestinationConfig(
+				abCfg.DestinationBucketName,
+				abCfg.AWSRegion,
+				abCfg.AWSS3Endpoint,
+				abCfg.AWSAccessKeyID,
+				abCfg.AWSAccessKeySecret)
+			s3Destination := destinations.S3Destination{
+				BaseConfig: s3AirbyteConfig,
+			}
+			catalog := destinations.NewDestinationCatalog(abCfg.AirbyteServerURL, &s3Destination)
+			if err := catalog.Init(); err != nil {
+				logger.Fatal(context.Background(), "Unable to initialize destinations catalog", zap.Error(err))
+			}
+
 			// Serve
 			grpcServer := grpc.NewGRPCServer(usersConfig.Port, tracer)
 
-			usersService := users.NewUsersService(&usersConfig, pgGorm.DB, rdb)
+			usersService := users.NewUsersService(&usersConfig, pgGorm.DB, rdb, catalog)
 			usersService.RegisterGRPCServer(grpcServer.Server)
 
 			healthService := users.NewHealthService(pgGorm.DB)

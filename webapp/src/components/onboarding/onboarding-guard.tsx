@@ -1,34 +1,33 @@
-import type { FC, ReactNode } from 'react';
-import { useEffect, useState } from 'react';
+import type {FC, ReactNode} from 'react';
+import {useEffect} from 'react';
 import PropTypes from 'prop-types';
-import { push } from 'redux-first-history';
-import { DASHBOARD_ROOT_PATH, ONBOARDING_ROOT_PATH } from '../../routes';
-import { useDispatch } from 'react-redux';
-import { useWorkspace } from '../../hooks/use-workspace';
+import {push} from 'redux-first-history';
+import {ANALYTICS_ROOT_PATH, ONBOARDING_ROOT_PATH} from '../../routes';
+import {useDispatch} from 'react-redux';
+import {useWorkspace} from '../../hooks/use-workspace';
 
 interface OnboardingGuardProps {
-  children: ReactNode;
+    children: ReactNode;
 }
 
 export const OnboardingGuard: FC<OnboardingGuardProps> = (props) => {
-  const { children } = props;
-  const dispatch = useDispatch();
-  const { organizationId, organizations } = useWorkspace();
+    const {children} = props;
+    const dispatch = useDispatch();
+    const {organization, organizations, attempts} = useWorkspace();
 
-  useEffect(() => {
-    if (organizationId) {
-      const currentOrg = organizations[organizationId]
-      if (!currentOrg.onboarded) {
-        dispatch(push(ONBOARDING_ROOT_PATH));
-      }
-    }
-  }, [organizationId]);
+    useEffect(() => {
+        const redirectOnboarding = (organization && !organization.onboarded)
+            || (attempts > 0 && organizations.length === 0)
+        if (redirectOnboarding) {
+            dispatch(push(ONBOARDING_ROOT_PATH));
+        }
+    }, [organization, organizations]);
 
-  return <>{children}</>;
+    return <>{children}</>;
 };
 
 OnboardingGuard.propTypes = {
-  children: PropTypes.node
+    children: PropTypes.node
 };
 
 export default OnboardingGuard;

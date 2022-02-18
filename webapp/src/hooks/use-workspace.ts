@@ -6,6 +6,9 @@ import {RootState} from "../features";
 export const useWorkspace = () =>
     useSelector((state: RootState) => state.workspace);
 
+export const useOrganizationsById = () =>
+    useSelector((state: RootState) => ArrayToObject(state.workspace.organizations, 'id'));
+
 export const useCurrentOrganization = () =>
     useSelector((state: RootState) =>
         state.workspace.organizationId ? state.workspace.organizations[state.workspace.organizationId] : null)
@@ -15,14 +18,9 @@ export const useCurrentWorkspace = (): {
     organization: V1Organization;
 } =>
     useSelector((state: RootState) => {
-        const {organizationId, workspaceId, organizations} = state.workspace;
+        const { workspaceId, organization} = state.workspace;
         return {
-            organization: organizationId ? organizations[organizationId] : null,
-            workspace:
-                workspaceId && organizationId
-                    ? ArrayToObject(organizations[organizationId].workspaces)[
-                        workspaceId
-                        ]
-                    : null,
+            organization,
+            workspace: organization?.workspaces?.find((ws: V1Workspace) => ws.id === workspaceId),
         };
     });
