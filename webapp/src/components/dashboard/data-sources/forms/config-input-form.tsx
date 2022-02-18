@@ -1,5 +1,4 @@
 import * as React from "react";
-import convertToYup from "json-schema-yup-transformer";
 import {useFormik, getIn} from 'formik';
 import Box from '@mui/material/Box';
 import {labelize} from "../../../../utils/string";
@@ -8,6 +7,7 @@ import {JSONFieldProperty, PropertyField} from "./PropertyField";
 import {Alert, AlertTitle, Button, CircularProgress} from "@mui/material";
 import isEqual from "lodash/isEqual";
 import {Api} from "../../../../api";
+import {BuildYup} from "../../../../utils/json/builder";
 
 
 interface ConfigInputFormProps {
@@ -36,10 +36,12 @@ export const ConfigInputForm = (props: ConfigInputFormProps) => {
     const {connectorId, configJSONSchema, secretsJSONSchema, initialValues} = props;
 
     const configJSONSchemaObj = JSON.parse(configJSONSchema.trim());
-    const configYupSchema = convertToYup(configJSONSchemaObj);
+    console.log("test", configJSONSchema.trim())
+    const configYupSchema = BuildYup(configJSONSchemaObj);
+    console.log("schema", configYupSchema)
     const configInitialValues =  getInitialValues(configJSONSchemaObj.properties);
     const secretsJSONSchemaObj = JSON.parse(secretsJSONSchema.trim());
-    const secretsYupSchema = convertToYup(secretsJSONSchemaObj);
+    const secretsYupSchema = BuildYup(secretsJSONSchemaObj);
     const secretsInitialValues =  getInitialValues(secretsJSONSchemaObj.properties)
 
 

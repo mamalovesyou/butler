@@ -18,7 +18,6 @@ const GOOGLE_ADS_CONFIG_INPUT_JSON_SCHEMA = `{
     "title": "Google Ads Spec",
     "$schema": "http://json-schema.org/draft-07/schema#",
     "required": [
-      "credentials",
       "start_date",
       "customer_id"
     ],

@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from 'react';
+import {FC, useEffect, useRef, useState} from 'react';
 import { Box, Container, Typography } from "@mui/material";
 import { UTMLeftMenu } from "../../components/dashboard/utm-automation/utm-left-menu";
 import { CampaignListTable } from "../../components/dashboard/utm-automation/campaign-list-table";
@@ -6,6 +6,10 @@ import { useConnectors } from "../../hooks/use-connectors";
 import { DashboardPageInner } from "../../components/dashboard/dashboard-page-inner";
 import DashboardDrawer from "../../components/dashboard/dashboard-drawer";
 import UTMDetails from '../../components/dashboard/utm-automation/utm-details';
+import {listAvailableSourcesRequest} from "../../features/data-sources";
+import {listWorkspaceConnectorsRequest} from "../../features/connectors";
+import {useCurrentWorkspace} from "../../hooks/use-workspace";
+import {useDispatch} from "react-redux";
 
 const utmAutomation = []
 
@@ -18,15 +22,24 @@ for (let i = 0; i < 5; i++) {
 }
 
 const UTMAutomation: FC = () => {
-
+    const dispatch = useDispatch();
     const { connectors } = useConnectors();
+    const {workspace} = useCurrentWorkspace();
 
     const rootRef = useRef<HTMLDivElement | null>(null);
+    const [selectedConnector, setSelectedConnector] = useState(null);
     const [utms, setUTMs] = useState<any[]>([]);
     const [drawer, setDrawer] = useState<{ isOpen: boolean; orderId?: string; }>({
         isOpen: false,
         orderId: null
     });
+
+    useEffect(() => {
+        if (workspace?.id) {
+            dispatch(listAvailableSourcesRequest());
+            dispatch(listWorkspaceConnectorsRequest({workspaceId: workspace.id}));
+        }
+    }, [workspace]);
 
     const handleOpenDrawer = (orderId: string): void => {
         setDrawer({
