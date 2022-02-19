@@ -1,13 +1,16 @@
 // shared config (dev and prod)
+const webpack = require('webpack');
 const { resolve } = require("path");
 const Dotenv = require("dotenv-webpack");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 const CopyPlugin = require("copy-webpack-plugin");
 
+
 module.exports = {
   target: 'web',
   resolve: {
     extensions: [".js", ".jsx", ".ts", ".tsx"],
+    fallback: {},
   },
   context: resolve(__dirname, "../../src"),
   module: {
@@ -47,7 +50,7 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         { from: resolve('public', 'static'), to: resolve('dist', 'static') },
-        { from: resolve('public', 'manifest.json'), to: resolve('dist', 'manifest.json') },
+        { from: resolve('public', 'site.webmanifest'), to: resolve('dist', 'site.webmanifest') },
       ],
     }),
   ],

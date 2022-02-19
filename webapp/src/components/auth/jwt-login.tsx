@@ -4,16 +4,6 @@ import { useFormik } from 'formik';
 import { Box, Button, FormHelperText, TextField } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { loginRequest } from '../../features/auth';
-import { OAuthPopup } from '../oauth-popup';
-
-const googleUrl = `https://accounts.google.com/o/oauth2/v2/auth?
-scope=https://www.googleapis.com/auth/drive.metadata.readonly&
-access_type=offline&
-include_granted_scopes=true&
-response_type=code&
-state=state_parameter_passthrough_value&
-redirect_uri=http://localhost:3000/oauth&
-client_id=133098310007-oq0arc40c3o9821rmcq9oen5bncnn1ru.apps.googleusercontent.com`;
 
 export const JWTLogin: FC = (props) => {
   const dispatch = useDispatch();
@@ -76,7 +66,7 @@ export const JWTLogin: FC = (props) => {
       )}
       <Box sx={{ mt: 2 }}>
         <Button
-          disabled={formik.isSubmitting}
+          disabled={formik.isSubmitting || !formik.isValid || !formik.dirty}
           fullWidth
           size="large"
           type="submit"

@@ -12,7 +12,7 @@ import {
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Cog as CogIcon } from '../../icons/cog';
 import { useDispatch } from 'react-redux';
-import { ACCOUNT_ROOT_PATH } from '../../routes';
+import {ACCOUNT_ROOT_PATH, ACCOUNT_SETTINGS_PATH} from '../../routes';
 import { Link } from 'react-router-dom';
 import { logout } from '../../features/auth';
 import { UserAvatar } from '../user-avatar';
@@ -67,7 +67,7 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
       </Box>
       <Divider />
       <Box sx={{ my: 1 }}>
-        <MenuItem to={ACCOUNT_ROOT_PATH} component={Link}>
+        <MenuItem to={`${ACCOUNT_ROOT_PATH}/${ACCOUNT_SETTINGS_PATH}`} component={Link}>
           <ListItemIcon>
             <CogIcon fontSize="small" />
           </ListItemIcon>

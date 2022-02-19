@@ -1,0 +1,108 @@
+syntax = "proto3";
+option go_package = "github.com/butlerhq/butler/api/services/octopus/v1;octopus";
+package v1;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+import "services/octopus/v1/requests.proto";
+import "services/octopus/v1/responses.proto";
+
+
+message ListConnectorsRequest {
+  string workspaceId = 1;
+}
+
+message CreateConnectorRequest {
+  string workspaceId = 1;
+  string airbyteWorkspaceId = 2;
+  string airbyteSourceDefinitionId = 3;
+  string airbyteDestinationId = 4;
+}
+
+message MutateConnectorRequest {
+  string connectorId = 1;
+  google.protobuf.Struct secrets = 2;
+  google.protobuf.Struct config = 3;
+}
+
+message MutateConnectorResponse {
+  string status = 2;
+  string message = 3;
+  repeated string logs = 4;
+}
+
+message GetConnectorRequest {
+  string connectorId = 1;
+}
+
+message AuthenticateConnectorRequest {
+  string connectorId = 1;
+  string code = 3;
+}
+
+message TestConnectionResponse {
+  string status = 2;
+  string message = 3;
+  repeated string logs = 4;
+}
+
+message SyncConnectionRequest {
+  string connectorId = 1;
+  string airbyteDestinationId = 2;
+}
+
+
+message Connector {
+  string id = 1;
+  string workspaceId = 2;
+  string name = 3;
+  string airbyteSourceDefinitionId = 4;
+  bool isActive = 5;
+  AuthType authScheme = 6;
+  google.protobuf.Struct config = 7;
+  google.protobuf.Timestamp updatedAt = 8;
+}
+
+message ConnectorList {
+  repeated Connector connectors = 1;
+}
+
+service ConnectorsService {
+
+  rpc ListConnectors(ListConnectorsRequest) returns (ConnectorList) {
+    option (google.api.http) = {
+      post: "/v1/connectors/list",
+      body: "*"
+    };
+  }
+
+  rpc CreateConnector(CreateConnectorRequest) returns (Connector) {
+    option (google.api.http) = {
+      post: "/v1/connectors/create",
+      body: "*"
+    };
+  }
+
+  rpc MutateConnector(MutateConnectorRequest) returns (MutateConnectorResponse) {
+    option (google.api.http) = {
+      post: "/v1/connectors/update",
+      body: "*"
+    };
+  }
+
+  rpc GetConnector(GetConnectorRequest) returns (Connector) {
+    option (google.api.http) = {
+      post: "/v1/connectors/get",
+      body: "*"
+    };
+  }
+
+  rpc AuthenticateOAuthConnector(AuthenticateConnectorRequest) returns (Connector) {
+    option (google.api.http) = {
+      post: "/v1/connectors/oauth",
+      body: "*"
+    };
+  }
+}

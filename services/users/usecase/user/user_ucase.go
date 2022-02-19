@@ -8,15 +8,19 @@ import (
 )
 
 type UserUsecase struct {
-	JWTManager *jwt.JWTManager
-	UserRepo   *repositories.UserRepo
-	TokenRepo  *repositories.TokenRepo
+	JWTManager       *jwt.JWTManager
+	UserRepo         *repositories.UserRepo
+	WorkspaceRepo    *repositories.WorkspaceRepo
+	OrganizationRepo *repositories.OrganizationRepo
+	InvitationRepo   *repositories.InvitationRepo
+	TokenRepo        *repositories.TokenRepo
 }
 
 func NewUserUsecase(db *gorm.DB, rdb *redis.Client, manager *jwt.JWTManager) *UserUsecase {
 	return &UserUsecase{
-		UserRepo:   repositories.NewUserRepo(db),
-		TokenRepo:  repositories.NewRefreshTokenRepo(rdb),
-		JWTManager: manager,
+		UserRepo:       repositories.NewUserRepo(db),
+		InvitationRepo: repositories.NewInvitationRepo(db),
+		TokenRepo:      repositories.NewRefreshTokenRepo(rdb),
+		JWTManager:     manager,
 	}
 }

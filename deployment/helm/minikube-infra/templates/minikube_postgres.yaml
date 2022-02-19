@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-pv-volume
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/instance: {{ .Release.Name}}
+    app.kubernetes.io/component: database
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+spec:
+  storageClassName: manual
+  capacity:
+    storage: 2Gi
+  accessModes:
+    - ReadWriteMany
+  hostPath:
+    path: "/mnt/data/postgres"
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: postgres-pv-claim
+  labels:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/instance: {{ .Release.Name}}
+    app.kubernetes.io/component: database
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+spec:
+  storageClassName: manual
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      cpu: 100m
+      memory: 100Mi
+      storage: 2Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: postgres
+      app.kubernetes.io/instance: {{ .Release.Name}}
+      app.kubernetes.io/component: database
+      app.kubernetes.io/version: {{ .Chart.AppVersion }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: postgres
+        app.kubernetes.io/instance: {{ .Release.Name}}
+        app.kubernetes.io/component: database
+        app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    spec:
+      containers:
+        - name: postgres
+          image: {{ default "public.ecr.aws/c1s5x5y2/butlerhq/postgres:12-alpine" .Values.postgres.image }}
+          imagePullPolicy: "IfNotPresent"
+          env:
+            - name: POSTGRES_USER
+              value: {{ default "postgres" .Values.postgres.user }}
+            - name: POSTGRES_PASSWORD
+              value: {{ default "password" .Values.postgres.password }}
+            - name: POSTGRES_MULTIPLE_DATABASES
+              value: {{ default "users_db,octopus_db" .Values.postgres.databases }}
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: postgredb
+      volumes:
+        - name: postgredb
+          persistentVolumeClaim:
+            claimName: postgres-pv-claim
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+spec:
+  ports:
+    - port: 5432
+  selector:
+    app.kubernetes.io/name: postgres
+    app.kubernetes.io/instance: {{ .Release.Name}}
+    app.kubernetes.io/component: database
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}

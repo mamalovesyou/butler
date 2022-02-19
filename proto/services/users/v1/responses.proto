@@ -1,6 +1,6 @@
 syntax = "proto3";
 option go_package = "github.com/butlerhq/butler/api/services/users/v1;users";
-package users;
+package v1;
 
 import "services/users/v1/messages.proto";
 
@@ -21,4 +21,13 @@ message OrganizationResponse {
 
 message WorkspaceResponse {
   Workspace workspace = 1;
+}
+
+message InvitationResponse {
+  Invitation invitations = 1;
+}
+
+
+message InvitationListResponse {
+  repeated Invitation invitations = 1;
 }

@@ -7,16 +7,16 @@ import (
 )
 
 type Postgres struct {
-	Config *PostgresConfig
+	Config *Config
 	DB     *sql.DB
 }
 
-func NewPostgres(cfg *PostgresConfig) *Postgres {
+func NewPostgres(cfg *Config) *Postgres {
 	return &Postgres{Config: cfg}
 }
 
 // Connect tries to connect to the DB under given DSN
-func (pg *Postgres) Connect(cfg *PostgresConfig, withoutDB bool) (err error) {
+func (pg *Postgres) Connect(cfg *Config, withoutDB bool) (err error) {
 	var uri string
 	if uri = cfg.GetConnectionURI(); withoutDB {
 		uri = cfg.GetConnectionURIWithoutDB()

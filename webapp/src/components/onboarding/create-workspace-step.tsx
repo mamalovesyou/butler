@@ -40,13 +40,13 @@ export const CreateWorkspaceStep: FC<CreateWorkspaceStepProps> = (props) => {
     onSubmit: async (values, helpers): Promise<void> => {
       dispatch(
         createWorkspaceRequest({
-          organizationID: values.organizationId,
-          name: values.name,
-          description: values.description
+          organizationId: values.organizationId,
+          workspace: {
+            name: values.name,
+            description: values.description
+          }
         })
       );
-
-      // TODO: Display errors
     }
   });
 

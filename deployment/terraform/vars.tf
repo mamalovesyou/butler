@@ -19,6 +19,19 @@ variable "users_db_user" {
 }
 
 variable "users_db_password" {
-  type        = string
-  description = "Users service database password"
+  description = "Users database password"
+}
+
+variable "airbyte_db_name" {
+  default     = "airbyte_db"
+  description = "Airbyte service database name"
+}
+
+variable "airbyte_db_user" {
+  default     = "butler"
+  description = "Airbyte service database user"
+}
+
+variable "airbyte_db_password" {
+  description = "Airbyte database password"
 }

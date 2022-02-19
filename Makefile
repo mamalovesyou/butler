@@ -36,6 +36,7 @@ endif
 DOCKER_PUSH ?= false
 DOCKER_REGISTRY ?= butlerhq
 DOCKER_IMAGE_TAG ?= test
+DOCKER_BUILD_FLAGS ?= --progress plain
 
 # Git
 GIT_CURRENT_SHA=$(shell git rev-parse --short HEAD)
@@ -47,19 +48,21 @@ DOCKER_COMPOSE_CMD_TEST = $(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-comp
 DOCKER_COMPOSE_CMD_TEST_LOCAL = $(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.local.test.yml
 
 # Open Api
-OPEN_API_OUT=config/openapi
+OPEN_API_OUT=webapp/config/openapi
 OPEN_API_NAME=api
 OPEN_API_FILE=$(OPEN_API_OUT)/$(OPEN_API_NAME).swagger.json
 
 # Protobuf
 PROTO_ROOT := proto
-PROTO_FILES := $(shell find ./proto/services -name "*.proto")
+PROTO_FILES := $(shell find ./proto -name "*.proto")
 PROTO_DIRS := $(sort $(dir $(PROTO_FILES)))
-PROTO_IMPORTS := -I=$(PROTO_ROOT) -I./vendor/github.com/grpc-ecosystem/grpc-gateway/v2 -I./vendor/github.com/envoyproxy -I./third_party
+PROTO_IMPORTS := -I=$(PROTO_ROOT) -I./vendor/github.com/grpc-ecosystem/grpc-gateway/v2 -I./vendor/github.com/envoyproxy
 PROTO_OUT := api
 PROTO_CMD := protoc $(PROTO_IMPORTS)
 
 ##### Proto #####
+proto-all: proto open-api
+
 .PHONY: proto
 proto:
 	@mkdir -p $(PROTO_OUT)
@@ -71,6 +74,7 @@ proto:
 			$${PROTO_FILE} && echo "✅ $${PROTO_FILE}" || (echo "❌ $${PROTO_FILE}"; exit 1); \
 	done
 
+.PHONY: open-api
 open-api:
 	@mkdir -p $(OPEN_API_OUT)
 	@echo $(PROTO_FILES)
@@ -78,9 +82,17 @@ open-api:
     	--openapiv2_out=openapi_naming_strategy=fqn,allow_merge=true,merge_file_name=$(OPEN_API_NAME),logtostderr=true:$(OPEN_API_OUT) \
     	$(PROTO_FILES)
 
+##### Migrations #####
+fix-migrations:
+	@echo "Fixing migrations"
+	@for NAME in $(sort $(dir $(wildcard $(CURDIR)/services/*/migrations/.))); do \
+  		echo "Fixing $${NAME}"; \
+  		cd $${NAME} && goose fix && echo "All migrations looks good ✅" || (echo "Unable to fix migrations ❌"; exit 1);  \
+  	done
+
 ##### Binaries #####
 tools: clean-tools-bins butler-victorinox
-services: clean-services-bins butler-users butler-gateway
+services: clean-services-bins butler-users butler-octopus butler-gateway
 
 clean-tools-bins:
 	@echo "Delete old binaries..."
@@ -106,16 +118,21 @@ butler-users:
 	@mkdir -p $(BIN)
 	CGO_ENABLED=$(CGO_ENABLED) go build -o $(BIN)/butler-users cmd/users/main.go
 
+butler-octopus:
+	@printf "Build butler-octopus service with OS: $(GOOS), ARCH: $(GOARCH)..."
+	@mkdir -p $(BIN)
+	CGO_ENABLED=$(CGO_ENABLED) go build -o $(BIN)/butler-octopus cmd/octopus/main.go
+
 
 ##### Docker #####
-docker-all: docker-service-gateway docker-service-users docker-webapp docker-victorinox
-docker-services: docker-service-gateway docker-service-users
+docker-all: docker-service-gateway docker-service-users docker-service-octopus docker-webapp docker-victorinox
+docker-services: docker-service-gateway docker-service-users docker-service-octopus
 docker-tools: docker-victorinox
 
 .PHONY: docker-victorinox
 docker-victorinox:
 	@printf "Building docker image  $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG)...\n"
-	docker build . -t $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG) --target victorinox
+	docker build . -t $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG) $(DOCKER_BUILD_FLAGS) --target victorinox
 	@if [ $(DOCKER_PUSH) = true ]; then \
   		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG)...\n"; \
 		docker push $(DOCKER_REGISTRY)/butler-victorinox:$(DOCKER_IMAGE_TAG); \
@@ -124,7 +141,7 @@ docker-victorinox:
 .PHONY: docker-webapp
 docker-webapp:
 	@printf "Building docker image $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG)...\n"
-	cd ./webapp && docker build . -t $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG) --target prod
+	cd ./webapp && docker build . -t $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG) $(DOCKER_BUILD_FLAGS) --target prod
 	@if [ $(DOCKER_PUSH) = true ]; then \
 		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG)...\n"; \
 		docker push $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG); \
@@ -135,7 +152,7 @@ docker-webapp:
 .PHONY: docker-service-gateway
 docker-service-gateway:
 	@printf "Building docker image $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG)...\n"
-	@docker build . -t $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG) --target service-gateway
+	@docker build . -t $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG) $(DOCKER_BUILD_FLAGS) --target service-gateway
 	@if [ $(DOCKER_PUSH) = true ]; then \
 		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG)...\n"; \
 		docker push $(DOCKER_REGISTRY)/butler-gateway:$(DOCKER_IMAGE_TAG); \
@@ -144,10 +161,19 @@ docker-service-gateway:
 .PHONY: docker-service-users
 docker-service-users:
 	@printf "Building docker image $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG)...\n"
-	@docker build . -t $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG) --target service-users
+	@docker build . -t $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG) $(DOCKER_BUILD_FLAGS) --target service-users
 	@if [ $(DOCKER_PUSH) = true ]; then \
 		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG)...\n"; \
 		docker push $(DOCKER_REGISTRY)/butler-users:$(DOCKER_IMAGE_TAG); \
+	fi
+
+.PHONY: docker-service-octopus
+docker-service-octopus:
+	@printf "Building docker image $(DOCKER_REGISTRY)/butler-octopus:$(DOCKER_IMAGE_TAG)...\n"
+	@docker build . -t $(DOCKER_REGISTRY)/butler-octopus:$(DOCKER_IMAGE_TAG) $(DOCKER_BUILD_FLAGS) --target service-octopus
+	@if [ $(DOCKER_PUSH) = true ]; then \
+		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-octopus:$(DOCKER_IMAGE_TAG)...\n"; \
+		docker push $(DOCKER_REGISTRY)/butler-octopus:$(DOCKER_IMAGE_TAG); \
 	fi
 
 
@@ -174,47 +200,51 @@ tidy: ## Clean go.mod dependencies
 
 
 
-# DOCKER ENV
-docker.dev.infra: ## Start dev environment with docker
+########################
+###  Docker Compose  ###
+########################
+
+dev.infra: ## Start dev environment with docker
 	@echo "Starting dev infra..."
-	@$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans postgres
+	@$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.infra.yml up --build postgres redis minio
 
-docker.dev.migrate: ## Provision databases
+dev.airbyte: ## Start airbyte
+	@echo "Starting airbyte..."
+	@$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/airbyte/docker-compose.yml --env-file $(DOCKER_COMPOSE)/airbyte/.env.dev up
+
+dev.migrate: ## Provision databases
 	@echo "Starting victorinox..."
-	@$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans victorinox
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.services.yml up --build victorinox
 
-
-docker.dev.services: ## Start services with docker in dev environment
+.PHONY: dev.services
+dev.services: ## Start services with docker in dev environment
 	@echo "Starting dev env..."
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --abort-on-container-exit --remove-orphans auth workspace gateway
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.services.yml up --build users octopus gateway
 
 
-docker.dev.monitor: ## Start monitor dev evironment with docker
+dev.monitor: ## Start monitor dev evironment with docker
 	@echo "Starting monitoring dev env..."
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml up --build --remove-orphans pgadmin
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.yml up --build pgadmin
 
-docker.dev.clean: ## Clean docker dev evironment
+dev.clean: ## Clean docker dev evironment
 	@echo "Cleaning dev env..."
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.dev.yml rm -f
-	@echo "Cleaning monitor dev env..."
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.dev.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
-	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.dev.yml rm -f
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/airbyte/docker-compose.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/airbyte/docker-compose.yml rm -f
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.services.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.services.yml rm -f
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.monitor.yml rm -f
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.infra.yml down $(DOCKER_COMPOSE_CLEAN_FLAGS)
+	$(DOCKER_COMPOSE_CMD) -f $(DOCKER_COMPOSE)/docker-compose.infra.yml rm -f
 
 
 ########################
-###     Minikube     ###
+###       K8s        ###
 ########################
-.PHONY: minikube-start
-minikube-start:
-	@echo "Starting minikube..."
-	@minikube start --profile new --kubernetes-version=v1.20.0 --cpus 4 --memory 6144
 
-.PHONY: minikube-env
-minikube-env:
-	@echo "Loading minikube docker-env..."
-	$(shell eval $(minikube -p new docker-env))
 
 help: ## Display this help screen
 	@grep -h -E '^[a-zA-Z_-]+(\.[a-zA-Z_-]+)*:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+
+
 

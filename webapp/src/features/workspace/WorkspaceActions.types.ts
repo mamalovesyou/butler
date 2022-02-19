@@ -1,15 +1,15 @@
 import {
-  GoogleRpcStatus,
-  V1CreateOrganizationRequest,
-  V1CreateWorkspaceRequest,
-  V1Organization,
-  V1OrganizationListResponse,
-  V1OrganizationResponse,
-  V1AuthenticatedUser,
-  V1SignInRequest,
-  V1WorkspaceResponse
+    GoogleRpcStatus,
+    V1CreateOrganizationRequest,
+    V1OrganizationListResponse,
+    V1OrganizationResponse,
+    V1AuthenticatedUser,
+    V1WorkspaceResponse,
+    V1CreateWorkspaceRequest,
+    V1BulkInviteWorkspaceMemberRequest,
+    V1GetOrganizationRequest,
+    V1Organization,
 } from '../../api';
-import { SET_ONBOARDING_STEP } from '../onboarding';
 
 export const LIST_ORGANIZATIONS_REQUEST = 'LIST_ORGANIZATIONS_REQUEST';
 export const LIST_ORGANIZATIONS_SUCCESS = 'LIST_ORGANIZATIONS_SUCCESS';
@@ -18,6 +18,10 @@ export const LIST_ORGANIZATIONS_FAILURE = 'LIST_ORGANIZATIONS_FAILURE';
 export const CREATE_ORGANIZATION_REQUEST = 'CREATE_ORGANIZATION_REQUEST';
 export const CREATE_ORGANIZATION_SUCCESS = 'CREATE_ORGANIZATION_SUCCESS';
 export const CREATE_ORGANIZATION_FAILURE = 'CREATE_ORGANIZATION_FAILURE';
+
+export const GET_ORGANIZATION_REQUEST = 'GET_ORGANIZATION_REQUEST';
+export const GET_ORGANIZATION_SUCCESS = 'GET_ORGANIZATION_SUCCESS';
+export const GET_ORGANIZATION_FAILURE = 'GET_ORGANIZATION_FAILURE';
 
 export const LIST_WORKSPACES_REQUEST = 'LIST_WORKSPACES_REQUEST';
 export const LIST_WORKSPACES_SUCCESS = 'LIST_WORKSPACES_SUCCESS';
@@ -35,101 +39,120 @@ export const SET_CURRENT_WORKSPACE = 'SET_CURRENT_WORKSPACE';
 
 // CreateOrganization
 export interface ICreateOrganizationRequest {
-  type: typeof CREATE_ORGANIZATION_REQUEST;
-  payload: V1CreateOrganizationRequest;
+    type: typeof CREATE_ORGANIZATION_REQUEST;
+    payload: V1CreateOrganizationRequest;
 }
 
 export interface ICreateOrganizationSuccess {
-  type: typeof CREATE_ORGANIZATION_SUCCESS;
-  payload: V1OrganizationResponse;
+    type: typeof CREATE_ORGANIZATION_SUCCESS;
+    payload: V1OrganizationResponse;
 }
 
 export interface ICreateOrganizationFailure {
-  type: typeof CREATE_ORGANIZATION_FAILURE;
-  error: GoogleRpcStatus;
+    type: typeof CREATE_ORGANIZATION_FAILURE;
+    error: GoogleRpcStatus;
 }
 
-// CreateWorkspace
+// GetOrganization
+export interface IGetOrganizationRequest {
+    type: typeof GET_ORGANIZATION_REQUEST;
+    payload: V1GetOrganizationRequest;
+}
+
+export interface IGetOrganizationSuccess {
+    type: typeof GET_ORGANIZATION_SUCCESS;
+    payload: V1Organization;
+}
+
+export interface IGetOrganizationFailure {
+    type: typeof GET_ORGANIZATION_FAILURE;
+    error: GoogleRpcStatus;
+}
+
+// CreateWorkspaceDialog
 export interface IListOrganizationsRequest {
-  type: typeof LIST_ORGANIZATIONS_REQUEST;
+    type: typeof LIST_ORGANIZATIONS_REQUEST;
 }
 
 export interface IListOrganizationsSuccess {
-  type: typeof LIST_ORGANIZATIONS_SUCCESS;
-  payload: V1OrganizationListResponse;
+    type: typeof LIST_ORGANIZATIONS_SUCCESS;
+    payload: V1OrganizationListResponse;
 }
 
 export interface IListOrganizationsFailure {
-  type: typeof LIST_ORGANIZATIONS_FAILURE;
-  error: GoogleRpcStatus;
+    type: typeof LIST_ORGANIZATIONS_FAILURE;
+    error: GoogleRpcStatus;
 }
 
-// CreateWorkspace
+// CreateWorkspaceDialog
 export interface IListWorkspacesRequest {
-  type: typeof LIST_WORKSPACES_REQUEST;
+    type: typeof LIST_WORKSPACES_REQUEST;
 }
 
 export interface IListWorkspacesSuccess {
-  type: typeof LIST_WORKSPACES_SUCCESS;
-  payload: V1OrganizationListResponse;
+    type: typeof LIST_WORKSPACES_SUCCESS;
+    payload: V1OrganizationListResponse;
 }
 
 export interface IListWorkspacesFailure {
-  type: typeof LIST_WORKSPACES_FAILURE;
-  error: GoogleRpcStatus;
+    type: typeof LIST_WORKSPACES_FAILURE;
+    error: GoogleRpcStatus;
 }
 
-// CreateWorkspace
+// CreateWorkspaceDialog
 export interface ICreateWorkspaceRequest {
-  type: typeof CREATE_WORKSPACE_REQUEST;
-  payload: V1CreateWorkspaceRequest;
+    type: typeof CREATE_WORKSPACE_REQUEST;
+    payload: V1CreateWorkspaceRequest;
 }
 
 export interface ICreateWorkspaceSuccess {
-  type: typeof CREATE_WORKSPACE_SUCCESS;
-  payload: V1WorkspaceResponse;
+    type: typeof CREATE_WORKSPACE_SUCCESS;
+    payload: V1WorkspaceResponse;
 }
 
 export interface ICreateWorkspaceFailure {
-  type: typeof CREATE_WORKSPACE_FAILURE;
-  error: GoogleRpcStatus;
+    type: typeof CREATE_WORKSPACE_FAILURE;
+    error: GoogleRpcStatus;
 }
 
 // AddWorkspaceMembers
 export interface IAddWorkspaceMembersRequest {
-  type: typeof ADD_WORKSPACE_MEMBER_REQUEST;
-  payload: V1SignInRequest;
+    type: typeof ADD_WORKSPACE_MEMBER_REQUEST;
+    payload: V1BulkInviteWorkspaceMemberRequest;
 }
 
 export interface IAddWorkspaceMembersSuccess {
-  type: typeof ADD_WORKSPACE_MEMBER_SUCCESS;
-  payload: V1AuthenticatedUser;
+    type: typeof ADD_WORKSPACE_MEMBER_SUCCESS;
+    payload: V1AuthenticatedUser;
 }
 
 export interface IAddWorkspaceMembersFailure {
-  type: typeof ADD_WORKSPACE_MEMBER_FAILURE;
-  error: GoogleRpcStatus;
+    type: typeof ADD_WORKSPACE_MEMBER_FAILURE;
+    error: GoogleRpcStatus;
 }
 
 export interface ISetCurrentWorkspace {
-  type: typeof SET_CURRENT_WORKSPACE;
-  payload: { workspaceId: string; organizationId: string };
+    type: typeof SET_CURRENT_WORKSPACE;
+    payload: { workspaceId: string; organizationId: string };
 }
 
 export type WorkspaceActionType =
-  | IListOrganizationsRequest
-  | IListOrganizationsSuccess
-  | IListOrganizationsFailure
-  | ICreateOrganizationRequest
-  | ICreateOrganizationSuccess
-  | ICreateOrganizationFailure
-  | ICreateWorkspaceRequest
-  | ICreateWorkspaceSuccess
-  | ICreateWorkspaceFailure
-  | IListWorkspacesRequest
-  | IListWorkspacesSuccess
-  | IListWorkspacesFailure
-  | IAddWorkspaceMembersRequest
-  | IAddWorkspaceMembersSuccess
-  | IAddWorkspaceMembersFailure
-  | ISetCurrentWorkspace;
+    | IListOrganizationsRequest
+    | IListOrganizationsSuccess
+    | IListOrganizationsFailure
+    | ICreateOrganizationRequest
+    | ICreateOrganizationSuccess
+    | ICreateOrganizationFailure
+    | IGetOrganizationRequest
+    | IGetOrganizationSuccess
+    | IGetOrganizationFailure
+    | ICreateWorkspaceRequest
+    | ICreateWorkspaceSuccess
+    | ICreateWorkspaceFailure
+    | IListWorkspacesRequest
+    | IListWorkspacesSuccess
+    | IListWorkspacesFailure
+    | IAddWorkspaceMembersRequest
+    | IAddWorkspaceMembersSuccess
+    | IAddWorkspaceMembersFailure
+    | ISetCurrentWorkspace;

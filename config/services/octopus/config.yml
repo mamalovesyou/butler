@@ -1,0 +1,26 @@
+environment: dev
+logger:
+  disableCaller: true
+  disableStacktrace: false
+  encoding: json
+  level: debug
+jaeger:
+  host: jaeger:6831
+  logSpans: true
+  serviceName: User_GRPC
+postgres:
+  host: postgres
+  port: 5432
+  name: connector_db
+  user: postgres
+  password: password
+sources:
+  redirectURL: http://localhost:3000/oauth
+  google:
+    clientID: clientID
+    clientSecret: clientSecret
+  linkedin:
+    clientID: clientID
+    clientSecret: clientSecret
+port: 3002
+airbyteServerURL: "http://airbyte-server:8001/api"

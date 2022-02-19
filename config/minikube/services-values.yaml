@@ -1,0 +1,68 @@
+environment: local
+replicaCount: 1
+image:
+  repository: butlerhq
+  pullPolicy: IfNotPresent
+  tag: "test"
+
+certManager:
+  enabled: false
+
+services:
+
+  gateway:
+    serviceType: LoadBalancer
+    containerPort: 5000
+    host: api.heybutler.local
+
+  webapp:
+    serviceType: LoadBalancer
+    containerPort: 80
+    host: app.heybutler.local
+
+  users:
+    sendgridAPIKey: sendgridKey
+    webappBaseURL: "https://app.heybutler.local"
+    jwtSecret: superSecret
+    containerPort: 5001
+    postgres:
+      external: false
+      host: postgres
+      name: users_db
+      user: postgres
+      password: password
+
+  octopus:
+    connectors:
+      redirectURL: "http://app.heybutler.local/oauth"
+      google:
+        clientID: clientID
+        clientSecret: clientSecret
+        developerToken: developerToken
+      linkedin:
+        clientID: clientID
+        clientSecret: clientSecret
+        developerToken: developerToken
+    containerPort: 5002
+    postgres:
+      external: false
+      host: postgres
+      name: octopus_db
+      user: postgres
+      password: password
+
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 256Mi
+  requests:
+    cpu: 50m
+    memory: 128Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 100
+  targetCPUUtilizationPercentage: 80
+  targetMemoryUtilizationPercentage: 80

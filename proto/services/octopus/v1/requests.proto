@@ -1,0 +1,30 @@
+syntax = "proto3";
+option go_package = "github.com/butlerhq/butler/api/services/octopus/v1;octopus";
+package v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+
+message WorkspaceConnectorsRequest {
+  string workspaceId = 1;
+}
+
+message ConnectWithCodeRequest {
+  string workspaceId = 1;
+  string provider = 2;
+  string airbyteSourceId = 3;
+  string code = 4;
+}
+
+message SelectAccountRequest {
+  string workspaceConnectorId = 1;
+  string accountId = 2;
+  string accountName = 3;
+  bool isTestAccount = 4;
+}
+
+message GetConnectorSecretRequest {
+  string organizationId = 1;
+  string workspaceId = 2;
+  string provider = 3;
+}

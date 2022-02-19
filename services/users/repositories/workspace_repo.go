@@ -1,6 +1,8 @@
 package repositories
 
 import (
+	"fmt"
+
 	"github.com/butlerhq/butler/services/users/models"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -25,29 +27,32 @@ func (repo *WorkspaceRepo) CreateOne(orga *models.Workspace) (*models.Workspace,
 	if err := repo.db.Create(orga).Error; err != nil {
 		return &models.Workspace{}, err
 	}
-	if err := repo.db.Save(orga).Error; err != nil {
-		return &models.Workspace{}, err
-	}
 	return orga, nil
 }
 
 // FindByID an Workspace in database and eager load Worspaces and Members
 func (repo *WorkspaceRepo) FindByID(workspaceID string) (*models.Workspace, error) {
-	org := &models.Workspace{}
-	if err := repo.db.Model(org).Preload(clause.Associations).Where("id = ?", workspaceID).Take(org).Error; err != nil {
+	ws := &models.Workspace{}
+	if err := repo.db.Model(ws).Preload(clause.Associations).Where("id = ?", workspaceID).Take(ws).Error; err != nil {
 		return &models.Workspace{}, err
 	}
-	return org, nil
+	fmt.Println()
+	fmt.Printf("Workspace Inivtes: %v", ws.PendingInvitations)
+	fmt.Println()
+	return ws, nil
 }
 
 // AddWorkspaceMember add a WorkspaceMember to a Workspace
-func (repo *WorkspaceRepo) AddWorkspaceMember(workspaceID string, member *models.WorkspaceMember) (*models.Workspace, error) {
-	wk := &models.Workspace{}
-	tx := repo.db.Model(wk).Preload(clause.Associations).Where("id = ?", workspaceID).Take(wk)
-	if err := tx.Association("UserMembers").Append(member); err != nil {
-		return &models.Workspace{}, err
+func (repo *WorkspaceRepo) AddWorkspaceMember(workspaceID uuid.UUID, userID uuid.UUID) (*models.WorkspaceMember, error) {
+	userMember := models.WorkspaceMember{
+		WorkspaceID: workspaceID,
+		UserID:      userID,
+		Role:        "member",
 	}
-	return wk, nil
+	if err := repo.db.Create(&userMember).Error; err != nil {
+		return &models.WorkspaceMember{}, err
+	}
+	return &userMember, nil
 }
 
 // GetWorkspaceMember for a given workspaceID, userID pair

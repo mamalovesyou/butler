@@ -1,38 +1,19 @@
 import {
   GoogleRpcStatus,
-  V1CatalogConnectorList,
-  V1OAuthAuthorizationRequestConnectorCode,
-  V1WorkspaceConnector,
-  V1WorkspaceConnectorList
+  V1ConnectWithCodeRequest,
+  V1ConnectorList,
+  V1ListConnectorsRequest, V1Connector
 } from '../../api';
 import * as ActionTypes from './ConnectorsActions.types';
 
-export const listCatalogConnectorsRequest =
-  (): ActionTypes.ConnectorsActionType => ({
-    type: ActionTypes.LIST_CATALOG_CONNECTORS_REQUEST
-  });
-
-export const listCatalogConnectorsSuccess = (
-  payload: V1CatalogConnectorList
-): ActionTypes.ConnectorsActionType => ({
-  type: ActionTypes.LIST_CATALOG_CONNECTORS_SUCCESS,
-  payload
-});
-
-export const listCatalogConnectorsFailure = (
-  error: GoogleRpcStatus
-): ActionTypes.ConnectorsActionType => ({
-  type: ActionTypes.LIST_CATALOG_CONNECTORS_FAILURE,
-  error
-});
-
 export const listWorkspaceConnectorsRequest =
-  (): ActionTypes.ConnectorsActionType => ({
-    type: ActionTypes.LIST_WORKSPACE_CONNECTORS_REQUEST
+  (payload: V1ListConnectorsRequest): ActionTypes.ConnectorsActionType => ({
+    type: ActionTypes.LIST_WORKSPACE_CONNECTORS_REQUEST,
+    payload
   });
 
 export const listWorkspaceConnectorsSuccess = (
-  payload: V1WorkspaceConnectorList
+  payload: V1ConnectorList
 ): ActionTypes.ConnectorsActionType => ({
   type: ActionTypes.LIST_WORKSPACE_CONNECTORS_SUCCESS,
   payload
@@ -46,14 +27,14 @@ export const listWorkspaceConnectorsFailure = (
 });
 
 export const connectOAuthConnectorRequest = (
-  payload: V1OAuthAuthorizationRequestConnectorCode
+  payload: V1ConnectWithCodeRequest
 ): ActionTypes.ConnectorsActionType => ({
   type: ActionTypes.CONNECT_OAUTH_CONNECTOR_REQUEST,
   payload
 });
 
 export const connectOAuthConnectorSuccess = (
-  payload: V1WorkspaceConnector
+  payload: V1Connector
 ): ActionTypes.ConnectorsActionType => ({
   type: ActionTypes.CONNECT_OAUTH_CONNECTOR_SUCCESS,
   payload
@@ -63,5 +44,25 @@ export const connectOAuthConnectorFailure = (
   error: GoogleRpcStatus
 ): ActionTypes.ConnectorsActionType => ({
   type: ActionTypes.CONNECT_OAUTH_CONNECTOR_FAILURE,
+  error
+});
+
+export const getConnectorRequest =
+(payload: V1ListConnectorsRequest): ActionTypes.ConnectorsActionType => ({
+  type: ActionTypes.LIST_WORKSPACE_CONNECTORS_REQUEST,
+  payload
+});
+
+export const getConnectorSuccess = (
+    payload: V1ConnectorList
+): ActionTypes.ConnectorsActionType => ({
+  type: ActionTypes.LIST_WORKSPACE_CONNECTORS_SUCCESS,
+  payload
+});
+
+export const getConnectorFailure = (
+    error: GoogleRpcStatus
+): ActionTypes.ConnectorsActionType => ({
+  type: ActionTypes.LIST_WORKSPACE_CONNECTORS_FAILURE,
   error
 });

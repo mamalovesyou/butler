@@ -30,12 +30,21 @@ spec:
         - name: butler-svc-users
           image: "{{ .Values.image.repository }}/butler-users:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          envFrom:
-            - configMapRef:
-                name: {{ .Release.Name}}-svc-users
+          env:
+            {{- range $key, $val := .Values.services.users.config.env }}
+            - name: $key
+              value: $val
+            {{- end}}
+            {{- range $key, $val := .Values.services.users.config.secrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-users-secrets
+                  key: {{ $key }}
+          {{- end}}
           ports:
             - name: http
-              containerPort: {{ .Values.services.users.containerPort }}
+              containerPort: 5000
               protocol: TCP
           resources:
             requests:
@@ -45,6 +54,10 @@ spec:
               cpu: {{ .Values.resources.limits.cpu }}
               memory: {{ .Values.resources.limits.memory }}
           readinessProbe:
-            httpGet:
-              path: /
-              port: http
+            exec:
+              command: ["/grpc-health-probe", "-addr=:5000"]
+            initialDelaySeconds: 5
+          livenessProbe:
+            exec:
+              command: ["/grpc-health-probe", "-addr=:5000"]
+            initialDelaySeconds: 10

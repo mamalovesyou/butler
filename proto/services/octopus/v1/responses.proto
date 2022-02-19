@@ -1,0 +1,48 @@
+syntax = "proto3";
+option go_package = "github.com/butlerhq/butler/api/services/octopus/v1;octopus";
+package v1;
+
+import "google/protobuf/timestamp.proto";
+import "google/api/annotations.proto";
+import "google/protobuf/struct.proto";
+
+enum AuthType {
+  OAUTH2 = 0;
+  API_KEY = 1;
+}
+
+message WorkspaceConnectorList {
+  repeated WorkspaceConnector connectors = 1;
+}
+
+message WorkspaceConnector {
+  string id = 1;
+  string workspaceId = 2;
+  string name = 3;
+  string status = 4;
+  AuthType authScheme = 5;
+  ProviderAccount accountConfig = 6;
+  google.protobuf.Timestamp expiresIn = 7;
+  google.protobuf.Timestamp createdAt = 8;
+  google.protobuf.Timestamp updatedAt = 9;
+}
+
+message ProviderAccount {
+  string name = 1;
+  string id = 2;
+  bool test = 3;
+  string currency = 4;
+}
+
+message ListAccountsResponse {
+  repeated ProviderAccount accounts = 1;
+}
+
+message ConnectorSecret {
+  google.protobuf.Struct value = 1;
+}
+
+message ConnectorSecretPair {
+  WorkspaceConnector connector = 1;
+  ConnectorSecret credentials = 2;
+}

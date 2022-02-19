@@ -7,12 +7,20 @@ import (
 
 var DefaultVictorinoxConfig = VictorioxConfig{
 	Environment: "dev",
-	Postgres:    postgres.DefaultPostgresConfig,
-	Logger:      logger.DefaultLoggerConfig,
+	Services: ServicesConfig{
+		Users:   postgres.DefaultConfig,
+		Octopus: postgres.DefaultConfig,
+	},
+	Logger: logger.DefaultLoggerConfig,
+}
+
+type ServicesConfig struct {
+	Users   postgres.Config
+	Octopus postgres.Config
 }
 
 type VictorioxConfig struct {
 	Environment string
-	Postgres    postgres.PostgresConfig
+	Services    ServicesConfig
 	Logger      logger.LoggerConfig
 }

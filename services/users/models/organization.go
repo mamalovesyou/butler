@@ -8,10 +8,12 @@ import (
 
 type Organization struct {
 	BaseModel
-	Name        string
-	OwnerID     uuid.UUID
-	Workspaces  []Workspace          `gorm:"foreignKey:OrganizationID"`
-	UserMembers []OrganizationMember `gorm:"foreignKey:OrganizationID"`
+	Name               string
+	OwnerID            uuid.UUID
+	Onboarded          bool
+	Workspaces         []Workspace          `gorm:"foreignKey:OrganizationID"`
+	UserMembers        []OrganizationMember `gorm:"foreignKey:OrganizationID"`
+	PendingInvitations []Invitation         `gorm:"foreignKey:OrganizationID"`
 }
 
 func (u *Organization) TableName() string {
@@ -24,6 +26,7 @@ func (o *Organization) ToPb() *users.Organization {
 		Id:        o.ID.String(),
 		OwnerId:   o.OwnerID.String(),
 		Name:      o.Name,
+		Onboarded: o.Onboarded,
 		CreatedAt: timestamppb.New(o.CreatedAt),
 		UpdatedAt: timestamppb.New(o.UpdatedAt),
 	}
@@ -40,12 +43,19 @@ func (o *Organization) ToPb() *users.Organization {
 	}
 	pb.Workspaces = workspaces
 
+	invitations := make([]*users.Invitation, len(o.PendingInvitations))
+	for i, invite := range o.PendingInvitations {
+		invitations[i] = invite.ToPb()
+	}
+	pb.Invitations = invitations
+
 	return pb
 }
 
 type OrganizationMember struct {
 	BaseModel
 	UserID         uuid.UUID
+	User           User `gorm:"foreignKey:UserID"`
 	OrganizationID uuid.UUID
 	Role           string
 }
@@ -57,7 +67,9 @@ func (u *OrganizationMember) TableName() string {
 // ToPb return the workspace.UserMember of a OrganizationMember
 func (m *OrganizationMember) ToPb() *users.UserMember {
 	return &users.UserMember{
-		UserId: m.UserID.String(),
-		Role:   m.Role,
+		UserId:    m.UserID.String(),
+		FirstName: m.User.FirstName,
+		LastName:  m.User.LastName,
+		Role:      m.Role,
 	}
 }

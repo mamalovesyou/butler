@@ -2,6 +2,7 @@ package permissions
 
 import (
 	"context"
+
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/services/users/errors"
 	"github.com/butlerhq/butler/services/users/models"
@@ -16,7 +17,7 @@ func (uc *PermissionsUsecase) IsAuthenticated(ctx context.Context, token string)
 
 	token, err := grpc_auth.AuthFromMD(ctx, "bearer")
 	if err != nil {
-		logger.Error(ctx, "Unable to retrieve auth token from context", zap.Error(err))
+		logger.Error(ctx, "Unable to retrieve users token from context", zap.Error(err))
 		return nil, errors.ErrMissingAccessToken
 	}
 

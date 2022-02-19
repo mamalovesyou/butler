@@ -3,24 +3,24 @@
 
 # Working directory
 # . or absolute path, please note that the directories following must be under root.
-root = "." 
+root = "/"
 tmp_dir = "/tmp"
 
 [build]
 # Just plain old shell command. You could use `make` as well.
-cmd = "time go build -i -o /tmp/gateway/main github.com/butlerhq/butler/cmd/gateway"
+cmd = "go build -o /tmp/main github.com/butlerhq/butler/cmd/gateway"
 # Binary file yields from `cmd`.
-bin = "/tmp/gateway/main"
+bin = "/tmp/main"
 # Customize binary.
-full_bin = "/tmp/gateway/main start --dir ./config/services"
+full_bin = "/tmp/main start --config /config/config.yml"
 # Watch these filename extensions.
-include_ext = ["go", "tpl", "tmpl", "html"]
+include_ext = ["go", "tpl", "tmpl", "yaml", "yml"]
 
 # Ignore these filename extensions or directories.
 exclude_dir = []
 
 # Watch these directories if you specified.
-include_dir = ["internal"]
+include_dir = ["butler/api", "butler/services/gateway", "butler/cmd/gateway", "config"]
 
 # Exclude files.
 exclude_file = []

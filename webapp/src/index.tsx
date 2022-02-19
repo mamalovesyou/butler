@@ -12,6 +12,7 @@ import {
   SettingsConsumer,
   SettingsProvider
 } from './contexts/settings-context';
+import NotificationToaster from "./components/notifications-toaster";
 
 ReactDOM.render(
   <React.StrictMode>
@@ -29,7 +30,7 @@ ReactDOM.render(
                   })}
                 >
                   <CssBaseline />
-                  {/* <Toaster position="top-center" /> */}
+                  <NotificationToaster />
                   <AppRoutes />
                 </ThemeProvider>
               )}

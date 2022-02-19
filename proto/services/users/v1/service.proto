@@ -1,6 +1,6 @@
 syntax = "proto3";
 option go_package = "github.com/butlerhq/butler/api/services/users/v1;users";
-package users;
+package v1;
 
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/empty.proto";
@@ -16,7 +16,7 @@ service UsersService {
   // Authentication
   rpc SignIn(SignInRequest) returns (AuthenticatedUser) {
     option (google.api.http) = {
-      post: "/v1/user/signin"
+      post: "/v1/users/signin"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -26,7 +26,7 @@ service UsersService {
 
   rpc SignUp(SignUpRequest) returns (AuthenticatedUser) {
     option (google.api.http) = {
-      post: "/v1/user/signup"
+      post: "/v1/users/signup"
       body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
@@ -36,8 +36,8 @@ service UsersService {
 
   rpc SignUpWithInvite(SignUpWithInvitationRequest) returns (AuthenticatedUser) {
     option (google.api.http) = {
-      post: "/v1/user/signup/invites/{invitationId}"
-      body: "infos"
+      post: "/v1/users/signup/invites"
+      body: "*"
     };
     option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
       security: {} // Disable security key
@@ -46,13 +46,13 @@ service UsersService {
 
   rpc SignOut(SignOutRequest) returns (google.protobuf.Empty) {
     option (google.api.http) = {
-      post: "/v1/user/signout"
+      post: "/v1/users/signout"
       body: "*"
     };
   }
   rpc RefreshToken(RefreshRequest) returns (AuthenticatedUser) {
     option (google.api.http) = {
-      post: "/v1/user/refresh"
+      post: "/v1/users/refresh"
       body: "*"
     };
   }
@@ -64,32 +64,53 @@ service UsersService {
     };
   }
 
-  rpc CreateOrganization(CreateOrganizationRequest) returns (OrganizationResponse) {
+  rpc GetOrganization(GetOrganizationRequest) returns (OrganizationResponse) {
     option (google.api.http) = {
-      post: "/v1/organizations"
+      post: "/v1/organizations",
       body: "*"
     };
   }
 
-  rpc InviteOrganizationMember(IniviteOrganizationMemberRequest) returns (Invitation) {
+  rpc CreateOrganization(CreateOrganizationRequest) returns (OrganizationResponse) {
     option (google.api.http) = {
-      post: "/v1/organizations/{organization_id}/members/invite"
-      body: "invitation"
+      post: "/v1/organizations/create"
+      body: "*"
+    };
+  }
+
+  rpc CompleteOnboarding(CompleteOnboardingRequest) returns (OrganizationResponse) {
+    option (google.api.http) = {
+      post: "/v1/organizations/onboarding"
+      body: "*"
     };
   }
 
   // Workspace
   rpc CreateWorkspace(CreateWorkspaceRequest) returns (WorkspaceResponse) {
     option (google.api.http) = {
-      post: "/v1/organizations/{organization_id}/workspaces"
-      body: "workspace"
+      post: "/v1/workspaces/create"
+      body: "*"
     };
   }
 
-  rpc InviteWorkspaceMember(InviteWorkspaceMemberRequest) returns (Invitation) {
+  rpc GetWorkspace(GetWorkspaceRequest) returns (WorkspaceResponse) {
     option (google.api.http) = {
-      post: "/v1/workspaces/{workspace_id}/invites"
-      body: "invitation"
+      post: "/v1/workspaces",
+      body: "*"
+    };
+  }
+
+  rpc SendBatchInvitations(BatchInviteMemberRequest) returns (InvitationListResponse) {
+    option (google.api.http) = {
+      post: "/v1/invitations/send"
+      body: "*"
+    };
+  }
+
+  rpc GetInvitation(GetInvitationRequest) returns (Invitation) {
+    option (google.api.http) = {
+      post: "/v1/invitations",
+      body: "*"
     };
   }
 }

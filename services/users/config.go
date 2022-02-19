@@ -1,28 +1,34 @@
 package users
 
 import (
+	"github.com/butlerhq/butler/internal/airbyte"
 	"github.com/butlerhq/butler/internal/logger"
 	"github.com/butlerhq/butler/internal/postgres"
 	"github.com/butlerhq/butler/internal/redis"
 )
 
 var DefaultServiceConfig = ServiceConfig{
-	Environment: "dev",
-	Port:        "5001",
-	JWTSecret:   "SuperSecretJWT",
-	Postgres:    postgres.DefaultPostgresConfig,
-	Redis:       redis.DefaultRedisConfig,
-	Logger:      logger.DefaultLoggerConfig,
-	Jaeger:      logger.DefaultJaegerConfig,
+	Environment:    "dev",
+	Port:           "5001",
+	JWTSecret:      "SuperSecretJWT",
+	SendgridAPIKey: "supersecretkey",
+	Postgres:       postgres.DefaultConfig,
+	Redis:          redis.DefaultRedisConfig,
+	Logger:         logger.DefaultLoggerConfig,
+	Jaeger:         logger.DefaultJaegerConfig,
+	WebappBaseURL:  "http://localhost:3000",
+	Airbyte:        airbyte.DefaultAirbyteConfig,
 }
 
 type ServiceConfig struct {
-	Environment     string
-	Port            string
-	JWTSecret       string `mapstructure:"jwtSecret"`
-	Postgres        postgres.PostgresConfig
-	Redis           redis.RedisConfig
-	Jaeger          logger.JaegerConfig
-	Logger          logger.LoggerConfig
-	AuthServiceAddr string
+	Environment    string
+	Port           string
+	JWTSecret      string `mapstructure:"jwtSecret"`
+	SendgridAPIKey string `mapstructure:"sendgridAPIKey" env:"SENDGRID_API_KEY"`
+	Postgres       postgres.Config
+	Redis          redis.RedisConfig
+	Jaeger         logger.JaegerConfig
+	Logger         logger.LoggerConfig
+	WebappBaseURL  string `mapstructure:"webAppBaseURL" env:"WEBAPP_BASE_URL"`
+	Airbyte        airbyte.Config
 }

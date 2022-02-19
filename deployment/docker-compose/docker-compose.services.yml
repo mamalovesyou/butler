@@ -1,0 +1,75 @@
+version: "3.6"
+
+services:
+  victorinox:
+    working_dir: /butler
+    build:
+      context: ../..
+      target: victorinox
+    volumes:
+      - ../../:/butler
+    command: /butler-victorinox migrate up --all --config config/tools/victorinox_config.yaml
+    networks:
+      - butler_net
+
+  users:
+    image: cosmtrek/air
+    working_dir: /butler
+    volumes:
+      - ../..:/butler:delegated
+      - ../../config/services/users:/config
+    entrypoint: [ "air", "-c", "/config/air.toml" ]
+    env_file:
+      - ../../.env
+    ports:
+      - 3001:3001
+    networks:
+      - butler_net
+
+  octopus:
+    image: cosmtrek/air
+    working_dir: /butler
+    env_file:
+      - ../../.env
+    ports:
+      - 3002:3002
+    volumes:
+      - ../..:/butler:delegated
+      - ../../config/services/octopus:/config
+    entrypoint: [ "air", "-c", "/config/air.toml" ]
+    networks:
+      - butler_net
+
+  gateway:
+    image: cosmtrek/air
+    working_dir: /butler
+    volumes:
+      - ../..:/butler:delegated
+      - ../../config/services/gateway:/config
+    entrypoint: [ "air", "-c", "/config/air.toml" ]
+    ports:
+      - 8080:8080
+    networks:
+      - butler_net
+
+  webapp:
+    build:
+      context: ../../webapp
+      target: dev
+    ports:
+      - 3000:3000
+    volumes:
+      - ../../webapp:/app
+    environment:
+      - BUILD_TARGET=local
+      - APP_VERSION=local
+      - API_BASE_URL=http://localhost:8080
+      - APP_BASE_URL=http://localhost:3000
+    depends_on:
+      - gateway
+    networks:
+      - butler_net
+
+networks:
+  butler_net:
+    name: butler_network

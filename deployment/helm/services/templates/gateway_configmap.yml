@@ -16,4 +16,5 @@ data:
   LOGGER_DISABLE_STACKTRACE: "false"
   JAEGER_ADDR: {{ default "jaeger-agent:6831" .Values.jaeger.addr | quote }}
   JAEGER_DISABLED: {{ default "true" (not .Values.jaeger.enabled) | quote }}
-  USERSERVICEADDR: "butler-users:5000"
+  USERSSERVICEADDR: "{{ .Release.Name}}-svc-users:5000"
+  OCTOPUSSERVICEADDR: "{{ .Release.Name}}-svc-octopus:5000"

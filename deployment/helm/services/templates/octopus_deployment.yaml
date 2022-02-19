@@ -1,0 +1,63 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name}}-svc-octopus
+  labels:
+    app.kubernetes.io/name: service-octopus
+    app.kubernetes.io/instance: {{ .Release.Name}}
+    app.kubernetes.io/component: service
+    app.kubernetes.io/version: {{ .Chart.AppVersion }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: service-octopus
+      app.kubernetes.io/instance: {{ .Release.Name}}
+      app.kubernetes.io/component: service
+      app.kubernetes.io/version: {{ .Chart.AppVersion }}
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: service-octopus
+        app.kubernetes.io/instance: {{ .Release.Name}}
+        app.kubernetes.io/component: service
+        app.kubernetes.io/version: {{ .Chart.AppVersion }}
+    spec:
+
+      containers:
+        - name: butler-svc-octopus
+          image: "{{ .Values.image.repository }}/butler-octopus:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+            {{- range $key, $val := .Values.services.octopus.config.env }}
+            - name: $key
+              value: $val
+            {{- end}}
+            {{- range $key, $val := .Values.services.octopus.config.secrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-octopus-secrets
+                  key: {{ $key }}
+            {{- end}}
+          ports:
+            - name: http
+              containerPort: 5000
+              protocol: TCP
+          resources:
+            requests:
+              cpu: {{ .Values.resources.requests.cpu }}
+              memory: {{ .Values.resources.requests.memory }}
+            limits:
+              cpu: {{ .Values.resources.limits.cpu }}
+              memory: {{ .Values.resources.limits.memory }}
+          readinessProbe:
+            exec:
+              command: ["/grpc-health-probe", "-addr=:5000"]
+            initialDelaySeconds: 5
+          livenessProbe:
+            exec:
+              command: ["/grpc-health-probe", "-addr=:5000"]
+            initialDelaySeconds: 10

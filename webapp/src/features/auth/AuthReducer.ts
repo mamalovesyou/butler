@@ -22,11 +22,13 @@ const authReducer = (
   switch (action.type) {
     case ActionType.LOGIN_SUCCESS:
     case ActionType.SIGNUP_SUCCESS:
+    case ActionType.SIGNUP_WITH_INVITE_SUCCESS:
     case ActionType.REFRESH_TOKEN_SUCCESS:
       return { ...state, ...action.payload, isAuthenticated: true };
 
     case ActionType.LOGIN_FAILURE:
     case ActionType.SIGNUP_FAILURE:
+    case ActionType.SIGNUP_WITH_INVITE_FAILURE:
     case ActionType.REFRESH_TOKEN_FAILURE:
     case ActionType.LOGOUT:
       return initialAuthState;

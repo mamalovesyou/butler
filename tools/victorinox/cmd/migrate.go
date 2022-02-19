@@ -9,6 +9,7 @@ import (
 )
 
 var (
+	allService bool
 	service    string
 	migrateCmd = &cobra.Command{
 		Use:   "migrate",
@@ -31,13 +32,17 @@ var (
 			}
 
 			migrations := victorinox.NewGooseMigrations(&victorinoxCfg)
-
-			migrations.RunGooseMigration(ctx, service, gooseCmd, args...)
+			if allService {
+				migrations.RunGooseMigrationForAllServices(ctx, gooseCmd, args...)
+			} else {
+				migrations.RunGooseMigrationForService(ctx, service, gooseCmd, args...)
+			}
 		},
 	}
 )
 
 func init() {
 	rootCmd.PersistentFlags().StringVarP(&service, "service", "s", "users", "Services name")
+	rootCmd.PersistentFlags().BoolVarP(&allService, "all", "", false, "Migrate all services")
 	rootCmd.AddCommand(migrateCmd)
 }

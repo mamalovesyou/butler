@@ -19,7 +19,9 @@ import { Check as CheckIcon } from "../icons/check";
 import { useAuth } from "../hooks/use-auth";
 import { OnboardingStep, setOnboardingStep } from "../features/onboarding";
 import { ConnectDataSourceStep } from "../components/onboarding/connect-data-source-step";
-import { listCatalogConnectorsRequest, listWorkspaceConnectorsRequest } from "../features/connectors";
+import { listWorkspaceConnectorsRequest } from "../features/connectors";
+import OnboardingLeftPannel from "../components/onboarding/onboarding-left-pannel";
+import {listAvailableSourcesRequest} from "../features/data-sources";
 
 const StepIcon: React.FC<StepIconProps> = (props) => {
   const { active, completed, icon } = props;
@@ -48,10 +50,11 @@ const Onboarding: React.FC = () => {
   const { workspaceId, organizationId } = useWorkspace();
 
   useEffect(() => {
+      console.log(organizationId, workspaceId, activeStep)
     if (organizationId) {
       if (workspaceId) {
-        dispatch(listWorkspaceConnectorsRequest());
-        dispatch(listCatalogConnectorsRequest());
+        dispatch(listAvailableSourcesRequest());
+        dispatch(listWorkspaceConnectorsRequest({ workspaceId }));
         dispatch(setOnboardingStep(OnboardingStep.CONNECT_DATA_SOURCE));
       } else {
         dispatch(setOnboardingStep(OnboardingStep.CREATE_WORKSPACE));
@@ -94,20 +97,13 @@ const Onboarding: React.FC = () => {
           sx={{
             display: "flex",
             flexGrow: 1,
-            backgroundColor: "red",
             backgroundPosition: "center",
             backgroundRepeat: "no-repeat",
             backgroundSize: "cover",
             alignContent: "center",
           }}
         >
-          <Typography variant="h2" textAlign="center" sx={{ py: 3 }}>
-            Hey Butler
-          </Typography>
-          <Typography variant="h6" textAlign="center">
-            Welcome to the butler family. We&apos;re here to guide you through
-            this incredible journey.
-          </Typography>
+            <OnboardingLeftPannel />
         </Grid>
         <Grid
           item

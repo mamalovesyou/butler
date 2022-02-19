@@ -16,8 +16,7 @@ jaeger:
 
 image:
   repository: butlerhq
-  pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
+  pullPolicy: Always
   tag: ""
 
 
@@ -32,17 +31,74 @@ certManager:
 
 services:
   webapp:
+    serviceType: ClusterIP
     containerPort: 80
     host: app.heybutler.io
+
   users:
-    jwtSecret: superSecret
+    config:
+      env:
+        ENVIRONMENT: { { default "local" .Values.environment | quote } }
+        LOGGER_LEVEL: "debug"
+        LOGGER_ENCODING: "json"
+        LOGGER_DISABLE_CALLER: "true"
+        LOGGER_DISABLE_STACKTRACE: "false"
+        JAEGER_ADDR: "jaeger-agent:6831"
+        JAEGER_DISABLED: "true"
+        WEBAPP_BASE_URL: "https://app.heybutler.io"
+
+      secrets:
+        SENDGRID_API_KEY: "sendgrid-api-key"
+        JWT_SECRET: "super-secret-jwt"
+        POSTGRES_HOST: "localhost"
+        POSTGRES_PORT: 5432
+        POSTGRES_NAME: users_db
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: password
+
     containerPort: 5001
     postgres:
-      host: butler-users-db-postgresql
-      name: users_db
-      user: butler
+      external: false
+      host: postgres
+      name: octopus_db
+      user: postgres
       password: password
+
+  octopus:
+    config:
+      env:
+        ENVIRONMENT: "local"
+        LOGGER_LEVEL: "debug"
+        LOGGER_ENCODING: "json"
+        LOGGER_DISABLE_CALLER: "true"
+        LOGGER_DISABLE_STACKTRACE: "false"
+        JAEGER_ADDR: "jaeger-agent:6831"
+        JAEGER_DISABLED: "true"
+        AIRBYTE_SERVER_URL: "http://localhost:8001/api"
+        OAUTH_REDIRECT_URL: "https://app.heybutler.io/oauth"
+
+      secrets:
+        GOOGLE_CLIENT_ID: "abcde"
+        GOOGLE_CLIENT_SECRET: "abcde"
+        LINKEDIN_CLIENT_ID: "abcde"
+        LINKEDIN_CLIENT_SECRET: "abcde"
+        POSTGRES_HOST: postgres
+        POSTGRES_PORT: 5432
+        POSTGRES_NAME: octopus_db
+        POSTGRES_USER: postgres
+        POSTGRES_PASSWORD: password
+
+    containerPort: 5002
+    postgres:
+      external: false
+      host: postgres
+      name: octopus_db
+      user: postgres
+      password: password
+
+
   gateway:
+    serviceType: ClusterIP
     containerPort: 5000
     host: api.heybutler.io
 

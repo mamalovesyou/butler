@@ -2,6 +2,8 @@ package users
 
 import (
 	"context"
+	"fmt"
+
 	butlerctx "github.com/butlerhq/butler/internal/context"
 	"github.com/butlerhq/butler/services/users/errors"
 	grpc_auth "github.com/grpc-ecosystem/go-grpc-middleware/auth"
@@ -12,9 +14,11 @@ func (svc *UsersService) AuthFuncOverride(ctx context.Context, fullmethodName st
 	span, ctx := opentracing.StartSpanFromContext(ctx, "users.AuthFuncOverride")
 	defer span.Finish()
 
+	fmt.Printf("Test: %s", fullmethodName)
+
 	// Skip authentication when user sign in or register
 	switch fullmethodName {
-	case "SignIn", "SignUp":
+	case "/v1.UsersService/SignIn", "/v1.UsersService/SignUp", "/v1.UsersService/GetInvitation":
 		return ctx, nil
 	}
 

@@ -1,9 +1,10 @@
 import { FC, useEffect, useState } from 'react';
 import { MenuItem, Popover } from '@mui/material';
 import { useDispatch } from 'react-redux';
-import { useWorkspace } from '../../hooks/use-workspace';
+import {useOrganizationsById, useWorkspace} from '../../hooks/use-workspace';
 import { V1Workspace } from '../../api';
-import { setCurrentWorkspace } from '../../features/workspace';
+import {getOrganizationRequest, setCurrentWorkspace} from '../../features/workspace';
+import {onGetOrganizationRequest} from "../../features/workspace/WorkspaceEffects";
 
 interface WorkspacePopoverProps {
   anchorEl: null | Element;
@@ -13,34 +14,41 @@ interface WorkspacePopoverProps {
 }
 
 interface WorkspaceName {
-  ID: string;
-  organizationID: string;
+  id: string;
+  organizationid: string;
   name: string;
 }
 
 export const WorkspacePopover: FC<WorkspacePopoverProps> = (props) => {
   const { anchorEl, onClose, open, ...other } = props;
   const dispatch = useDispatch();
-  const [workspaceNames, setworkspaceNames] = useState<WorkspaceName[]>([]);
-  const { organizations, organizationId } = useWorkspace();
+  const [workspaceNames, setWorkspaceNames] = useState<WorkspaceName[]>([]);
+  const { organizationId } = useWorkspace();
+  const organizationsById = useOrganizationsById();
 
   const handleChange = (workspace: WorkspaceName): void => {
     dispatch(
       setCurrentWorkspace({
-        organizationId: workspace.organizationID,
-        workspaceId: workspace.ID
+        organizationId: workspace.organizationid,
+        workspaceId: workspace.id
       })
+    );
+    dispatch(
+        getOrganizationRequest({
+          organizationId: workspace.organizationid,
+        })
     );
     onClose();
   };
 
   useEffect(() => {
+
     const names = organizationId
-      ? organizations[organizationId].workspaces?.map(
+      ? organizationsById[organizationId].workspaces?.map(
           (w: V1Workspace) => w as WorkspaceName
         )
       : [];
-    setworkspaceNames(names);
+    setWorkspaceNames(names);
   }, [organizationId]);
 
   return (
@@ -58,7 +66,7 @@ export const WorkspacePopover: FC<WorkspacePopoverProps> = (props) => {
       {...other}
     >
       {workspaceNames.map((workspace) => (
-        <MenuItem key={workspace.ID} onClick={() => handleChange(workspace)}>
+        <MenuItem key={workspace.id} onClick={() => handleChange(workspace)}>
           {workspace.name}
         </MenuItem>
       ))}
