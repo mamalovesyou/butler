@@ -30,9 +30,18 @@ spec:
         - name: butler-svc-users
           image: "{{ .Values.image.repository }}/butler-users:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          envFrom:
-            - configMapRef:
-                name: {{ .Release.Name}}-svc-users
+          env:
+            {{- range $key, $val := .Values.services.users.config.env }}
+            - name: $key
+              value: $val
+            {{- end}}
+            {{- range $key, $val := .Values.services.users.config.secrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-users-secrets
+                  key: {{ $key }}
+          {{- end}}
           ports:
             - name: http
               containerPort: 5000

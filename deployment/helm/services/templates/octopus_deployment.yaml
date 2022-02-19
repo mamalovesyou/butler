@@ -30,9 +30,18 @@ spec:
         - name: butler-svc-octopus
           image: "{{ .Values.image.repository }}/butler-octopus:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-          envFrom:
-            - configMapRef:
-                name: {{ .Release.Name}}-svc-octopus
+          env:
+            {{- range $key, $val := .Values.services.octopus.config.env }}
+            - name: $key
+              value: $val
+            {{- end}}
+            {{- range $key, $val := .Values.services.octopus.config.secrets }}
+            - name: {{ $key }}
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-octopus-secrets
+                  key: {{ $key }}
+            {{- end}}
           ports:
             - name: http
               containerPort: 5000
