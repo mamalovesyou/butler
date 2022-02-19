@@ -8,5 +8,5 @@ type OAuthSourceConfig struct {
 type SourcesConfig struct {
 	Google      OAuthSourceConfig `envPrefix:"GOOGLE_"`
 	Linkedin    OAuthSourceConfig `envPrefix:"LINKEDIN_"`
-	RedirectURL string            `mapStructure:"redirectURL"`
+	RedirectURL string            `mapStructure:"redirectURL" env:"OAUTH_REDIRECT_URL"`
 }
