@@ -38,7 +38,7 @@ services:
   users:
     config:
       env:
-        ENVIRONMENT: { { default "local" .Values.environment | quote } }
+        ENVIRONMENT: "local"
         LOGGER_LEVEL: "debug"
         LOGGER_ENCODING: "json"
         LOGGER_DISABLE_CALLER: "true"
