@@ -56,7 +56,6 @@ services:
       secrets:
         SENDGRID_API_KEY: "sendgrid-api-key"
         JWT_SECRET: "super-secret-jwt"
-        POSTGRES_PASSWORD: password
         AWS_ACCESS_KEY_ID: minio-access-key-id
         AWS_ACCESS_KEY_SECRET: minio-access-key-secret
 
