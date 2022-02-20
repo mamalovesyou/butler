@@ -35,11 +35,12 @@ spec:
             - name: $key
               value: $val
             {{- end}}
+            {{- $releaseName := .Release.Name -}}
             {{- range $key, $val := .Values.services.octopus.config.secrets }}
             - name: {{ $key }}
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Release.Name }}-octopus-secrets
+                  name: {{ $releaseName }}-octopus-secrets
                   key: {{ $key }}
             {{- end}}
           ports:
