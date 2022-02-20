@@ -13,7 +13,7 @@ variable "db_user" {
   description = "Database username"
 }
 
-variable "db_passowrd" {
+variable "db_password" {
   type        = string
   description = "Database password"
 }

@@ -56,10 +56,6 @@ services:
       secrets:
         SENDGRID_API_KEY: "sendgrid-api-key"
         JWT_SECRET: "super-secret-jwt"
-        POSTGRES_HOST: "localhost"
-        POSTGRES_PORT: 5432
-        POSTGRES_NAME: users_db
-        POSTGRES_USER: postgres
         POSTGRES_PASSWORD: password
         AWS_ACCESS_KEY_ID: minio-access-key-id
         AWS_ACCESS_KEY_SECRET: minio-access-key-secret
@@ -83,11 +79,6 @@ services:
         GOOGLE_CLIENT_SECRET: "abcde"
         LINKEDIN_CLIENT_ID: "abcde"
         LINKEDIN_CLIENT_SECRET: "abcde"
-        POSTGRES_HOST: postgres
-        POSTGRES_PORT: 5432
-        POSTGRES_NAME: octopus_db
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: password
 
     containerPort: 5002
     postgres:

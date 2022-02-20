@@ -22,7 +22,7 @@ module "eks" {
   worker_groups = [
     {
       instance_type        = "t2.small"
-      asg_max_size         = 10
+      asg_max_size         = 15
       asg_desired_capacity = 1
       asg_min_size         = 1
       subnets              = var.private_subnets

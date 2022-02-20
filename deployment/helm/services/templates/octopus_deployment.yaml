@@ -31,6 +31,12 @@ spec:
           image: "{{ .Values.image.repository }}/butler-octopus:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
+            - name: POSTGRES_HOST
+              value: {{ .Values.services.octopus.postgres.host }}
+            - name: POSTGRES_NAME
+              value: {{ .Values.services.octopus.postgres.name }}
+            - name: POSTGRES_PORT
+              value: "5432"
             {{- range $key, $val := .Values.commonEnv }}
             - name: $key
               value: $val
