@@ -63,7 +63,20 @@ module "users_db" {
   vpc_cidr_block     = module.network.vpc_cidr_block
   db_name            = var.users_db_name
   db_user            = var.users_db_user
-  db_passowrd        = var.users_db_password
+  db_password        = var.users_db_password
+  security_group_ids = [module.security_group.security_group_id]
+}
+
+module "connectors_db" {
+  source = "./modules/postgres"
+
+  prefix             = var.prefix
+  vpc_id             = module.network.vpc_id
+  database_subnets   = module.network.database_subnets
+  vpc_cidr_block     = module.network.vpc_cidr_block
+  db_name            = var.connectors_db_name
+  db_user            = var.connectors_db_user
+  db_password        = var.connectors_db_password
   security_group_ids = [module.security_group.security_group_id]
 }
 
@@ -76,6 +89,6 @@ module "airbyte_db" {
   vpc_cidr_block     = module.network.vpc_cidr_block
   db_name            = var.airbyte_db_name
   db_user            = var.airbyte_db_user
-  db_passowrd        = var.airbyte_db_password
+  db_password        = var.airbyte_db_password
   security_group_ids = [module.security_group.security_group_id]
 }
