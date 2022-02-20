@@ -52,6 +52,7 @@ services:
         AIRBYTE_DESTINATION_BUCKET_NAME: "butler-airbyte-data"
         AWS_S3_ENDPOINT: "http://localhost:9000"
         AWS_REGION: "us-east-2"
+        REDIS_HOST: "redis-master.svc.local"
 
       secrets:
         SENDGRID_API_KEY: "sendgrid-api-key"
