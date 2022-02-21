@@ -30,5 +30,5 @@ type ServiceConfig struct {
 	Jaeger         logger.JaegerConfig `envPrefix:"JAEGER_"`
 	Logger         logger.LoggerConfig `envPrefix:"LOGGER_"`
 	WebappBaseURL  string              `mapstructure:"webAppBaseURL" env:"WEBAPP_BASE_URL"`
-	Airbyte        airbyte.Config      `envPrefix:"AIRBYTE_"`
+	Airbyte        airbyte.Config
 }
