@@ -55,7 +55,7 @@ spec:
                   name: {{ .Release.Name }}-octopus-secrets
                   key: POSTGRES_PASSWORD
             {{- range $key, $val := .Values.commonEnv }}
-            - name: $key
-              value: $val
+            - name: {{ $key }}
+              value: {{ $val }}
             {{- end}}
           command: ["/butler-victorinox", "migrate", "up", "--all"]

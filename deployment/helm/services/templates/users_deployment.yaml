@@ -48,12 +48,12 @@ spec:
                   name: {{ .Release.Name }}-users-secrets
                   key: POSTGRES_PASSWORD
             {{- range $key, $val := .Values.commonEnv }}
-            - name: $key
-              value: $val
+            - name: {{ $key }}
+              value: {{ $val }}
             {{- end}}
             {{- range $key, $val := .Values.services.users.config.env }}
-            - name: $key
-              value: $val
+            - name: {{ $key }}
+              value: {{ $val }}
             {{- end}}
             {{- $releaseName := .Release.Name -}}
             {{- range $key, $val := .Values.services.users.config.secrets }}
