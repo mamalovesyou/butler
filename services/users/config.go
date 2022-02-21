@@ -21,14 +21,14 @@ var DefaultServiceConfig = ServiceConfig{
 }
 
 type ServiceConfig struct {
-	Environment    string
-	Port           string
-	JWTSecret      string `mapstructure:"jwtSecret"`
-	SendgridAPIKey string `mapstructure:"sendgridAPIKey" env:"SENDGRID_API_KEY"`
-	Postgres       postgres.Config
-	Redis          redis.RedisConfig
-	Jaeger         logger.JaegerConfig
-	Logger         logger.LoggerConfig
-	WebappBaseURL  string `mapstructure:"webAppBaseURL" env:"WEBAPP_BASE_URL"`
-	Airbyte        airbyte.Config
+	Environment    string              `env:"ENVIRONMENT"`
+	Port           string              `env:"PORT"`
+	JWTSecret      string              `mapstructure:"jwtSecret"`
+	SendgridAPIKey string              `mapstructure:"sendgridAPIKey" env:"SENDGRID_API_KEY"`
+	Postgres       postgres.Config     `envPrefix:"POSTGRES_"`
+	Redis          redis.RedisConfig   `envPrefix:"REDIS_"`
+	Jaeger         logger.JaegerConfig `envPrefix:"JAEGER_"`
+	Logger         logger.LoggerConfig `envPrefix:"LOGGER_"`
+	WebappBaseURL  string              `mapstructure:"webAppBaseURL" env:"WEBAPP_BASE_URL"`
+	Airbyte        airbyte.Config      `envPrefix:"AIRBYTE_"`
 }

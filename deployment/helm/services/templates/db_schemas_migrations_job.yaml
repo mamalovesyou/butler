@@ -22,34 +22,42 @@ spec:
           image: "{{ .Values.image.repository }}/butler-victorinox:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            - name: SERVICES_USERS_POSTGRES_HOST
+            - name: USERS_POSTGRES_HOST
+              {{ if .Values.services.users.postgres.external }}
+              value: {{ "users-postgres" }}
+              {{ else }}
               value: {{ .Values.services.users.postgres.host | quote }}
-            - name: SERVICES_USERS_POSTGRES_NAME
+              {{ end }}
+            - name: USERS_POSTGRES_NAME
               value: {{ .Values.services.users.postgres.name | quote }}
-            - name: SERVICES_USERS_POSTGRES_PORT
+            - name: USERS_POSTGRES_PORT
               value: "5432"
-            - name: SERVICES_USERS_POSTGRES_USER
+            - name: USERS_POSTGRES_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ .Release.Name }}-users-secrets
                   key: POSTGRES_USER
-            - name: SERVICES_USERS_POSTGRES_PASSWORD
+            - name: USERS_POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Release.Name }}-users-secrets
                   key: POSTGRES_PASSWORD
-            - name: SERVICES_OCTOPUS_POSTGRES_HOST
-              value: {{ .Values.services.users.postgres.host | quote }}
-            - name: SERVICES_OCTOPUS_POSTGRES_NAME
+            - name: OCTOPUS_POSTGRES_HOST
+              {{ if .Values.services.octopus.postgres.external }}
+              value: {{ "octopus-postgres" }}
+              {{ else }}
+              value: {{ .Values.services.octopus.postgres.host | quote }}
+              {{ end }}
+            - name: OCTOPUS_POSTGRES_NAME
               value: {{ .Values.services.octopus.postgres.name | quote }}
-            - name: SERVICES_OCTOPUS_POSTGRES_PORT
+            - name: OCTOPUS_POSTGRES_PORT
               value: "5432"
-            - name: SERVICES_OCTOPUS_POSTGRES_USER
+            - name: OCTOPUS_POSTGRES_USER
               valueFrom:
                 secretKeyRef:
                   name: {{ .Release.Name }}-octopus-secrets
                   key: POSTGRES_USER
-            - name: SERVICES_OCTOPUS_POSTGRES_PASSWORD
+            - name: OCTOPUS_POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: {{ .Release.Name }}-octopus-secrets

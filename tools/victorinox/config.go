@@ -15,12 +15,12 @@ var DefaultVictorinoxConfig = VictorioxConfig{
 }
 
 type ServicesConfig struct {
-	Users   postgres.Config
-	Octopus postgres.Config
+	Users   postgres.Config `envPrefix:"USERS_POSTGRES_"`
+	Octopus postgres.Config `envPrefix:"OCTOPUS_POSTGRES_"`
 }
 
 type VictorioxConfig struct {
-	Environment string
+	Environment string `env:"ENVIRONMENT"`
 	Services    ServicesConfig
-	Logger      logger.LoggerConfig
+	Logger      logger.LoggerConfig `envPrefix:"LOGGER_"`
 }

@@ -28,7 +28,7 @@ var (
 			ctx := context.Background()
 
 			// Update logger with config and init tracer
-			logger.UpdateAppLoggerWithConfig(&cfgService.Logger)
+			logger.UpdateAppLoggerWithConfig(cfgService.Environment, &cfgService.Logger)
 			tracer, closer, err := logger.NewJaegerTracer(&cfgService.Jaeger)
 			if err != nil {
 				logger.Fatalf(ctx, "Cannot create jaeger tracer: %+v", err)

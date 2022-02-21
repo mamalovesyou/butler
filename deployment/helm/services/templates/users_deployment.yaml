@@ -30,9 +30,15 @@ spec:
         - name: butler-svc-users
           image: "{{ .Values.image.repository }}/butler-users:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- $postgresHost := .Values.services.users.postgres.host | quote -}}
+          {{ if .Values.services.users.postgres.external }}
+          {{- $postgresHost = "users-postgres" -}}
+          {{ end }}
           env:
+            - name: PORT
+              value: {{ .Values.services.users.port | quote }}
             - name: POSTGRES_HOST
-              value: {{ .Values.services.users.postgres.host | quote }}
+              value: {{ $postgresHost }}
             - name: POSTGRES_NAME
               value: {{ .Values.services.users.postgres.name | quote }}
             - name: POSTGRES_PORT
@@ -65,7 +71,7 @@ spec:
             {{- end}}
           ports:
             - name: http
-              containerPort: 5000
+              containerPort: {{ .Values.services.users.port }}
               protocol: TCP
           resources:
             requests:
@@ -76,9 +82,9 @@ spec:
               memory: {{ .Values.resources.limits.memory }}
           readinessProbe:
             exec:
-              command: ["/grpc-health-probe", "-addr=:5000"]
+              command: ["/grpc-health-probe", "-addr=:{{ default "5000" .Values.services.users.port }}"]
             initialDelaySeconds: 5
           livenessProbe:
             exec:
-              command: ["/grpc-health-probe", "-addr=:5000"]
+              command: ["/grpc-health-probe", "-addr=:{{ default "5000" .Values.services.users.port }}"]
             initialDelaySeconds: 10
