@@ -2,9 +2,9 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name}}-postgresql-octopus
+  name: octopus-postgres
   annotations:
-    "helm.sh/hook-weight": "1"
+    "helm.sh/hook-weight": "0"
   labels:
     app.kubernetes.io/name: postgresql-octopus
     app.kubernetes.io/instance: {{ .Release.Name}}

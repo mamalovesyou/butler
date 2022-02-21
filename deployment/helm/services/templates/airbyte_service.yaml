@@ -1,16 +1,15 @@
-{{- if .Values.services.users.postgres.external }}
+{{- if .Values.airbyte.external }}
 apiVersion: v1
 kind: Service
 metadata:
-  name: users-postgres
+  name: airbyte-server
   annotations:
     "helm.sh/hook-weight": "0"
   labels:
-    app.kubernetes.io/name: postgresql-users
+    app.kubernetes.io/name: airbyte-server-service
     app.kubernetes.io/instance: {{ .Release.Name}}
-    app.kubernetes.io/component: postgresql
     app.kubernetes.io/version: {{ .Chart.AppVersion }}
 spec:
   type: ExternalName
-  externalName: {{ .Values.services.users.postgres.host }}
+  externalName: {{ .Values.airbyte.serviceName }}
 {{- end }}

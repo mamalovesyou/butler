@@ -31,7 +31,6 @@ var (
 	}
 
 	DefaultLoggerConfig = LoggerConfig{
-		Environment:       "dev",
 		DisableCaller:     true,
 		DisableStacktrace: false,
 		Encoding:          EncodingJSON,
@@ -47,19 +46,18 @@ func init() {
 }
 
 type LoggerConfig struct {
-	Environment       string
-	DisableCaller     bool
-	DisableStacktrace bool
-	Encoding          string
-	Level             string
+	DisableCaller     bool   `env:"DISABLE_CALLER"`
+	DisableStacktrace bool   `env:"DISABLE_STACK_TRACE"`
+	Encoding          string `env:"DISABLE_CALLER"`
+	Level             string `env:"LEVEL"`
 }
 
 // Update Logger configuration
-func UpdateAppLoggerWithConfig(cfg *LoggerConfig) {
+func UpdateAppLoggerWithConfig(env string, cfg *LoggerConfig) {
 	logLevel := getLoggerLevel(cfg)
 	logWriter := zapcore.AddSync(os.Stderr)
 	var encoderCfg zapcore.EncoderConfig
-	if environment.IsProductionEnv(cfg.Environment) {
+	if environment.IsProductionEnv(env) {
 		encoderCfg = zap.NewProductionEncoderConfig()
 	} else {
 		encoderCfg = zap.NewDevelopmentEncoderConfig()

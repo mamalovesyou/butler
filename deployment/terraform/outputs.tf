@@ -3,6 +3,11 @@ output "users-db-address" {
   value       = module.users_db.db_address
 }
 
+output "connectors-db-address" {
+  description = "Connectors service database address"
+  value       = module.connectors_db.db_address
+}
+
 output "airbyte-db-address" {
   description = "Airbyte service database address"
   value       = module.airbyte_db.db_address

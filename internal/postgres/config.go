@@ -16,11 +16,11 @@ var (
 
 // Config contains infos needed to open a postgres connection
 type Config struct {
-	Host     string
-	Port     string
-	Name     string
-	User     string
-	Password string
+	Host     string `env:"HOST"`
+	Port     string `env:"PORT"`
+	Name     string `env:"NAME"`
+	User     string `env:"USER"`
+	Password string `env:"PASSWORD"`
 }
 
 // GetConnectionURI build and return database connection URI

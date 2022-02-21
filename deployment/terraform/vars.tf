@@ -22,6 +22,20 @@ variable "users_db_password" {
   description = "Users database password"
 }
 
+variable "connectors_db_name" {
+  default     = "connectors_db"
+  description = "Connectors service database name"
+}
+
+variable "connectors_db_user" {
+  default     = "butler"
+  description = "Connectors service database user"
+}
+
+variable "connectors_db_password" {
+  description = "Connectors database password"
+}
+
 variable "airbyte_db_name" {
   default     = "airbyte_db"
   description = "Airbyte service database name"

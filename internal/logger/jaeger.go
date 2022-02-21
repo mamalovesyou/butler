@@ -19,10 +19,10 @@ var DefaultJaegerConfig = JaegerConfig{
 }
 
 type JaegerConfig struct {
-	ServiceName string
-	Addr        string
-	LogSpans    bool
-	Disabled    bool
+	ServiceName string `env:"SERVICE_NAME"`
+	Addr        string `env:"ADDR"`
+	LogSpans    bool   `env:"LOG_SPANS"`
+	Disabled    bool   `env:"DISABLED"`
 }
 
 // NewJaegerTracer set up a global opentracing.Tracer

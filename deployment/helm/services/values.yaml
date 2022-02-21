@@ -29,6 +29,20 @@ certManager:
     region: "us-east-2"
     hostedZoneID: "zoneID"
 
+commonEnv:
+  ENVIRONMENT: "local"
+  LOGGER_LEVEL: "debug"
+  LOGGER_ENCODING: "json"
+  LOGGER_DISABLE_CALLER: "true"
+  LOGGER_DISABLE_STACKTRACE: "false"
+  JAEGER_ADDR: "jaeger-agent:6831"
+  JAEGER_DISABLED: "true"
+
+airbyte:
+  external: true
+  serviceName: "airbyte-server.airbyte.svc.cluster.local"
+  port: 8001
+
 services:
   webapp:
     serviceType: ClusterIP
@@ -36,45 +50,33 @@ services:
     host: app.heybutler.io
 
   users:
-    config:
-      env:
-        ENVIRONMENT: { { default "local" .Values.environment | quote } }
-        LOGGER_LEVEL: "debug"
-        LOGGER_ENCODING: "json"
-        LOGGER_DISABLE_CALLER: "true"
-        LOGGER_DISABLE_STACKTRACE: "false"
-        JAEGER_ADDR: "jaeger-agent:6831"
-        JAEGER_DISABLED: "true"
-        WEBAPP_BASE_URL: "https://app.heybutler.io"
-
-      secrets:
-        SENDGRID_API_KEY: "sendgrid-api-key"
-        JWT_SECRET: "super-secret-jwt"
-        POSTGRES_HOST: "localhost"
-        POSTGRES_PORT: 5432
-        POSTGRES_NAME: users_db
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: password
-
-    containerPort: 5001
+    port: 5000
     postgres:
-      external: false
+      external: true
       host: postgres
       name: octopus_db
       user: postgres
       password: password
-
-  octopus:
     config:
       env:
-        ENVIRONMENT: "local"
-        LOGGER_LEVEL: "debug"
-        LOGGER_ENCODING: "json"
-        LOGGER_DISABLE_CALLER: "true"
-        LOGGER_DISABLE_STACKTRACE: "false"
-        JAEGER_ADDR: "jaeger-agent:6831"
-        JAEGER_DISABLED: "true"
-        AIRBYTE_SERVER_URL: "http://localhost:8001/api"
+        WEBAPP_BASE_URL: "https://app.heybutler.io"
+        AIRBYTE_SERVER_URL: "http://airbyte-server:8001/api"
+        AIRBYTE_DESTINATION_BUCKET_NAME: "butler-airbyte-data"
+        AWS_S3_ENDPOINT: ""
+        AWS_REGION: "us-east-2"
+        REDIS_HOST: "redis-master"
+
+      secrets:
+        SENDGRID_API_KEY: "sendgrid-api-key"
+        JWT_SECRET: "super-secret-jwt"
+        AWS_ACCESS_KEY_ID: minio-access-key-id
+        AWS_ACCESS_KEY_SECRET: minio-access-key-secret
+
+  octopus:
+    port: 5000
+    config:
+      env:
+        AIRBYTE_SERVER_URL: "http://airbyte-server:8001/api"
         OAUTH_REDIRECT_URL: "https://app.heybutler.io/oauth"
 
       secrets:
@@ -82,15 +84,8 @@ services:
         GOOGLE_CLIENT_SECRET: "abcde"
         LINKEDIN_CLIENT_ID: "abcde"
         LINKEDIN_CLIENT_SECRET: "abcde"
-        POSTGRES_HOST: postgres
-        POSTGRES_PORT: 5432
-        POSTGRES_NAME: octopus_db
-        POSTGRES_USER: postgres
-        POSTGRES_PASSWORD: password
-
-    containerPort: 5002
     postgres:
-      external: false
+      external: true
       host: postgres
       name: octopus_db
       user: postgres
@@ -99,8 +94,15 @@ services:
 
   gateway:
     serviceType: ClusterIP
-    containerPort: 5000
+    port: 5000
     host: api.heybutler.io
+    config:
+      env:
+        WEBAPP_ORIGIN_URL: "app.heybutler.io"
+
+redis:
+  fullnameOverride: redis
+  usePassword: false
 
 resources:
    limits:
