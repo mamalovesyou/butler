@@ -4,7 +4,8 @@ kind: Service
 metadata:
   name: users-postgres
   annotations:
-    "helm.sh/hook-weight": "0"
+    "helm.sh/hook": pre-install,pre-upgrade
+    "helm.sh/hook-weight": "-10"
   labels:
     app.kubernetes.io/name: postgresql-users
     app.kubernetes.io/instance: {{ .Release.Name}}
