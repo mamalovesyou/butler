@@ -129,8 +129,9 @@ jobs:
           DOCKER_PUSH: true
           BUILD_TARGET: prod
           APP_VERSION: ${{ needs.version.outputs.version }}
-          API_BASE_URL:  ${{ secrets.GATEWAY_PUBLIC_URL }}
-          APP_BASE_URL:  ${{ secrets.WEBAPP_PUBLIC_URL }}
+          API_BASE_URL:  ${{ secrets.API_PUBLIC_URL }}
+          WEBAPP_BASE_URL:  ${{ secrets.WEBAPP_PUBLIC_URL }}
+
         run: |
           DOCKER_REGISTRY="$ECR_REGISTRY/butlerhq" \
           make docker-webapp
