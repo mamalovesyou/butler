@@ -20,7 +20,7 @@ var (
 			ctx := context.Background()
 
 			// Update logger with config and init tracer
-			logger.UpdateAppLoggerWithConfig(&gatewayCfg.Logger)
+			logger.UpdateAppLoggerWithConfig(gatewayCfg.Environment, &gatewayCfg.Logger)
 			tracer, closer, err := logger.NewJaegerTracer(&gatewayCfg.Jaeger)
 			if err != nil {
 				logger.Fatalf(ctx, "Cannot create jaeger tracer: %+v", err)
@@ -37,7 +37,7 @@ var (
 			serverCfg := &rest.RESTServerConfig{
 				Port:           gatewayCfg.Port,
 				Mux:            gatewayService.Mux,
-				AllowedOrigins: []string{gatewayCfg.DashboardOriginUrl},
+				AllowedOrigins: []string{gatewayCfg.WebAppOriginUrl},
 			}
 
 			server := rest.NewRESTServer(serverCfg)

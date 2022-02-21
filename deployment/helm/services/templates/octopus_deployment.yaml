@@ -30,20 +30,36 @@ spec:
         - name: butler-svc-octopus
           image: "{{ .Values.image.repository }}/butler-octopus:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- $postgresHost := .Values.services.octopus.postgres.host | quote -}}
+          {{ if .Values.services.octopus.postgres.external }}
+          {{- $postgresHost = "octopus-postgres" -}}
+          {{ end }}
           env:
+            - name: PORT
+              value: {{ .Values.services.octopus.port | quote }}
             - name: POSTGRES_HOST
-              value: {{ .Values.services.octopus.postgres.host }}
+              value: {{ $postgresHost }}
             - name: POSTGRES_NAME
-              value: {{ .Values.services.octopus.postgres.name }}
+              value: {{ .Values.services.octopus.postgres.name | quote }}
             - name: POSTGRES_PORT
               value: "5432"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-octopus-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-octopus-secrets
+                  key: POSTGRES_PASSWORD
             {{- range $key, $val := .Values.commonEnv }}
-            - name: $key
-              value: $val
+            - name: {{ $key }}
+              value: {{ $val | quote }}
             {{- end}}
             {{- range $key, $val := .Values.services.octopus.config.env }}
-            - name: $key
-              value: $val
+            - name: {{ $key }}
+              value: {{ $val | quote }}
             {{- end}}
             {{- $releaseName := .Release.Name -}}
             {{- range $key, $val := .Values.services.octopus.config.secrets }}
@@ -55,7 +71,7 @@ spec:
             {{- end}}
           ports:
             - name: http
-              containerPort: 5000
+              containerPort: {{ default "5000" .Values.services.octopus.port }}
               protocol: TCP
           resources:
             requests:
@@ -66,9 +82,9 @@ spec:
               memory: {{ .Values.resources.limits.memory }}
           readinessProbe:
             exec:
-              command: ["/grpc-health-probe", "-addr=:5000"]
+              command: ["/grpc-health-probe", "-addr=:{{ default "5000" .Values.services.octopus.port }}"]
             initialDelaySeconds: 5
           livenessProbe:
             exec:
-              command: ["/grpc-health-probe", "-addr=:5000"]
+              command: ["/grpc-health-probe", "-addr=:{{ default "5000" .Values.services.octopus.port }}"]
             initialDelaySeconds: 10

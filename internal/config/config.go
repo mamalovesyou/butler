@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/butlerhq/butler/internal/utils"
 	"github.com/caarlos0/env/v6"
 	"github.com/spf13/viper"
 )
@@ -21,17 +20,9 @@ func LoadYAMLConfig(cfgFilePath string) error {
 	return viper.ReadInConfig()
 }
 
-func LoadEnvConfig() {
-	for k, v := range utils.GetEnvironMap() {
-		viperKey := utils.EnvToViperKey(k)
-		viper.Set(viperKey, v)
-	}
-}
-
 func ReadConfig(cfgFilePath string, prefixKey string, cfg interface{}) error {
 	fmt.Println(os.Environ())
 	LoadYAMLConfig(cfgFilePath)
-	LoadEnvConfig()
 
 	if len(prefixKey) > 0 {
 		if err := viper.UnmarshalKey(prefixKey, cfg); err != nil {

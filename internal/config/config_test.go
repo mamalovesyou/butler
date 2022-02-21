@@ -12,13 +12,13 @@ import (
 )
 
 type TestConfig struct {
-	Name   string
-	Nested *NestedTestConfig
+	Name   string            `env:"NAME"`
+	Nested *NestedTestConfig `envPrefix:"NESTED_"`
 }
 
 type NestedTestConfig struct {
-	Name        string
-	ComplexName string
+	Name        string `env:"NAME"`
+	ComplexName string `env:"COMPLEX_NAME"`
 }
 
 var yamlExample = []byte(`
@@ -52,31 +52,30 @@ func setUpTest(t *testing.T) {
 	fmt.Println(string(bytes))
 }
 
-func TestReadConfig(t *testing.T) {
+func TestReadConfigWithNoEnv(t *testing.T) {
 
-	t.Run("No env set", func(t *testing.T) {
-		setUpTest(t)
+	setUpTest(t)
 
-		cfg := &TestConfig{}
-		err := ReadConfig("/etc/butler/config.yml", "", cfg)
+	cfg := &TestConfig{Nested: &NestedTestConfig{}}
+	err := ReadConfig("/etc/butler/config.yml", "", cfg)
 
-		assert.Equal(t, "butler", cfg.Name)
-		assert.Equal(t, "butler", cfg.Nested.Name)
-		assert.Equal(t, "heybutler", cfg.Nested.ComplexName)
-		assert.NoError(t, err)
-	})
+	assert.Equal(t, "butler", cfg.Name)
+	assert.Equal(t, "butler", cfg.Nested.Name)
+	assert.Equal(t, "heybutler", cfg.Nested.ComplexName)
+	assert.NoError(t, err)
+}
 
-	t.Run("With env set", func(t *testing.T) {
-		setUpTest(t)
+func TestReadConfigFromEnv(t *testing.T) {
+	os.Clearenv()
+	os.Setenv("NAME", "butler")
+	os.Setenv("NESTED_NAME", "nested")
+	os.Setenv("NESTED_COMPLEX_NAME", "butler")
 
-		os.Setenv("NESTED_COMPLEX_NAME", "override")
+	cfg := &TestConfig{Nested: &NestedTestConfig{}}
+	err := ReadConfig("", "", cfg)
 
-		cfg := &TestConfig{}
-		err := ReadConfig("/etc/butler/config.yml", "", cfg)
-
-		assert.Equal(t, "butler", cfg.Name)
-		assert.Equal(t, "butler", cfg.Nested.Name)
-		assert.Equal(t, "override", cfg.Nested.ComplexName)
-		assert.NoError(t, err)
-	})
+	assert.Equal(t, "butler", cfg.Name)
+	assert.Equal(t, "nested", cfg.Nested.Name)
+	assert.Equal(t, "butler", cfg.Nested.ComplexName)
+	assert.NoError(t, err)
 }

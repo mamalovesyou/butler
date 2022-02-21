@@ -14,11 +14,11 @@ var DefaultServiceConfig = ServiceConfig{
 }
 
 type ServiceConfig struct {
-	Environment      string
-	Port             string
+	Environment      string `env:"ENVIRONMENT"`
+	Port             string `env:"PORT"`
 	Sources          SourcesConfig
-	Postgres         postgres.Config
-	Jaeger           logger.JaegerConfig
-	Logger           logger.LoggerConfig
-	AirbyteServerURL string `mapStructure:"redirectURL" env:"AIRBYTE_SERVER_URL"`
+	Postgres         postgres.Config     `envPrefix:"POSTGRES_"`
+	Jaeger           logger.JaegerConfig `envPrefix:"JAEGER_"`
+	Logger           logger.LoggerConfig `envPrefix:"LOGGER_"`
+	AirbyteServerURL string              `mapStructure:"redirectURL" env:"AIRBYTE_SERVER_URL"`
 }
