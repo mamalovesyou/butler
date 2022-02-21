@@ -37,6 +37,16 @@ spec:
               value: {{ .Values.services.users.postgres.name }}
             - name: POSTGRES_PORT
               value: "5432"
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-users-secrets
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-users-secrets
+                  key: POSTGRES_PASSWORD
             {{- range $key, $val := .Values.commonEnv }}
             - name: $key
               value: $val
