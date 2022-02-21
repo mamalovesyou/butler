@@ -32,9 +32,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: POSTGRES_HOST
-              value: {{ .Values.services.octopus.postgres.host }}
+              value: {{ .Values.services.octopus.postgres.host | quote }}
             - name: POSTGRES_NAME
-              value: {{ .Values.services.octopus.postgres.name }}
+              value: {{ .Values.services.octopus.postgres.name | quote }}
             - name: POSTGRES_PORT
               value: "5432"
             - name: POSTGRES_USER
@@ -49,11 +49,11 @@ spec:
                   key: POSTGRES_PASSWORD
             {{- range $key, $val := .Values.commonEnv }}
             - name: {{ $key }}
-              value: {{ $val }}
+              value: {{ $val | quote }}
             {{- end}}
             {{- range $key, $val := .Values.services.octopus.config.env }}
             - name: {{ $key }}
-              value: {{ $val }}
+              value: {{ $val | quote }}
             {{- end}}
             {{- $releaseName := .Release.Name -}}
             {{- range $key, $val := .Values.services.octopus.config.secrets }}

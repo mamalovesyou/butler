@@ -23,9 +23,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
             - name: SERVICES_USERS_POSTGRES_HOST
-              value: {{ .Values.services.users.postgres.host }}
+              value: {{ .Values.services.users.postgres.host | quote }}
             - name: SERVICES_USERS_POSTGRES_NAME
-              value: {{ .Values.services.users.postgres.name }}
+              value: {{ .Values.services.users.postgres.name | quote }}
             - name: SERVICES_USERS_POSTGRES_PORT
               value: "5432"
             - name: SERVICES_USERS_POSTGRES_USER
@@ -39,9 +39,9 @@ spec:
                   name: {{ .Release.Name }}-users-secrets
                   key: POSTGRES_PASSWORD
             - name: SERVICES_OCTOPUS_POSTGRES_HOST
-              value: {{ .Values.services.users.postgres.host }}
+              value: {{ .Values.services.users.postgres.host | quote }}
             - name: SERVICES_OCTOPUS_POSTGRES_NAME
-              value: {{ .Values.services.octopus.postgres.name }}
+              value: {{ .Values.services.octopus.postgres.name | quote }}
             - name: SERVICES_OCTOPUS_POSTGRES_PORT
               value: "5432"
             - name: SERVICES_OCTOPUS_POSTGRES_USER
@@ -56,6 +56,6 @@ spec:
                   key: POSTGRES_PASSWORD
             {{- range $key, $val := .Values.commonEnv }}
             - name: {{ $key }}
-              value: {{ $val }}
+              value: {{ $val | quote }}
             {{- end}}
           command: ["/butler-victorinox", "migrate", "up", "--all"]
