@@ -94,6 +94,10 @@ services:
     containerPort: 5000
     host: api.heybutler.io
 
+redis:
+  fullnameOverride: redis
+  usePassword: false
+
 resources:
    limits:
      cpu: 200m
