@@ -21,41 +21,41 @@ spec:
         - name: butler-databases-schemas-migrations
           image: "{{ .Values.image.repository }}/butler-victorinox:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
-        - env:
-          - name: SERVICES_USERS_POSTGRES_HOST
-            value: {{ .Values.services.users.postgres.host }}
-          - name: SERVICES_USERS_POSTGRES_NAME
-            value: {{ .Values.services.users.postgres.name }}
-          - name: SERVICES_USERS_POSTGRES_PORT
-            value: "5432"
-          - name: SERVICES_USERS_POSTGRES_USER
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Release.Name }}-users-secrets
-                key: POSTGRES_USER
-          - name: SERVICES_USERS_POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Release.Name }}-users-secrets
-                key: POSTGRES_PASSWORD
-          - name: SERVICES_OCTOPUS_POSTGRES_HOST
-            value: {{ .Values.services.users.postgres.host }}
-          - name: SERVICES_OCTOPUS_POSTGRES_NAME
-            value: {{ .Values.services.octopus.postgres.name }}
-          - name: SERVICES_OCTOPUS_POSTGRES_PORT
-            value: "5432"
-          - name: SERVICES_OCTOPUS_POSTGRES_USER
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Release.Name }}-octopus-secrets
-                key: POSTGRES_USER
-          - name: SERVICES_OCTOPUS_POSTGRES_PASSWORD
-            valueFrom:
-              secretKeyRef:
-                name: {{ .Release.Name }}-octopus-secrets
-                key: POSTGRES_PASSWORD
-          {{- range $key, $val := .Values.commonEnv }}
-          - name: $key
-            value: $val
-          {{- end}}
+          env:
+            - name: SERVICES_USERS_POSTGRES_HOST
+              value: {{ .Values.services.users.postgres.host }}
+            - name: SERVICES_USERS_POSTGRES_NAME
+              value: {{ .Values.services.users.postgres.name }}
+            - name: SERVICES_USERS_POSTGRES_PORT
+              value: "5432"
+            - name: SERVICES_USERS_POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-users-secrets
+                  key: POSTGRES_USER
+            - name: SERVICES_USERS_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-users-secrets
+                  key: POSTGRES_PASSWORD
+            - name: SERVICES_OCTOPUS_POSTGRES_HOST
+              value: {{ .Values.services.users.postgres.host }}
+            - name: SERVICES_OCTOPUS_POSTGRES_NAME
+              value: {{ .Values.services.octopus.postgres.name }}
+            - name: SERVICES_OCTOPUS_POSTGRES_PORT
+              value: "5432"
+            - name: SERVICES_OCTOPUS_POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-octopus-secrets
+                  key: POSTGRES_USER
+            - name: SERVICES_OCTOPUS_POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Release.Name }}-octopus-secrets
+                  key: POSTGRES_PASSWORD
+            {{- range $key, $val := .Values.commonEnv }}
+            - name: $key
+              value: $val
+            {{- end}}
           command: ["/butler-victorinox", "migrate", "up", "--all"]
