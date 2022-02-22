@@ -82,9 +82,9 @@ spec:
               memory: {{ .Values.resources.limits.memory }}
           readinessProbe:
             exec:
-              command: ["/grpc-health-probe", "-addr=:{{ default "5000" .Values.services.users.port }}"]
+              command: ["/grpc_health_probe", "-addr=:{{ default "5000" .Values.services.users.port }}"]
             initialDelaySeconds: 5
           livenessProbe:
             exec:
-              command: ["/grpc-health-probe", "-addr=:{{ default "5000" .Values.services.users.port }}"]
+              command: ["/grpc_health_probe", "--addr=:{{ default "5000" .Values.services.users.port }}"]
             initialDelaySeconds: 10
