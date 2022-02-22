@@ -13,6 +13,7 @@ spec:
     - port: 5000
       protocol: TCP
       name: http
+      targetPort: {{ .Values.services.users.port }}
   selector:
     app.kubernetes.io/name: service-users
     app.kubernetes.io/instance: {{ .Release.Name}}
