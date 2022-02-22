@@ -1,12 +1,11 @@
-import { updateAxiosInstance } from "../config";
 import { Api as GenAPI, ApiConfig } from "./gen";
+import {API_BASE_URL} from "../config";
 
 export class ButlerApi<T> extends GenAPI<T> {
   private static apiInstance;
 
   constructor(apiConfig?: ApiConfig) {
     super(apiConfig);
-    updateAxiosInstance(this.instance);
     if (ButlerApi.apiInstance) {
       // eslint-disable-next-line no-constructor-return
       return ButlerApi.apiInstance;
@@ -15,20 +14,15 @@ export class ButlerApi<T> extends GenAPI<T> {
   }
 }
 
-export const getButlerApiInstance = <T>(): ButlerApi<T> => new ButlerApi();
+export const Api = new ButlerApi({baseURL: API_BASE_URL });
 
 export const addCommonHeader = (key: string, value: string) => {
-  const GenAPI = getButlerApiInstance();
-  GenAPI.instance.defaults.headers.common[key] = value;
-  console.log(GenAPI.instance.defaults.headers)
+  Api.instance.defaults.headers.common[key] = value;
 }
 
 export const addAuthorization = (accessToken: string): void => {
   addCommonHeader("Authorization", `Bearer ${accessToken}`);
-
 };
-
-export const Api = new ButlerApi();
 
 export * from "./gen";
 export default ButlerApi;

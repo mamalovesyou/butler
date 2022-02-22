@@ -5,8 +5,11 @@ RUN apk add --update --no-cache make ca-certificates git
 
 WORKDIR /butler
 
+RUN GRPC_HEALTH_PROBE_VERSION=v0.3.1 && \
+    wget -qO/bin/grpc_health_probe https://github.com/grpc-ecosystem/grpc-health-probe/releases/download/${GRPC_HEALTH_PROBE_VERSION}/grpc_health_probe-linux-amd64 && \
+    chmod +x /bin/grpc_health_probe
+
 COPY go.* ./
-RUN go install github.com/grpc-ecosystem/grpc-health-probe@latest
 RUN go mod download
 
 FROM dependencies as builder
@@ -23,13 +26,13 @@ COPY --from=builder /butler/bin/butler-victorinox /butler-victorinox
 # butler-users service
 FROM scratch as service-users
 COPY --from=builder /butler/bin/butler-users /butler-users
-COPY --from=builder /go/bin/grpc-health-probe /grpc-health-probe
+COPY --from=builder /bin/grpc_health_probe /grpc_health_probe
 ENTRYPOINT ["/butler-users", "start"]
 
 # butler-users service
 FROM scratch as service-octopus
 COPY --from=builder /butler/bin/butler-octopus /butler-octopus
-COPY --from=builder /go/bin/grpc-health-probe /grpc-health-probe
+COPY --from=builder /bin/grpc_health_probe /grpc_health_probe
 ENTRYPOINT ["/butler-octopus", "start"]
 
 # butler-gateway service
