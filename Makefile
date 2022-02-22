@@ -38,6 +38,12 @@ DOCKER_REGISTRY ?= butlerhq
 DOCKER_IMAGE_TAG ?= test
 DOCKER_BUILD_FLAGS ?= --progress plain
 
+# Config
+BUILD_TARGET ?= local
+APP_VERSION ?= 0.0.1
+API_BASE_URL ?= "http://localhost:8080"
+WEBAPP_BASE_URL ?= "http://localhost:3000"
+
 # Git
 GIT_CURRENT_SHA=$(shell git rev-parse --short HEAD)
 
@@ -141,7 +147,9 @@ docker-victorinox:
 .PHONY: docker-webapp
 docker-webapp:
 	@printf "Building docker image $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG)...\n"
-	cd ./webapp && docker build . -t $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG) $(DOCKER_BUILD_FLAGS) --target prod
+	cd ./webapp && docker build --build-arg BUILD_TARGET=$(BUILD_TARGET) --build-arg APP_VERSION=$(APP_VERSION) \
+ 			--build-arg API_BASE_URL=$(API_BASE_URL) --build-arg WEBAPP_BASE_URL=$(WEBAPP_BASE_URL) .  \
+ 			-t $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG) $(DOCKER_BUILD_FLAGS) --target prod
 	@if [ $(DOCKER_PUSH) = true ]; then \
 		echo "Pushing docker image  $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG)...\n"; \
 		docker push $(DOCKER_REGISTRY)/butler-webapp:$(DOCKER_IMAGE_TAG); \
