@@ -45,7 +45,8 @@ var (
 			}
 
 			// Initialize redis
-			rdb := redis.NewRedisClient(&usersConfig.Redis)
+			rds := redis.NewRedisClient(&usersConfig.Redis)
+			rds.CheckConnection(5)
 
 			// Catalog
 			abCfg := &usersConfig.Airbyte
@@ -66,7 +67,7 @@ var (
 			// Serve
 			grpcServer := grpc.NewGRPCServer(usersConfig.Port, tracer)
 
-			usersService := users.NewUsersService(&usersConfig, pgGorm.DB, rdb, catalog)
+			usersService := users.NewUsersService(&usersConfig, pgGorm.DB, rds.Client, catalog)
 			usersService.RegisterGRPCServer(grpcServer.Server)
 
 			healthService := users.NewHealthService(pgGorm.DB)
