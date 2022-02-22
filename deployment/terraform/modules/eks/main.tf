@@ -6,6 +6,7 @@ provider "kubernetes" {
 
 module "eks" {
   source                 = "terraform-aws-modules/eks/aws"
+  version                = "~> 17.24"
   cluster_name           = var.cluster_name
   cluster_version        = "1.21"
   subnets                = var.private_subnets
@@ -19,18 +20,29 @@ module "eks" {
     Organization = "butlerhq"
   }
 
-  worker_groups = [
-    {
-      instance_type        = "t2.small"
-      asg_max_size         = 15
-      asg_desired_capacity = 1
-      asg_min_size         = 1
-      subnets              = var.private_subnets
-    }
-  ]
+  node_groups_defaults = {
+    ami_type  = "AL2_x86_64"
+    disk_size = 50
+  }
 
-  manage_aws_auth = true
-  enable_irsa     = true
+  node_groups = {
+    t3Large = {
+      desired_capacity = 1
+      max_capacity     = 10
+      min_capacity     = 1
+
+      subnets = var.private_subnets
+
+      instance_types = ["t3.large"]
+      capacity_type  = "SPOT"
+      k8s_labels = {
+        Environment = "${terraform.workspace}"
+      }
+    }
+  }
+
+  enable_irsa = true
+  map_users   = var.map_users
 }
 
 data "aws_eks_cluster" "cluster" {
