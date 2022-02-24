@@ -3,6 +3,7 @@ package models
 import (
 	"github.com/butlerhq/butler/internal/airbyte/sources"
 	"github.com/butlerhq/butler/internal/postgres/types"
+	"gorm.io/gorm"
 
 	"github.com/butlerhq/butler/api/services/octopus/v1"
 	"github.com/google/uuid"
@@ -28,6 +29,14 @@ type Connector struct {
 
 func (c *Connector) TableName() string {
 	return "connectors"
+}
+
+// BeforeCreate will set the config if missing
+func (c *Connector) BeforeCreate(tx *gorm.DB) (err error) {
+	if c.Config == nil {
+		c.Config = &types.JSONB{}
+	}
+	return nil
 }
 
 // ToPb return the workspace.UserMembers of a OrganizationMember
