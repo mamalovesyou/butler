@@ -8,7 +8,7 @@ import {
   V1WorkspaceResponse,
   V1CreateWorkspaceRequest,
   V1GetOrganizationRequest,
-  V1Organization, V1BatchInviteMemberRequest
+  V1Organization, V1BatchInviteMemberRequest, V1Workspace
 } from '../../api';
 
 export const createOrganizationRequest = (
@@ -128,10 +128,12 @@ export const addWorkspaceMembersFailure = (
   error
 });
 
-export const setCurrentWorkspace = (payload: {
-  organizationId: string;
-  workspaceId: string;
-}): ActionTypes.WorkspaceActionType => ({
+export const setCurrentOrganization = (payload: V1Organization): ActionTypes.WorkspaceActionType => ({
+  type: ActionTypes.SET_CURRENT_ORGANIZATION,
+  payload
+});
+
+export const setCurrentWorkspace = (payload: V1Workspace): ActionTypes.WorkspaceActionType => ({
   type: ActionTypes.SET_CURRENT_WORKSPACE,
   payload
 });

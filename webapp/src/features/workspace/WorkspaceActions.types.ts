@@ -6,9 +6,8 @@ import {
     V1AuthenticatedUser,
     V1WorkspaceResponse,
     V1CreateWorkspaceRequest,
-    V1BulkInviteWorkspaceMemberRequest,
     V1GetOrganizationRequest,
-    V1Organization,
+    V1Organization, V1Workspace, V1BatchInviteMemberRequest,
 } from '../../api';
 
 export const LIST_ORGANIZATIONS_REQUEST = 'LIST_ORGANIZATIONS_REQUEST';
@@ -35,6 +34,7 @@ export const ADD_WORKSPACE_MEMBER_REQUEST = 'ADD_WORKSPACE_MEMBER_REQUEST';
 export const ADD_WORKSPACE_MEMBER_SUCCESS = 'ADD_WORKSPACE_MEMBER_SUCCESS';
 export const ADD_WORKSPACE_MEMBER_FAILURE = 'ADD_WORKSPACE_MEMBER_FAILURE';
 
+export const SET_CURRENT_ORGANIZATION = 'SET_CURRENT_ORGANIZATION';
 export const SET_CURRENT_WORKSPACE = 'SET_CURRENT_WORKSPACE';
 
 // CreateOrganization
@@ -118,7 +118,7 @@ export interface ICreateWorkspaceFailure {
 // AddWorkspaceMembers
 export interface IAddWorkspaceMembersRequest {
     type: typeof ADD_WORKSPACE_MEMBER_REQUEST;
-    payload: V1BulkInviteWorkspaceMemberRequest;
+    payload: V1BatchInviteMemberRequest;
 }
 
 export interface IAddWorkspaceMembersSuccess {
@@ -131,9 +131,15 @@ export interface IAddWorkspaceMembersFailure {
     error: GoogleRpcStatus;
 }
 
+
+export interface ISetCurrentOrganization {
+    type: typeof SET_CURRENT_ORGANIZATION;
+    payload: V1Organization;
+}
+
 export interface ISetCurrentWorkspace {
     type: typeof SET_CURRENT_WORKSPACE;
-    payload: { workspaceId: string; organizationId: string };
+    payload: V1Workspace;
 }
 
 export type WorkspaceActionType =
@@ -155,4 +161,5 @@ export type WorkspaceActionType =
     | IAddWorkspaceMembersRequest
     | IAddWorkspaceMembersSuccess
     | IAddWorkspaceMembersFailure
-    | ISetCurrentWorkspace;
+    | ISetCurrentWorkspace
+    | ISetCurrentOrganization;

@@ -13,6 +13,10 @@ import { Location, useLocation } from 'react-router-dom';
 import {ONBOARDING_ROOT_PATH} from '../../routes';
 import { OnboardingStep, setOnboardingStep } from '../onboarding';
 import {push} from "redux-first-history";
+import {useCurrentWorkspace} from "../../hooks/use-workspace";
+import {setCurrentOrganization, setCurrentWorkspace} from "./WorkspaceActions";
+import {RootState} from "../index";
+
 
 export function* onCreateOrganizationRequest() {
   yield takeEvery(
@@ -57,11 +61,19 @@ export function* onListOrganizationsRequest() {
   });
 }
 
-// Redirect to onboarding if there is no organizations listed
+
+
+// Redirect to onboarding if there is no organizations listed or select default organization
 export function* onListOrganizationsSuccess() {
     yield takeEvery(ActionTypes.LIST_ORGANIZATIONS_SUCCESS, function* ({ payload }: ActionTypes.IListOrganizationsSuccess) {
-       if (payload.organizations.length == 0) {
-           yield put(push(ONBOARDING_ROOT_PATH));
+       if (payload.organizations.length > 0) {
+           const getSelectedWorkspace = (state: RootState) => state.workspace.selected;
+           const { organization } = yield select(getSelectedWorkspace);
+           if (organization === null)  {
+               const defaultOrganization = payload.organizations[0];
+               yield put(setCurrentOrganization(defaultOrganization));
+               if (defaultOrganization.workspaces.length > 0) yield put(setCurrentWorkspace(defaultOrganization.workspaces[0]));
+           }
        }
     });
 }

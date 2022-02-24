@@ -1,5 +1,6 @@
 // Auth
-export const LOGIN_ROUTE_PATH = "/login";
+export const LOGIN_ROOT_PATH = "/login";
+export const LOGOUT_ROOT_PATH = "/logout";
 export const REGISTER_ROOT_PATH = "/register";
 export const JOIN_ROOT_PATH = "/join";
 export const OAUTH_CALLBACK = "/oauth";

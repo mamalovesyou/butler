@@ -3,7 +3,7 @@ import {Box, Card, Container, Divider, Typography} from '@mui/material';
 import {Logo} from '../../components/logo';
 import {
     DASHBOARD_ROOT_PATH,
-    LOGIN_ROUTE_PATH
+    LOGIN_ROOT_PATH
 } from '../../routes';
 import {Link} from 'react-router-dom';
 import {useAuth} from '../../hooks/use-auth';
@@ -75,7 +75,7 @@ const Register: FC = () => {
                         </Box>
                         <Divider sx={{my: 3}}/>
 
-                        <Link to={LOGIN_ROUTE_PATH} style={{textDecoration: 'none'}}>
+                        <Link to={LOGIN_ROOT_PATH} style={{textDecoration: 'none'}}>
                             <Typography color="textSecondary" variant="body2">
                                 Signin with existing account
                             </Typography>
