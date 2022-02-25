@@ -13,6 +13,7 @@ spec:
     - port: 80
       protocol: TCP
       name: http
+      targetPort: {{ .Values.services.gateway.port }}
   selector:
     app.kubernetes.io/name: service-gateway
     app.kubernetes.io/instance: {{ .Release.Name}}
