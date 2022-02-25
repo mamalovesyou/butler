@@ -8,13 +8,13 @@ import {
   Typography
 } from '@mui/material';
 import { AnalyticsGeneralOverview } from '../../components/dashboard/analytics/analytics-general-overview';
-import { AnalyticsMostVisited } from '../../components/dashboard/analytics/analytics-most-visited';
 import { AnalyticsSocialSources } from '../../components/dashboard/analytics/analytics-social-sources';
 import { AnalyticsOverviewTable } from '../../components/dashboard/analytics/analytics-cpc-per-channel';
-import { AnalyticsTrafficSources } from '../../components/dashboard/analytics/analytics-traffic-sources';
 import { Reports as ReportsIcon } from '../../icons/reports';
 
 const Analytics = () => {
+
+
 
   return (
     <Box

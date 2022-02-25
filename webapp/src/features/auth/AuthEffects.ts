@@ -13,11 +13,12 @@ import {push} from 'redux-first-history';
 import {
     ANALYTICS_ROOT_PATH,
     DASHBOARD_ROOT_PATH,
-    LOGIN_ROUTE_PATH,
+    LOGIN_ROOT_PATH,
     ONBOARDING_ROOT_PATH
 } from '../../routes';
 import {Api} from '../configureEffects';
 import {notificationsActions} from "../notifications";
+import {listOrganizationsRequest} from "../workspace/WorkspaceActions";
 
 
 // Called when a user try to login
@@ -56,13 +57,7 @@ export function* onRefreshTokenRequest() {
                 yield put(Actions.refreshSuccess(response.data));
                 yield call(addAuthorization, response.data.accessToken);
 
-                // Load organizations
-                yield put(WorkspaceActions.listOrganizationsRequest());
-
             } catch (error) {
-                if (error.response.status === 401) {
-                    yield put(push(LOGIN_ROUTE_PATH));
-                }
                 const rpcError: GoogleRpcStatus = error?.response?.data || {
                     code: 0,
                     message: error.message
@@ -73,10 +68,16 @@ export function* onRefreshTokenRequest() {
     );
 }
 
+export function* onRefreshSuccess() {
+    yield takeEvery(ActionTypes.REFRESH_TOKEN_SUCCESS, function* () {
+        yield put(listOrganizationsRequest());
+    });
+}
+
 // Redirect to login when refresh token request fails
 export function* onRefreshTokenFailure() {
     yield takeEvery(ActionTypes.REFRESH_TOKEN_FAILURE, function* () {
-        yield put(push(LOGIN_ROUTE_PATH));
+        yield put(push(LOGIN_ROOT_PATH));
     });
 }
 
@@ -103,6 +104,12 @@ export function* onSignUpRequest() {
     );
 }
 
+export function* onSignupSuccess() {
+    yield takeEvery(ActionTypes.SIGNUP_SUCCESS, function* () {
+        yield put(listOrganizationsRequest());
+    });
+}
+
 // Called when a user try to signup
 export function* onSignUpWithInviteRequest() {
     yield takeEvery(
@@ -125,17 +132,17 @@ export function* onSignUpWithInviteRequest() {
 // Called when a user try to logout
 export function* onLogout() {
     yield takeEvery(ActionTypes.LOGOUT, function* () {
-        // Purge persisted redux store and redirect to login
         yield call(persistor.purge);
-        // yield put(push(LOGIN_ROUTE_PATH));
     });
 }
 
 export const authEffects = [
     fork(onLoginRequest),
     fork(onSignUpRequest),
+    fork(onSignupSuccess),
     fork(onSignUpWithInviteRequest),
     fork(onRefreshTokenRequest),
+    fork(onRefreshSuccess),
     fork(onRefreshTokenFailure),
     fork(onLogout)
 ];

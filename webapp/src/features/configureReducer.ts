@@ -8,6 +8,7 @@ import connectorReducer from "./connectors/ConnectorsReducer";
 import onboardingReducer from "./onboarding/OnboardingReducer";
 import AlertSlice from "./notifications/AlertSlice";
 import dataSourceReducer from "./data-sources/DataSourceReducer";
+import * as ActionType from "./auth/AuthAction.types";
 
 // Persist config
 // Using a white list to only
@@ -18,18 +19,37 @@ const persistConfig = {
   whitelist: ["auth"],
 };
 
-const createRootReducer = (routerReducer: Reducer<RouterState>) =>
-  persistReducer(
-    persistConfig,
-    combineReducers({
-      router: routerReducer,
-      notifications: AlertSlice.reducer,
-      auth: authReducer,
-      workspace: workspaceReducer,
-      onboarding: onboardingReducer,
-      connectors: connectorReducer,
-      dataSources: dataSourceReducer
-    })
-  );
+const workspacePersistConfig = {
+    key: 'workspace',
+    storage,
+    whitelist: ['selected'],
+};
+
+const createRootReducer = (routerReducer: Reducer<RouterState>) => {
+
+    const appReducer = combineReducers({
+        router: routerReducer,
+        notifications: AlertSlice.reducer,
+        auth: authReducer,
+        workspace: persistReducer(workspacePersistConfig, workspaceReducer),
+        onboarding: onboardingReducer,
+        connectors: connectorReducer,
+        dataSources: dataSourceReducer
+    });
+
+    const rootReducer = (state, action) => {
+        if (action.type === ActionType.LOGOUT) {
+            return appReducer(undefined, action)
+        }
+        return appReducer(state, action)
+    }
+
+    return persistReducer(
+        persistConfig,
+        rootReducer
+    );
+}
+
+
 
 export default createRootReducer;

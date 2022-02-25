@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useAuth } from '../../hooks/use-auth';
 import { push } from 'redux-first-history';
-import { LOGIN_ROUTE_PATH } from '../../routes';
+import { LOGIN_ROOT_PATH } from '../../routes';
 import { useDispatch } from 'react-redux';
 
 interface AuthGuardProps {
@@ -17,9 +17,10 @@ export const AuthGuard: FC<AuthGuardProps> = (props) => {
   const [checked, setChecked] = useState(false);
 
   useEffect(() => {
+    console.log("is Authenticated changed", isAuthenticated);
     if (!isAuthenticated) {
       console.log('Not authenticated');
-      dispatch(push(LOGIN_ROUTE_PATH));
+      dispatch(push(LOGIN_ROOT_PATH));
     } else {
       setChecked(true);
     }
