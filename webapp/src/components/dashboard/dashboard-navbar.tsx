@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import type { FC } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -38,6 +38,7 @@ const DashboardNavbarRoot = styled(AppBar)(({ theme }) => ({
 
 const AccountButton = () => {
   const anchorRef = useRef<HTMLButtonElement | null>(null);
+  const [fullName, setFullName] = useState('');
   const [openPopover, setOpenPopover] = useState<boolean>(false);
 
   const handleOpenPopover = (): void => {
@@ -48,8 +49,10 @@ const AccountButton = () => {
     setOpenPopover(false);
   };
 
-  const { user } = useAuth();
-  const fullName = `${user?.firstName} ${user?.lastName}`;
+    const { user } = useAuth();
+    useEffect(() => {
+        if (user) setFullName(`${user?.firstName} ${user?.lastName}`)
+    }, [user]);
 
   return (
     <>

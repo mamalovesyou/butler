@@ -8,11 +8,11 @@ import {
     ACCOUNT_ROOT_PATH, ACCOUNT_SETTINGS_PATH, ANALYTICS_ROOT_PATH, UTMS_ROOT_PATH, CONNECTORS_DETAIL_PATH,
     DASHBOARD_ROOT_PATH,
     DATA_SOURCES_ROOT_PATH, ERROR_ROOT_PATH, JOIN_ROOT_PATH,
-    LOGIN_ROUTE_PATH,
+    LOGIN_ROOT_PATH,
     OAUTH_CALLBACK,
     ONBOARDING_ROOT_PATH,
-    ORGANIZATION_ROOT_PATH, ORGANIZATION_TEAM_PATH, ORGANIZATION_WORKSPACES_DETAIL_PATH, ORGANIZATION_WORKSPACES_PATH,
-    REGISTER_ROOT_PATH,
+    ORGANIZATION_ROOT_PATH, ORGANIZATION_WORKSPACES_DETAIL_PATH,
+    REGISTER_ROOT_PATH, LOGOUT_ROOT_PATH,
 } from "./constants";
 import Onboarding from "../pages/onboarding";
 import {AuthGuard} from "../components/auth/auth-guard";
@@ -32,21 +32,13 @@ import JoinInvitation from "../pages/auth/join-invitation";
 import Analytics from "../pages/dashboard/analytics";
 import ConnectorDetailsEdit from "../components/dashboard/data-sources/connector-details-edit";
 import DataSourceDetail from "../pages/dashboard/data-sources/data-source-detail";
+import Logout from "../pages/auth/logout";
 
 export * from "./constants";
 
 export const AppRoutes: React.FC = () => {
 
     const location = useLocation();
-
-    const [organization, setOrganization] = useState(null);
-    const {organizationId, organizations} = useWorkspace();
-
-    useEffect(() => {
-        if (organizationId) {
-            setOrganization(organizations[organizationId]);
-        }
-    }, [organizationId]);
 
     const element = useRoutes(
         [
@@ -55,8 +47,12 @@ export const AppRoutes: React.FC = () => {
                 element: <OAuthCallback/>,
             },
             {
-                path: LOGIN_ROUTE_PATH,
+                path: LOGIN_ROOT_PATH,
                 element: <Login/>,
+            },
+            {
+                path: LOGOUT_ROOT_PATH,
+                element: <Logout/>,
             },
             {
                 path: REGISTER_ROOT_PATH,
@@ -89,17 +85,17 @@ export const AppRoutes: React.FC = () => {
                         path: ORGANIZATION_ROOT_PATH, element: <OrganizationLayout/>, children: [
                             {
                                 path: "", element: <Organization/>, children: [
-                                    {path: "", element: <Navigate to={ORGANIZATION_WORKSPACES_PATH}/>},
-                                    {path: ORGANIZATION_WORKSPACES_PATH, element: <WorkspacesList/>},
-                                    {
-                                        path: ORGANIZATION_TEAM_PATH, element: <>{
-                                            organization
-                                                ? <TeamMembersTabs mode={"organization"} members={organization.members}
-                                                                   invitations={organization.invitations}/>
-                                                : null
-                                        }
-                                        </>
-                                    }
+                                    // {path: "", element: <Navigate to={ORGANIZATION_WORKSPACES_PATH}/>},
+                                    // {path: ORGANIZATION_WORKSPACES_PATH, element: <WorkspacesList/>},
+                                    // {
+                                    //     path: ORGANIZATION_TEAM_PATH, element: <>{
+                                    //         organization
+                                    //             ? <TeamMembersTabs mode={"organization"} members={organization.members}
+                                    //                                invitations={organization.invitations}/>
+                                    //             : null
+                                    //     }
+                                    //     </>
+                                    // }
                                 ]
                             },
                             {path: ORGANIZATION_WORKSPACES_DETAIL_PATH, element: <WorkspaceDetail/>},

@@ -12,11 +12,9 @@ import {
 import LogoutIcon from '@mui/icons-material/Logout';
 import { Cog as CogIcon } from '../../icons/cog';
 import { useDispatch } from 'react-redux';
-import {ACCOUNT_ROOT_PATH, ACCOUNT_SETTINGS_PATH} from '../../routes';
+import {ACCOUNT_ROOT_PATH, ACCOUNT_SETTINGS_PATH, LOGOUT_ROOT_PATH} from '../../routes';
 import { Link } from 'react-router-dom';
-import { logout } from '../../features/auth';
-import { UserAvatar } from '../user-avatar';
-import { useAuth } from '../../hooks/use-auth';
+import {push} from "redux-first-history";
 
 interface AccountPopoverProps {
   anchorEl: null | Element;
@@ -28,11 +26,8 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
   const { anchorEl, onClose, open, ...other } = props;
   const dispatch = useDispatch();
 
-  const { user } = useAuth();
-  const fullName = `${user?.firstName} ${user?.lastName}`;
-
   const handleLogout = async (): Promise<void> => {
-    dispatch(logout());
+    dispatch(push(LOGOUT_ROOT_PATH));
   };
 
   return (
@@ -49,23 +44,6 @@ export const AccountPopover: FC<AccountPopoverProps> = (props) => {
       transitionDuration={0}
       {...other}
     >
-      <Box
-        sx={{
-          alignItems: 'center',
-          p: 2,
-          display: 'flex'
-        }}
-      >
-        <UserAvatar name={fullName} />
-        <Box
-          sx={{
-            ml: 1
-          }}
-        >
-          <Typography variant="body1">{user.firstName}</Typography>
-        </Box>
-      </Box>
-      <Divider />
       <Box sx={{ my: 1 }}>
         <MenuItem to={`${ACCOUNT_ROOT_PATH}/${ACCOUNT_SETTINGS_PATH}`} component={Link}>
           <ListItemIcon>
