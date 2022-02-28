@@ -34,7 +34,7 @@ spec:
               value: {{ .Values.services.gateway.port | quote }}
             - name: USERS_SERVICE_ADDR
               value: "users-server:{{ default "5000" .Values.services.users.port }}"
-            - name: OCOTPUS_SERVICE_ADDR
+            - name: OCTOPUS_SERVICE_ADDR
               value: "octopus-server:{{ default "5000" .Values.services.octopus.port }}"
 
             {{- range $key, $val := .Values.commonEnv }}
