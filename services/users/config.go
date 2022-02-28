@@ -26,7 +26,7 @@ type ServiceConfig struct {
 	JWTSecret      string              `mapstructure:"jwtSecret"`
 	SendgridAPIKey string              `mapstructure:"sendgridAPIKey" env:"SENDGRID_API_KEY"`
 	Postgres       postgres.Config     `envPrefix:"POSTGRES_"`
-	Redis          redis.RedisConfig   `envPrefix:"REDIS_"`
+	Redis          redis.Config        `envPrefix:"REDIS_"`
 	Jaeger         logger.JaegerConfig `envPrefix:"JAEGER_"`
 	Logger         logger.LoggerConfig `envPrefix:"LOGGER_"`
 	WebappBaseURL  string              `mapstructure:"webAppBaseURL" env:"WEBAPP_BASE_URL"`

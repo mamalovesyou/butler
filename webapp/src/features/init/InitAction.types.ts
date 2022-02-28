@@ -14,5 +14,6 @@ export const ROUTER_LOCATION_CHANGE = '@@router/LOCATION_CHANGE';
 
 export interface IActionRehydrate {
   type: typeof PERSIST_REHYDRATE;
-  payload: PersistedState & { auth: AuthStateType };
+  payload: PersistedState;
+  key: string;
 }
