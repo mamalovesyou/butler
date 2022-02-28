@@ -53,6 +53,10 @@ spec:
                 secretKeyRef:
                   name: {{ .Release.Name }}-octopus-secrets
                   key: POSTGRES_PASSWORD
+            - name: USERS_SERVICE_ADDR
+              value: "users-server:{{ default "5000" .Values.services.users.port }}"
+            - name: OCTOPUS_SERVICE_ADDR
+              value: "octopus-server:{{ default "5000" .Values.services.octopus.port }}"
             {{- range $key, $val := .Values.commonEnv }}
             - name: {{ $key }}
               value: {{ $val | quote }}
