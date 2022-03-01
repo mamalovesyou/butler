@@ -11,6 +11,8 @@ export function* onRehydrate() {
     yield takeEvery(
         ActionTypes.PERSIST_REHYDRATE,
         function* ({payload, key}: ActionTypes.IActionRehydrate) {
+            console.log("payload", payload)
+            if (!payload) return;
             const getPath = (state: RootState) => state.router.location;
             const { pathname } = yield select(getPath);
             if (pathname !== LOGOUT_ROOT_PATH && key === "root") {

@@ -27,6 +27,8 @@ export const CONNECTORS_DETAIL_PATH = "/data-sources/:connectorId";
 export const ONBOARDING_ROOT_PATH = "/onboarding";
 
 // UTMs
+export const URL_BUILDER_ROOT_PATH = "/url-builder";
+export const URL_BUILDER_ADD_ROOT_PATH = "/url-builder/add";
 export const UTMS_ROOT_PATH = "/utms";
 
 // Errors

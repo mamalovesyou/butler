@@ -9,8 +9,7 @@ import {DashboardSidebarSection} from './dashboard-sidebar-section';
 import {WorkspacePopover} from './workspace-popover';
 import {useCurrentWorkspace} from '../../hooks/use-workspace';
 import {DASHBOARD_SIDEBAR_WIDTH} from "../../theme/constants";
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import {ORGANIZATION_ROOT_PATH, UTMS_ROOT_PATH} from "../../routes";
+import {ORGANIZATION_ROOT_PATH, URL_BUILDER_ROOT_PATH, UTMS_ROOT_PATH} from "../../routes";
 
 interface DashboardSidebarProps {
     onClose: () => void;
@@ -49,6 +48,10 @@ const getSections = (): Section[] => [
             {
                 title: 'UTM Automation',
                 path: UTMS_ROOT_PATH,
+            },
+            {
+                title: 'URL Builder',
+                path: URL_BUILDER_ROOT_PATH,
             }
         ]
     },
