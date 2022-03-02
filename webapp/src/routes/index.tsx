@@ -22,8 +22,7 @@ import {
     REGISTER_ROOT_PATH,
     LOGOUT_ROOT_PATH,
     URL_BUILDER_ROOT_PATH,
-    URL_BUILDER_ADD_ROOT_PATH,
-    ORGANIZATION_WORKSPACES_PATH, ORGANIZATION_TEAM_PATH,
+    ORGANIZATION_WORKSPACES_PATH,
 } from "./constants";
 import Onboarding from "../pages/onboarding";
 import {AuthGuard} from "../components/auth/auth-guard";
@@ -140,7 +139,7 @@ export const AppRoutes: React.FC = () => {
                 path: "*",
                 element:<Navigate replace to={`${ERROR_ROOT_PATH}/404`} />,
             },
-        ],
+        ], location
     );
 
     return element;
