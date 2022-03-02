@@ -23,14 +23,19 @@ RUN make services
 FROM scratch as victorinox
 COPY --from=builder /butler/bin/butler-victorinox /butler-victorinox
 
+
+# butler base service
+FROM alpine:3.14 as service-base
+RUN apk add --no-cache ca-certificates openssl
+
 # butler-users service
-FROM scratch as service-users
+FROM service-base  as service-users
 COPY --from=builder /butler/bin/butler-users /butler-users
 COPY --from=builder /bin/grpc_health_probe /grpc_health_probe
 ENTRYPOINT ["/butler-users", "start"]
 
 # butler-users service
-FROM scratch as service-octopus
+FROM service-base  as service-octopus
 COPY --from=builder /butler/bin/butler-octopus /butler-octopus
 COPY --from=builder /bin/grpc_health_probe /grpc_health_probe
 ENTRYPOINT ["/butler-octopus", "start"]
