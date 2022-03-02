@@ -97,7 +97,6 @@ export const AppRoutes: React.FC = () => {
                                 path: "", element: <Organization/>, children: [
                                     {path: "", element: <Navigate to={ORGANIZATION_WORKSPACES_PATH}/>},
                                     {path: ORGANIZATION_WORKSPACES_PATH, element: <WorkspacesList />},
-                                    {path: ORGANIZATION_WORKSPACES_PATH, element: <WorkspacesList />},
                                     // {
                                     //     path: ORGANIZATION_TEAM_PATH, element: <>{
                                     //         organization
