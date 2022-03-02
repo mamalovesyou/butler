@@ -33,6 +33,7 @@ func (c *Connector) TableName() string {
 
 // BeforeCreate will set the config if missing
 func (c *Connector) BeforeCreate(tx *gorm.DB) (err error) {
+	c.BaseModel.BeforeCreate(tx)
 	if c.Config == nil {
 		c.Config = &types.JSONB{}
 	}
