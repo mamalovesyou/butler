@@ -13,7 +13,7 @@ import {
 } from '@mui/material';
 import {Scrollbar} from '../../scrollbar';
 import {SeverityPill} from '../../severity-pill';
-import {useWorkspace} from "../../../hooks/use-workspace";
+import {useCurrentWorkspace} from "../../../hooks/use-workspace";
 import {useEffect, useState} from "react";
 import {V1Workspace} from "../../../api";
 import {ChevronRight} from "@mui/icons-material";
@@ -24,10 +24,11 @@ export const WorkspacesList: FC = () => {
 
     const navigate = useNavigate();
     const [workspaces, setWorkspaces] = useState<V1Workspace[]>([]);
-    const {workspaceId, organization} = useWorkspace();
+    const { organization, workspace } = useCurrentWorkspace();
 
 
     useEffect(() => {
+        console.log('organization changed')
         if (organization) {
             setWorkspaces(organization.workspaces);
         }
@@ -80,7 +81,7 @@ export const WorkspacesList: FC = () => {
                                     </Box>
                                 </TableCell>
                                 <TableCell>
-                                    { ws.id === workspaceId && <SeverityPill>Current workspace</SeverityPill>}
+                                    { ws.id === workspace.id && <SeverityPill>Current workspace</SeverityPill>}
                                 </TableCell>
                                 <TableCell align="right">
                                     <IconButton aria-label="delete" size="large" onClick={() => navigate(ws.id)}>
