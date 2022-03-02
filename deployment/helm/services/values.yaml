@@ -2,6 +2,10 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+
+global:
+  storageClass: us-east-2a-storageclass
+
 environment: local
 
 replicaCount: 1
@@ -102,7 +106,8 @@ services:
 
 redis:
   fullnameOverride: redis
-  usePassword: false
+  auth:
+    enabled: false
 
 resources:
    limits:
